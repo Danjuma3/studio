@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Ingredient, Recipe, StaffMember, ManagerTask } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod } from './types';
 
 const STORAGE_KEYS = {
   INGREDIENTS: 'ekoplate_ingredients',
   RECIPES: 'ekoplate_recipes',
   STAFF: 'ekoplate_staff',
   TASKS: 'ekoplate_tasks',
+  PAYMENTS: 'ekoplate_payments',
 };
 
-// Seed data for initial experience
+// Seed data
 const SEED_INGREDIENTS: Ingredient[] = [
   { id: '1', name: 'Jollof Rice (Long Grain)', unit: 'kg', bulkPrice: 1200, retailPrice: 1500, weeklyUsage: 50, lastUpdated: new Date().toISOString() },
   { id: '2', name: 'Tomato Paste', unit: 'kg', bulkPrice: 800, retailPrice: 1100, weeklyUsage: 20, lastUpdated: new Date().toISOString() },
@@ -33,11 +34,17 @@ const SEED_TASKS: ManagerTask[] = [
   { id: 't4', task: 'Update fish market prices', completed: false, priority: 'medium' },
 ];
 
+const SEED_PAYMENTS: PaymentMethod[] = [
+  { id: 'p1', type: 'bank_transfer', provider: 'GTBank', accountName: "Buchi's Kitchen Ent.", isDefault: true },
+  { id: 'p2', type: 'card', provider: 'Visa', lastFour: '4242', isDefault: false },
+];
+
 export function useInventory() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [tasks, setTasks] = useState<ManagerTask[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,30 +52,32 @@ export function useInventory() {
     const storedRecipes = localStorage.getItem(STORAGE_KEYS.RECIPES);
     const storedStaff = localStorage.getItem(STORAGE_KEYS.STAFF);
     const storedTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
+    const storedPayments = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
 
-    if (storedIngredients) {
-      setIngredients(JSON.parse(storedIngredients));
-    } else {
+    if (storedIngredients) setIngredients(JSON.parse(storedIngredients));
+    else {
       setIngredients(SEED_INGREDIENTS);
       localStorage.setItem(STORAGE_KEYS.INGREDIENTS, JSON.stringify(SEED_INGREDIENTS));
     }
 
-    if (storedRecipes) {
-      setRecipes(JSON.parse(storedRecipes));
-    }
+    if (storedRecipes) setRecipes(JSON.parse(storedRecipes));
 
-    if (storedStaff) {
-      setStaff(JSON.parse(storedStaff));
-    } else {
+    if (storedStaff) setStaff(JSON.parse(storedStaff));
+    else {
       setStaff(SEED_STAFF);
       localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(SEED_STAFF));
     }
 
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
-    } else {
+    if (storedTasks) setTasks(JSON.parse(storedTasks));
+    else {
       setTasks(SEED_TASKS);
       localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(SEED_TASKS));
+    }
+
+    if (storedPayments) setPaymentMethods(JSON.parse(storedPayments));
+    else {
+      setPaymentMethods(SEED_PAYMENTS);
+      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(SEED_PAYMENTS));
     }
 
     setLoading(false);
@@ -92,6 +101,11 @@ export function useInventory() {
   const saveTasks = (newTasks: ManagerTask[]) => {
     setTasks(newTasks);
     localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(newTasks));
+  };
+
+  const savePayments = (newPayments: PaymentMethod[]) => {
+    setPaymentMethods(newPayments);
+    localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(newPayments));
   };
 
   const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'lastUpdated'>) => {
@@ -127,11 +141,32 @@ export function useInventory() {
     saveTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
   };
 
+  const addPaymentMethod = (method: Omit<PaymentMethod, 'id'>) => {
+    const newMethod = {
+      ...method,
+      id: Math.random().toString(36).substr(2, 9),
+    };
+    if (newMethod.isDefault) {
+      savePayments(paymentMethods.map(m => ({ ...m, isDefault: false })).concat(newMethod));
+    } else {
+      savePayments([...paymentMethods, newMethod]);
+    }
+  };
+
+  const deletePaymentMethod = (id: string) => {
+    savePayments(paymentMethods.filter(m => m.id !== id));
+  };
+
+  const setDefaultPaymentMethod = (id: string) => {
+    savePayments(paymentMethods.map(m => ({ ...m, isDefault: m.id === id })));
+  };
+
   return {
     ingredients,
     recipes,
     staff,
     tasks,
+    paymentMethods,
     loading,
     addIngredient,
     updateIngredient,
@@ -139,5 +174,8 @@ export function useInventory() {
     addRecipe,
     deleteRecipe,
     toggleTask,
+    addPaymentMethod,
+    deletePaymentMethod,
+    setDefaultPaymentMethod,
   };
 }

@@ -9,7 +9,8 @@ import {
   Lightbulb, 
   TrendingUp,
   CookingPot,
-  ShieldCheck
+  ShieldCheck,
+  Settings
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -31,6 +32,7 @@ const navItems = [
   { name: 'Cost Insights', href: '/insights', icon: Lightbulb },
   { name: 'Market Updates', href: '/market', icon: TrendingUp },
   { name: 'Manager Tools', href: '/manager', icon: ShieldCheck },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export function AppNavigation() {

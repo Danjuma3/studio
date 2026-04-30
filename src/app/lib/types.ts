@@ -37,3 +37,12 @@ export interface ManagerTask {
   completed: boolean;
   priority: 'low' | 'medium' | 'high';
 }
+
+export interface PaymentMethod {
+  id: string;
+  type: 'card' | 'bank_transfer' | 'pos' | 'cash';
+  provider: string; // e.g. "GTBank", "Visa", "Moniepoint"
+  lastFour?: string;
+  accountName?: string;
+  isDefault: boolean;
+}
