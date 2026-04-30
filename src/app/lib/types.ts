@@ -23,3 +23,17 @@ export interface Recipe {
 }
 
 export type PricingStrategy = 'bulk' | 'retail';
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  role: 'Chef' | 'Server' | 'Cleaner' | 'Sous Chef';
+  status: 'active' | 'on-break' | 'off-duty';
+}
+
+export interface ManagerTask {
+  id: string;
+  task: string;
+  completed: boolean;
+  priority: 'low' | 'medium' | 'high';
+}

@@ -33,10 +33,10 @@ export default function RootLayout({
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">
-                    <p className="text-sm font-medium">Buchi's Kitchen</p>
-                    <p className="text-xs text-muted-foreground">Victoria Island, Lagos</p>
+                    <p className="text-sm font-bold">Buchi's Kitchen</p>
+                    <p className="text-xs text-primary font-medium tracking-wide">@buchi_kitchen_lagos</p>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center font-bold text-primary">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-white shadow-md border-2 border-white">
                     BK
                   </div>
                 </div>
