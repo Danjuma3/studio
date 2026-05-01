@@ -283,7 +283,7 @@ export default function SupportWorkspacePage() {
               <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 space-y-3 mt-4">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Domain Note:</p>
                 <p className="text-[11px] leading-relaxed text-white/80">
-                  Once you register <strong>kitchenprof.ng</strong> via a NiRA-accredited registrar, you can point your DNS settings to this Firebase instance to activate official branding.
+                  Once you register <strong>kitchenprof.ng</strong> via <strong>Whogohost</strong>, you can point your DNS settings to this Firebase instance to activate official branding.
                 </p>
               </div>
             </CardContent>
