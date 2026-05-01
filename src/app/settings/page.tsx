@@ -261,7 +261,7 @@ export default function SettingsPage() {
                           <CheckCircle2 size={12} className="text-primary" /> 3 AI Audits / Month
                         </li>
                         <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Market Trend Updates
+                          <CheckCircle2 size={12} className="text-primary" /> Limited Market Trend Updates
                         </li>
                       </ul>
                     </div>
@@ -277,8 +277,8 @@ export default function SettingsPage() {
                         <li className="text-[11px] flex items-center gap-2">
                           <CheckCircle2 size={12} className="text-primary" /> Unlimited AI Audits
                         </li>
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Advanced Procurement
+                        <li className="text-[11px] flex items-center gap-2 font-bold text-primary">
+                          <CheckCircle2 size={12} className="text-primary" /> Full Market Trend Updates
                         </li>
                         <li className="text-[11px] flex items-center gap-2">
                           <CheckCircle2 size={12} className="text-primary" /> Multi-Staff Access
