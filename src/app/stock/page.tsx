@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -16,10 +17,21 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Search, PackageSearch, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function StockTakingPage() {
-  const { ingredients, updateIngredient } = useInventory();
+  const { ingredients, updateIngredient, loading } = useInventory();
   const [search, setSearch] = useState('');
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isUserLoading, router]);
 
   const filteredIngredients = ingredients.filter(ing => 
     ing.name.toLowerCase().includes(search.toLowerCase())
@@ -33,6 +45,10 @@ export default function StockTakingPage() {
   };
 
   const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
+
+  if (loading || isUserLoading) {
+    return <div className="p-8 text-center">Loading Inventory...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -87,7 +103,7 @@ export default function StockTakingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">
-              {Math.round(((ingredients.length - lowStockCount) / ingredients.length) * 100)}%
+              {ingredients.length > 0 ? Math.round(((ingredients.length - lowStockCount) / ingredients.length) * 100) : 100}%
             </div>
             <p className="text-xs text-primary/70 mt-1">Healthy stock ratio</p>
           </CardContent>
@@ -117,7 +133,13 @@ export default function StockTakingPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredIngredients.map((ing) => {
+              {filteredIngredients.length === 0 ? (
+                 <TableRow>
+                   <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                     No ingredients tracked yet. Add some in the Inventory or Recipe Composer.
+                   </TableCell>
+                 </TableRow>
+              ) : filteredIngredients.map((ing) => {
                 const isLow = ing.currentStock <= ing.minStock;
                 return (
                   <TableRow key={ing.id} className="hover:bg-accent/5 transition-colors">
@@ -132,7 +154,7 @@ export default function StockTakingPage() {
                     </TableCell>
                     <TableCell className="text-center text-muted-foreground">{ing.minStock}</TableCell>
                     <TableCell className="text-center">
-                      <Badge variant="outline">{ing.unit}</Badge>
+                      <Badge variant="outline">{ing.unitOfMeasure}</Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       {isLow ? (

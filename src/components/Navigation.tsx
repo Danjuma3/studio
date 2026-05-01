@@ -14,7 +14,9 @@ import {
   CookingPot,
   Store,
   Info,
-  FileText
+  FileText,
+  LogOut,
+  User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -28,6 +30,8 @@ import {
   SidebarFooter
 } from '@/components/ui/sidebar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -48,6 +52,14 @@ const secondaryNav = [
 export function AppNavigation() {
   const pathname = usePathname();
   const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+  const { user } = useUser();
+  const auth = useAuth();
+
+  const handleLogout = () => {
+    if (auth) signOut(auth);
+  };
+
+  if (!user && pathname === '/login') return null;
 
   return (
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
@@ -123,8 +135,27 @@ export function AppNavigation() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 text-[10px] text-muted-foreground text-center">
-        &copy; {new Date().getFullYear()} Kitchen Prof Lagos
+      <SidebarFooter className="p-4 flex flex-col gap-2">
+        {user ? (
+          <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-xl">
+             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+               {user.email?.[0].toUpperCase() || 'U'}
+             </div>
+             <div className="flex-1 overflow-hidden">
+               <p className="text-[10px] font-bold truncate">{user.email}</p>
+               <button onClick={handleLogout} className="text-[9px] text-destructive hover:underline flex items-center gap-1">
+                 <LogOut size={10} /> Logout
+               </button>
+             </div>
+          </div>
+        ) : (
+          <SidebarMenuButton asChild className="bg-primary text-white hover:bg-primary/90">
+            <Link href="/login"><User size={16} /> Login</Link>
+          </SidebarMenuButton>
+        )}
+        <div className="text-[10px] text-muted-foreground text-center pt-2">
+          &copy; {new Date().getFullYear()} Kitchen Prof Lagos
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

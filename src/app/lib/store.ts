@@ -1,218 +1,140 @@
+
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, doc, serverTimestamp } from 'firebase/firestore';
+import { 
+  addDocumentNonBlocking, 
+  updateDocumentNonBlocking, 
+  deleteDocumentNonBlocking, 
+  setDocumentNonBlocking 
+} from '@/firebase/non-blocking-updates';
 import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo } from './types';
 
-const STORAGE_KEYS = {
-  INGREDIENTS: 'kitchenprof_ingredients',
-  RECIPES: 'kitchenprof_recipes',
-  STAFF: 'kitchenprof_staff',
-  TASKS: 'kitchenprof_tasks',
-  PAYMENTS: 'kitchenprof_payments',
-  SUBSCRIPTION: 'kitchenprof_subscription',
-};
-
-const SEED_INGREDIENTS: Ingredient[] = [
-  { id: '1', name: 'Jollof Rice (Long Grain)', unit: 'kg', bulkPrice: 1200, retailPrice: 1500, weeklyUsage: 50, currentStock: 120, minStock: 20, lastUpdated: new Date().toISOString() },
-  { id: '2', name: 'Tomato Paste', unit: 'kg', bulkPrice: 800, retailPrice: 1100, weeklyUsage: 20, currentStock: 15, minStock: 10, lastUpdated: new Date().toISOString() },
-  { id: '3', name: 'Vegetable Oil', unit: 'L', bulkPrice: 2200, retailPrice: 2600, weeklyUsage: 15, currentStock: 5, minStock: 10, lastUpdated: new Date().toISOString() },
-  { id: '4', name: 'Onions', unit: 'kg', bulkPrice: 600, retailPrice: 900, weeklyUsage: 30, currentStock: 45, minStock: 15, lastUpdated: new Date().toISOString() },
-  { id: '5', name: 'Chicken Breast', unit: 'kg', bulkPrice: 4500, retailPrice: 5200, weeklyUsage: 25, currentStock: 12, minStock: 8, lastUpdated: new Date().toISOString() },
-];
-
-const SEED_RECIPES: Recipe[] = [
-  { 
-    id: 'r1', 
-    name: 'Party Jollof Rice (Standard Portion)', 
-    description: 'Classic Lagos party jollof served per plate.', 
-    sellingPrice: 3500, 
-    items: [
-      { ingredientId: '1', quantity: 0.25 },
-      { ingredientId: '2', quantity: 0.05 },
-      { ingredientId: '3', quantity: 0.02 },
-      { ingredientId: '4', quantity: 0.03 },
-    ] 
-  }
-];
-
-const SEED_STAFF: StaffMember[] = [
-  { id: 's1', name: 'Chef Buchi', role: 'Chef', status: 'active' },
-  { id: 's2', name: 'Amaka Obi', role: 'Sous Chef', status: 'active' },
-  { id: 's3', name: 'Tunde Ade', role: 'Server', status: 'on-break' },
-];
-
-const SEED_TASKS: ManagerTask[] = [
-  { id: 't1', task: 'Check gas levels', completed: false, priority: 'high' },
-  { id: 't2', task: 'Review morning delivery', completed: true, priority: 'medium' },
-  { id: 't3', task: 'Inspect cold storage', completed: false, priority: 'high' },
-];
-
-const SEED_PAYMENTS: PaymentMethod[] = [
-  { id: 'p1', type: 'paystack', provider: 'Paystack', isDefault: true },
-];
-
-const DEFAULT_SUBSCRIPTION: SubscriptionInfo = {
-  plan: 'free',
-  status: 'active',
-  nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-};
-
 export function useInventory() {
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [tasks, setTasks] = useState<ManagerTask[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [subscription, setSubscription] = useState<SubscriptionInfo>(DEFAULT_SUBSCRIPTION);
-  const [loading, setLoading] = useState(true);
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
 
-  useEffect(() => {
-    const storedIngredients = localStorage.getItem(STORAGE_KEYS.INGREDIENTS);
-    const storedRecipes = localStorage.getItem(STORAGE_KEYS.RECIPES);
-    const storedStaff = localStorage.getItem(STORAGE_KEYS.STAFF);
-    const storedTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
-    const storedPayments = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
-    const storedSub = localStorage.getItem(STORAGE_KEYS.SUBSCRIPTION);
+  // Ingredients Collection
+  const ingredientsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'users', user.uid, 'ingredients');
+  }, [firestore, user]);
+  const { data: ingredients, isLoading: isIngredientsLoading } = useCollection<Ingredient>(ingredientsQuery);
 
-    if (storedIngredients) setIngredients(JSON.parse(storedIngredients));
-    else {
-      setIngredients(SEED_INGREDIENTS);
-      localStorage.setItem(STORAGE_KEYS.INGREDIENTS, JSON.stringify(SEED_INGREDIENTS));
-    }
+  // Recipes Collection
+  const recipesQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'users', user.uid, 'recipes');
+  }, [firestore, user]);
+  const { data: recipes, isLoading: isRecipesLoading } = useCollection<Recipe>(recipesQuery);
 
-    if (storedRecipes) setRecipes(JSON.parse(storedRecipes));
-    else {
-      setRecipes(SEED_RECIPES);
-      localStorage.setItem(STORAGE_KEYS.RECIPES, JSON.stringify(SEED_RECIPES));
-    }
+  // Staff Collection
+  const staffQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'users', user.uid, 'staff');
+  }, [firestore, user]);
+  const { data: staff } = useCollection<StaffMember>(staffQuery);
 
-    if (storedStaff) setStaff(JSON.parse(storedStaff));
-    else {
-      setStaff(SEED_STAFF);
-      localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(SEED_STAFF));
-    }
+  // Tasks Collection
+  const tasksQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'users', user.uid, 'tasks');
+  }, [firestore, user]);
+  const { data: tasks } = useCollection<ManagerTask>(tasksQuery);
 
-    if (storedTasks) setTasks(JSON.parse(storedTasks));
-    else {
-      setTasks(SEED_TASKS);
-      localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(SEED_TASKS));
-    }
+  // Payments Collection
+  const paymentsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'users', user.uid, 'payments');
+  }, [firestore, user]);
+  const { data: paymentMethods } = useCollection<PaymentMethod>(paymentsQuery);
 
-    if (storedPayments) setPaymentMethods(JSON.parse(storedPayments));
-    else {
-      setPaymentMethods(SEED_PAYMENTS);
-      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(SEED_PAYMENTS));
-    }
-
-    if (storedSub) setSubscription(JSON.parse(storedSub));
-    else {
-      setSubscription(DEFAULT_SUBSCRIPTION);
-      localStorage.setItem(STORAGE_KEYS.SUBSCRIPTION, JSON.stringify(DEFAULT_SUBSCRIPTION));
-    }
-
-    setLoading(false);
-  }, []);
-
-  const saveIngredients = (newIngredients: Ingredient[]) => {
-    setIngredients(newIngredients);
-    localStorage.setItem(STORAGE_KEYS.INGREDIENTS, JSON.stringify(newIngredients));
-  };
-
-  const saveRecipes = (newRecipes: Recipe[]) => {
-    setRecipes(newRecipes);
-    localStorage.setItem(STORAGE_KEYS.RECIPES, JSON.stringify(newRecipes));
-  };
-
-  const saveStaff = (newStaff: StaffMember[]) => {
-    setStaff(newStaff);
-    localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(newStaff));
-  };
-
-  const saveTasks = (newTasks: ManagerTask[]) => {
-    setTasks(newTasks);
-    localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(newTasks));
-  };
-
-  const savePayments = (newPayments: PaymentMethod[]) => {
-    setPaymentMethods(newPayments);
-    localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(newPayments));
-  };
-
-  const saveSubscription = (newSub: SubscriptionInfo) => {
-    setSubscription(newSub);
-    localStorage.setItem(STORAGE_KEYS.SUBSCRIPTION, JSON.stringify(newSub));
-  };
-
-  const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'lastUpdated'>) => {
-    const newIngredient = {
+  const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (!firestore || !user) return;
+    const colRef = collection(firestore, 'users', user.uid, 'ingredients');
+    const newDocId = Math.random().toString(36).substr(2, 9);
+    setDocumentNonBlocking(doc(colRef, newDocId), {
       ...ingredient,
-      id: Math.random().toString(36).substr(2, 9),
-      lastUpdated: new Date().toISOString(),
-    };
-    saveIngredients([...ingredients, newIngredient]);
+      id: newDocId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
   };
 
   const updateIngredient = (id: string, updates: Partial<Ingredient>) => {
-    saveIngredients(ingredients.map(ing => ing.id === id ? { ...ing, ...updates, lastUpdated: new Date().toISOString() } : ing));
+    if (!firestore || !user) return;
+    const docRef = doc(firestore, 'users', user.uid, 'ingredients', id);
+    updateDocumentNonBlocking(docRef, { ...updates, updatedAt: new Date().toISOString() });
   };
 
   const deleteIngredient = (id: string) => {
-    saveIngredients(ingredients.filter(ing => ing.id !== id));
+    if (!firestore || !user) return;
+    const docRef = doc(firestore, 'users', user.uid, 'ingredients', id);
+    deleteDocumentNonBlocking(docRef);
   };
 
-  const addRecipe = (recipe: Omit<Recipe, 'id'>) => {
-    const newRecipe = {
+  const addRecipe = (recipe: Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (!firestore || !user) return;
+    const colRef = collection(firestore, 'users', user.uid, 'recipes');
+    const newDocId = Math.random().toString(36).substr(2, 9);
+    setDocumentNonBlocking(doc(colRef, newDocId), {
       ...recipe,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    saveRecipes([...recipes, newRecipe]);
+      id: newDocId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
   };
 
   const updateRecipe = (id: string, updates: Partial<Recipe>) => {
-    saveRecipes(recipes.map(r => r.id === id ? { ...r, ...updates } : r));
+    if (!firestore || !user) return;
+    const docRef = doc(firestore, 'users', user.uid, 'recipes', id);
+    updateDocumentNonBlocking(docRef, { ...updates, updatedAt: new Date().toISOString() });
   };
 
   const deleteRecipe = (id: string) => {
-    saveRecipes(recipes.filter(r => r.id !== id));
+    if (!firestore || !user) return;
+    const docRef = doc(firestore, 'users', user.uid, 'recipes', id);
+    deleteDocumentNonBlocking(docRef);
   };
 
   const toggleTask = (id: string) => {
-    saveTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+    if (!firestore || !user || !tasks) return;
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    const docRef = doc(firestore, 'users', user.uid, 'tasks', id);
+    updateDocumentNonBlocking(docRef, { completed: !task.completed });
   };
 
   const addPaymentMethod = (method: Omit<PaymentMethod, 'id'>) => {
-    const newMethod = {
-      ...method,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    savePayments([...paymentMethods, newMethod]);
+    if (!firestore || !user) return;
+    const colRef = collection(firestore, 'users', user.uid, 'payments');
+    const newDocId = Math.random().toString(36).substr(2, 9);
+    setDocumentNonBlocking(doc(colRef, newDocId), { ...method, id: newDocId }, { merge: true });
   };
 
   const deletePaymentMethod = (id: string) => {
-    savePayments(paymentMethods.filter(p => p.id !== id));
+    if (!firestore || !user) return;
+    const docRef = doc(firestore, 'users', user.uid, 'payments', id);
+    deleteDocumentNonBlocking(docRef);
   };
 
   const setDefaultPaymentMethod = (id: string) => {
-    savePayments(paymentMethods.map(p => ({ ...p, isDefault: p.id === id })));
-  };
-
-  const upgradePlan = (plan: SubscriptionInfo['plan']) => {
-    saveSubscription({
-      ...subscription,
-      plan,
-      status: 'active',
-      nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    if (!firestore || !user || !paymentMethods) return;
+    paymentMethods.forEach(p => {
+      const docRef = doc(firestore, 'users', user.uid, 'payments', p.id);
+      updateDocumentNonBlocking(docRef, { isDefault: p.id === id });
     });
   };
 
   return {
-    ingredients,
-    recipes,
-    staff,
-    tasks,
-    paymentMethods,
-    subscription,
-    loading,
+    ingredients: ingredients || [],
+    recipes: recipes || [],
+    staff: staff || [],
+    tasks: tasks || [],
+    paymentMethods: paymentMethods || [],
+    subscription: { plan: 'free', status: 'active', nextBillingDate: new Date().toISOString() } as SubscriptionInfo,
+    loading: isUserLoading || isIngredientsLoading || isRecipesLoading,
     addIngredient,
     updateIngredient,
     deleteIngredient,
@@ -223,6 +145,6 @@ export function useInventory() {
     addPaymentMethod,
     deletePaymentMethod,
     setDefaultPaymentMethod,
-    upgradePlan,
+    upgradePlan: (plan: any) => {}, // Placeholder
   };
 }

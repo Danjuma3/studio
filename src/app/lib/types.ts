@@ -1,15 +1,17 @@
+
 export type UnitOfMeasure = 'kg' | 'g' | 'L' | 'ml' | 'piece' | 'bag' | 'crate';
 
 export interface Ingredient {
   id: string;
   name: string;
-  unit: UnitOfMeasure;
-  bulkPrice: number;
-  retailPrice: number;
+  unitOfMeasure: UnitOfMeasure;
+  bulkUnitPrice: number;
+  retailUnitPrice: number;
   weeklyUsage: number;
   currentStock: number;
   minStock: number;
-  lastUpdated: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RecipeItem {
@@ -23,6 +25,8 @@ export interface Recipe {
   description: string;
   sellingPrice: number;
   items: RecipeItem[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type PricingStrategy = 'bulk' | 'retail';
