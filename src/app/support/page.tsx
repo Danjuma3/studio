@@ -87,7 +87,7 @@ export default function SupportWorkspacePage() {
             <h1 className="text-3xl font-headline font-bold text-black/60">Team Command Center</h1>
             <p className="text-muted-foreground flex items-center gap-2">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Secure Backend</Badge>
-              Admin Access: {user?.email}
+              Admin Access: chefdtanju@gmail.com
             </p>
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function SupportWorkspacePage() {
             </div>
             <CardContent className="pt-6 space-y-4">
               <p className="text-sm leading-relaxed text-white/80">
-                Need to debug a user issue? Copy the <b>Health Data</b> and paste it into our chat. I will analyze the specific nodes to provide a fix.
+                Need help? Reach out to our legal team at <a href="mailto:legal@kitchenprof.ng" className="text-primary font-bold hover:underline">legal@kitchenprof.ng</a> or use the diagnostic tools.
               </p>
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Protocol:</p>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -61,7 +62,7 @@ export default function TermsPage() {
 
       <div className="p-6 rounded-2xl bg-muted/30 border text-center">
         <p className="text-sm font-medium">
-          Questions about our terms? Contact our support team at <a href="mailto:chefdtanju@gmail.com" className="text-primary font-bold hover:underline">chefdtanju@gmail.com</a>
+          Questions about our terms? Contact our support team at <a href="mailto:legal@kitchenprof.ng" className="text-primary font-bold hover:underline">legal@kitchenprof.ng</a>
         </p>
       </div>
     </div>
