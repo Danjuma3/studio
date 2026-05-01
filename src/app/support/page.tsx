@@ -7,17 +7,15 @@ import { useUser } from '@/firebase';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import {
-  LifeBuoy,
   Terminal,
   Bug,
   Sparkles,
   ShieldAlert,
   Copy,
   CheckCircle2,
-  AlertCircle,
   History,
-  Code,
   Users,
   Database,
   Activity,
@@ -80,14 +78,13 @@ export default function SupportWorkspacePage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center text-white shadow-2xl">
             <Database size={32} />
           </div>
           <div>
-            <h1 className="text-3xl font-headline font-bold">Team Command Center</h1>
+            <h1 className="text-3xl font-headline font-bold text-black/60">Team Command Center</h1>
             <p className="text-muted-foreground flex items-center gap-2">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Secure Backend</Badge>
               Admin Access: {user?.email}
@@ -113,7 +110,6 @@ export default function SupportWorkspacePage() {
         </div>
       </div>
 
-      {/* Global Activity Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-none shadow-md bg-white">
           <CardHeader className="pb-2">
@@ -166,7 +162,6 @@ export default function SupportWorkspacePage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Main Diagnostic Column */}
         <div className="xl:col-span-2 space-y-8">
           <Card className="border-none shadow-md bg-white overflow-hidden">
             <CardHeader className="bg-muted/30 border-b">
@@ -180,15 +175,15 @@ export default function SupportWorkspacePage() {
               <div className="rounded-2xl bg-black p-6 text-green-400 font-mono text-[11px] h-64 overflow-y-auto shadow-2xl leading-relaxed">
                 <p className="text-green-500/50"># Kitchen Profit OS v2.0.4 - Diagnostic Mode</p>
                 <p className="text-white/30">--------------------------------------------------</p>
-                <p>> Initializing Secure Handshake with chefdtanju@gmail.com...</p>
-                <p>> Status: AUTH_SUCCESS_LEVEL_ROOT</p>
-                <p>> Scanning Firestore Collections (Global Scope)...</p>
-                <p>> Found {ingredients.length} ingredient nodes.</p>
-                <p>> Found {recipes.length} recipe configurations.</p>
-                <p>> Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</p>
-                <p>> AI Model Link: STABLE</p>
-                <p>> Memory Usage: OPTIMAL</p>
-                <p className="animate-pulse">> Awaiting Command...</p>
+                <p>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</p>
+                <p>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</p>
+                <p>&gt; Scanning Firestore Collections (Global Scope)...</p>
+                <p>&gt; Found {ingredients.length} ingredient nodes.</p>
+                <p>&gt; Found {recipes.length} recipe configurations.</p>
+                <p>&gt; Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</p>
+                <p>&gt; AI Model Link: STABLE</p>
+                <p>&gt; Memory Usage: OPTIMAL</p>
+                <p className="animate-pulse">&gt; Awaiting Command...</p>
               </div>
             </CardContent>
             <CardFooter className="bg-muted/20 border-t py-4">
@@ -244,7 +239,6 @@ export default function SupportWorkspacePage() {
           </Card>
         </div>
 
-        {/* AI & Reporting Sidebar */}
         <div className="space-y-8">
           <Card className="border-none shadow-xl bg-black text-white overflow-hidden">
             <div className="p-6 bg-white/5 border-b border-white/10">
@@ -279,7 +273,7 @@ export default function SupportWorkspacePage() {
 
           <Card className="border-none shadow-md">
             <CardHeader className="pb-4">
-              <CardTitle className="text-base flex items-center gap-2">
+              <CardTitle className="text-base flex items-center gap-2 text-black/60">
                 <Bug size={18} className="text-destructive" />
                 Report System Anomaly
               </CardTitle>
@@ -288,7 +282,7 @@ export default function SupportWorkspacePage() {
             <CardContent>
               <form onSubmit={handleSubmitBug} className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xs">Issue Summary</Label>
+                  <Label className="text-xs font-bold uppercase tracking-tight text-muted-foreground">Issue Summary</Label>
                   <Input
                     placeholder="e.g. Broken Margin Calculation"
                     value={bugTitle}
@@ -297,7 +291,7 @@ export default function SupportWorkspacePage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs">Technical Details</Label>
+                  <Label className="text-xs font-bold uppercase tracking-tight text-muted-foreground">Technical Details</Label>
                   <Textarea
                     placeholder="Steps to reproduce or log error..."
                     className="h-28 text-sm resize-none"
@@ -315,8 +309,4 @@ export default function SupportWorkspacePage() {
       </div>
     </div>
   );
-}
-
-function Label({ children, className }: { children: React.ReactNode, className?: string }) {
-  return <label className={`text-sm font-bold text-muted-foreground uppercase tracking-tight ${className}`}>{children}</label>;
 }
