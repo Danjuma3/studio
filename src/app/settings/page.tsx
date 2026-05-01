@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useInventory } from '../lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
@@ -51,14 +50,36 @@ import { usePaystackPayment } from 'react-paystack';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
+/**
+ * Isolated Paystack button component to prevent SSR "window is not defined" errors.
+ */
+function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, onSuccess: any, onClose: any }) {
+  const initializePayment = usePaystackPayment(config);
+  
+  return (
+    <Button 
+      className="w-full h-12 gap-2 text-white bg-sky-600 hover:bg-sky-700 shadow-md"
+      onClick={() => initializePayment({onSuccess, onClose})}
+    >
+      <ExternalLink size={18} />
+      Pay Securely with Paystack
+    </Button>
+  );
+}
+
 export default function SettingsPage() {
   const { user } = useUser();
   const { toast } = useToast();
   const { paymentMethods, addPaymentMethod, deletePaymentMethod, setDefaultPaymentMethod, subscription, upgradePlan } = useInventory();
   const [isAddingOpen, setIsAddingOpen] = useState(false);
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [newMethod, setNewMethod] = useState({
     type: 'bank_transfer' as const,
@@ -77,14 +98,16 @@ export default function SettingsPage() {
     publicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   };
 
-  const config = {
-    reference: OFFICIAL_PAYMENT_INFO.reference + '-' + new Date().getTime(),
-    email: user?.email || "customer@kitchenprof.ng",
-    amount: OFFICIAL_PAYMENT_INFO.amount,
-    publicKey: OFFICIAL_PAYMENT_INFO.publicKey,
-  };
-
-  const initializePayment = usePaystackPayment(config);
+  // Memoize config to ensure stability and prevent hydration mismatch on reference
+  const paystackConfig = useMemo(() => {
+    if (!mounted || !user) return null;
+    return {
+      reference: OFFICIAL_PAYMENT_INFO.reference + '-' + Date.now(),
+      email: user?.email || "customer@kitchenprof.ng",
+      amount: OFFICIAL_PAYMENT_INFO.amount,
+      publicKey: OFFICIAL_PAYMENT_INFO.publicKey,
+    };
+  }, [mounted, user]);
 
   const onSuccess = (reference: any) => {
     upgradePlan('pro');
@@ -104,6 +127,7 @@ export default function SettingsPage() {
   };
 
   const handleCopy = (text: string, label: string) => {
+    if (typeof window === 'undefined') return;
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
@@ -129,6 +153,8 @@ export default function SettingsPage() {
       default: return <Wallet className="text-primary" />;
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="space-y-8">
@@ -290,13 +316,13 @@ export default function SettingsPage() {
                         
                         <div className="space-y-6 py-4">
                           <div className="space-y-4">
-                            <Button 
-                              className="w-full h-12 gap-2 text-white bg-sky-600 hover:bg-sky-700 shadow-md"
-                              onClick={() => initializePayment({onSuccess, onClose})}
-                            >
-                              <ExternalLink size={18} />
-                              Pay Securely with Paystack
-                            </Button>
+                            {paystackConfig && (
+                              <PaystackActivateButton 
+                                config={paystackConfig} 
+                                onSuccess={onSuccess} 
+                                onClose={onClose} 
+                              />
+                            )}
                             
                             <div className="relative w-full py-2">
                               <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
