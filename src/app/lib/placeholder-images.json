@@ -4,19 +4,19 @@
     {
       "id": "app-logo",
       "description": "Kitchen Prof official logo placeholder",
-      "imageUrl": "https://picsum.photos/seed/kitchenlogo/200/200",
+      "imageUrl": "https://picsum.photos/seed/kitchen-prof-logo/512/512",
       "imageHint": "restaurant logo"
     },
     {
       "id": "pwa-icon-192",
       "description": "PWA Icon 192x192",
-      "imageUrl": "https://picsum.photos/seed/kitchenlogo/192/192",
+      "imageUrl": "https://picsum.photos/seed/kitchen-prof-logo/192/192",
       "imageHint": "app icon"
     },
     {
       "id": "pwa-icon-512",
       "description": "PWA Icon 512x512",
-      "imageUrl": "https://picsum.photos/seed/kitchenlogo/512/512",
+      "imageUrl": "https://picsum.photos/seed/kitchen-prof-logo/512/512",
       "imageHint": "app icon"
     }
   ]

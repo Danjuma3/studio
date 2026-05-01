@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   title: 'Kitchen Prof - Food Cost Control & Analysis',
   description: 'The ultimate intelligent companion for Lagos restaurant owners to master their margins and dominate the market.',
   manifest: '/manifest.json',
+  icons: {
+    icon: 'https://picsum.photos/seed/kitchen-prof-logo/32/32',
+    apple: 'https://picsum.photos/seed/kitchen-prof-logo/180/180',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -44,7 +48,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <link rel="apple-touch-icon" href="https://picsum.photos/seed/kitchenlogo/180/180" />
       </head>
       <body className="font-body antialiased selection:bg-accent/30 selection:text-primary overflow-x-hidden safe-area-inset">
         <FirebaseClientProvider>
