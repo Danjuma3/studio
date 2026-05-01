@@ -8,13 +8,15 @@ import { Toaster } from '@/components/ui/toaster';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
+const appLogo = PlaceHolderImages.find(img => img.id === 'app-logo')?.imageUrl || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+
 export const metadata: Metadata = {
   title: 'Kitchen Prof - Food Cost Control & Analysis',
   description: 'The ultimate intelligent companion for Lagos restaurant owners to master their margins and dominate the market.',
   manifest: '/manifest.json',
   icons: {
-    icon: 'https://picsum.photos/seed/kitchen-prof-logo/32/32',
-    apple: 'https://picsum.photos/seed/kitchen-prof-logo/180/180',
+    icon: appLogo,
+    apple: appLogo,
   },
   appleWebApp: {
     capable: true,

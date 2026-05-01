@@ -3,7 +3,7 @@
   "placeholderImages": [
     {
       "id": "app-logo",
-      "description": "Kitchen Prof official logo placeholder",
+      "description": "Kitchen Prof official logo placeholder. Replace imageUrl with your logo URL.",
       "imageUrl": "https://picsum.photos/seed/kitchen-prof-logo/512/512",
       "imageHint": "restaurant logo"
     },
