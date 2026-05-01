@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -7,7 +6,7 @@ import { initiateAnonymousSignIn, initiateEmailSignIn, initiateEmailSignUp } fro
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
-import { ChefHat, Loader2, Sparkles } from 'lucide-react';
+import { ChefHat, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -55,7 +54,7 @@ export default function LoginPage() {
           <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg mb-4">
             <ChefHat size={32} />
           </div>
-          <CardTitle className="text-3xl font-headline font-bold">Kitchen Prof</CardTitle>
+          <CardTitle className="text-3xl font-headline font-bold">Kitchen Profit</CardTitle>
           <CardDescription>Securely manage your restaurant margins.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -64,7 +63,7 @@ export default function LoginPage() {
               <label className="text-sm font-medium">Email Address</label>
               <Input 
                 type="email" 
-                placeholder="chef@kitchenprof.ng" 
+                placeholder="chef@gmail.com" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
