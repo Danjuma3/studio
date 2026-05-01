@@ -16,7 +16,8 @@ import {
   Info,
   FileText,
   LogOut,
-  User
+  User,
+  ShieldAlert
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -32,6 +33,7 @@ import {
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
+import { Badge } from '@/components/ui/badge';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -59,6 +61,8 @@ export function AppNavigation() {
     if (auth) signOut(auth);
   };
 
+  const isAdmin = user?.email === 'chefdtanju@gmail.com';
+
   if (!user && pathname === '/login') return null;
 
   return (
@@ -75,16 +79,24 @@ export function AppNavigation() {
                 data-ai-hint={logo.imageHint}
               />
             ) : (
-              <div className="w-full h-full bg-primary flex items-center justify-center text-white">
+              <div className="w-full h-full bg-primary flex items-center justify-center text-white font-bold">
                 KP
               </div>
             )}
           </div>
           <div>
             <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Prof</h1>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-tighter">food cost control/Analysis</p>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-tighter font-semibold">food cost control/Analysis</p>
           </div>
         </Link>
+        {isAdmin && (
+          <div className="px-2 pb-2">
+            <Badge className="w-full justify-center gap-1.5 bg-destructive/10 text-destructive hover:bg-destructive/10 border-destructive/20 py-1">
+              <ShieldAlert size={12} />
+              PLATFORM ADMIN
+            </Badge>
+          </div>
+        )}
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu className="px-2">

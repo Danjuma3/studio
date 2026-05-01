@@ -1,109 +1,35 @@
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * EkoPlateCost Security Rules
+     * Kitchen Prof Security Rules
      *
-     * CORE PHILOSOPHY:
-     * This ruleset enforces a strict path-based ownership model. The application architecture
-     * is designed around "Authorization Independence," where the user's identity is 
-     * embedded directly into the document path hierarchy.
-     *
-     * DATA STRUCTURE:
-     * All application data is segregated by user ID at the root: /users/{userId}/...
-     * - /users/{userId}/ingredients: User-specific ingredient catalog.
-     * - /users/{userId}/recipes: User-specific recipe definitions.
-     * - Sub-entities (RecipeIngredients, MarketPriceHistory) are nested under their 
-     *   respective parents to maintain logical grouping and inherit ownership.
-     *
-     * KEY SECURITY DECISIONS:
-     * 1. Path-Based Authorization: We rely on the {userId} variable in the match 
-     *    path to verify ownership, avoiding expensive and slow get() calls.
-     * 2. Prototyping Flexibility: Rules strictly enforce WHO can access data but 
-     *    remain flexible on the internal data shape (schema) to allow for rapid iteration.
-     * 3. Relational Integrity: We enforce that internal ID fields (e.g., recipeId) 
-     *    match the document's path during creation to prevent data corruption.
-     * 4. Denormalization: The structure uses the path itself as the source of truth 
-     *    for authorization, effectively denormalizing the owner's UID into every URL.
+     * ADMIN POLICY:
+     * chefdtanju@gmail.com is granted global administrative access.
      */
 
-    // --- Helper Functions ---
-
-    /** @description Checks if the request is from an authenticated user. */
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /** @description Checks if the authenticated user matches the provided userId. */
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true || 
+        request.auth.token.email == "chefdtanju@gmail.com"
+      );
+    }
+
     function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+      return isAdmin() || (isSignedIn() && request.auth.uid == userId);
     }
 
-    /** @description Combined check for ownership and document existence for state changes. */
-    function isExistingOwner(userId) {
-      return resource != null && isOwner(userId);
+    match /users/{userId}/{document=**} {
+      allow read, write: if isOwner(userId);
     }
 
-    // --- Collection Rules ---
-
-    /**
-     * @description Rules for the top-level user-owned Ingredients collection.
-     * @path /users/{userId}/ingredients/{ingredientId}
-     * @allow Authenticated user (userId_123) to create (create) ingredient 'apple_1' under their own path.
-     * @deny User (userId_123) attempting to list (list) ingredients under /users/userId_456/ingredients.
-     * @principle Restricts access to a user's own data tree and validates path consistency.
-     */
-    match /users/{userId}/ingredients/{ingredientId} {
-      allow get, list: if isOwner(userId);
-      allow create: if isOwner(userId) && request.resource.data.id == ingredientId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
-
-      /**
-       * @description Rules for market price history records nested under an ingredient.
-       * @path /users/{userId}/ingredients/{ingredientId}/marketPriceHistory/{historyEntryId}
-       * @allow Owner to record (create) a new price update for their own ingredient.
-       * @deny Anyone else attempting to view (get) price history for this user's ingredients.
-       * @principle Inherited path ownership via the parent userId and ingredientId.
-       */
-      match /marketPriceHistory/{historyEntryId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.ingredientId == ingredientId;
-        allow update: if isExistingOwner(userId) && request.resource.data.ingredientId == resource.data.ingredientId;
-        allow delete: if isExistingOwner(userId);
-      }
-    }
-
-    /**
-     * @description Rules for the top-level user-owned Recipes collection.
-     * @path /users/{userId}/recipes/{recipeId}
-     * @allow Owner (userId_123) to update (update) their 'Jollof' recipe document.
-     * @deny Unauthenticated user trying to get (get) a recipe document.
-     * @principle Enforces strict ownership for private recipe data.
-     */
-    match /users/{userId}/recipes/{recipeId} {
-      allow get, list: if isOwner(userId);
-      allow create: if isOwner(userId) && request.resource.data.id == recipeId;
-      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-      allow delete: if isExistingOwner(userId);
-
-      /**
-       * @description Rules for recipe ingredients (the join entity) nested under a recipe.
-       * @path /users/{userId}/recipes/{recipeId}/recipeIngredients/{recipeIngredientId}
-       * @allow Owner to add (create) 'Tomato' to their 'Jollof' recipe.
-       * @deny User trying to delete (delete) a recipe ingredient from another user's recipe.
-       * @principle Ensures relational integrity by matching internal recipeId to the path.
-       */
-      match /recipeIngredients/{recipeIngredientId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.recipeId == recipeId;
-        allow update: if isExistingOwner(userId) && request.resource.data.recipeId == resource.data.recipeId;
-        allow delete: if isExistingOwner(userId);
-      }
-    }
-
-    // --- Global Deny ---
+    // Default deny
     match /{document=**} {
       allow read, write: if false;
     }
