@@ -94,7 +94,7 @@ export function AppNavigation() {
         </Link>
         {isAdmin && (
           <div className="px-2 pb-2">
-            <Badge className="w-full justify-center gap-1.5 bg-destructive/10 text-destructive hover:bg-destructive/10 border-destructive/20 py-1">
+            <Badge className="w-full justify-center gap-1.5 bg-black/5 text-black/60 hover:bg-black/5 border-black/10 py-1">
               <ShieldAlert size={12} />
               PLATFORM ADMIN
             </Badge>
@@ -178,7 +178,7 @@ export function AppNavigation() {
              </div>
              <div className="flex-1 overflow-hidden">
                <p className="text-[10px] font-bold truncate">{user.email}</p>
-               <button onClick={handleLogout} className="text-[9px] text-destructive hover:underline flex items-center gap-1">
+               <button onClick={handleLogout} className="text-[9px] text-black/60 hover:underline flex items-center gap-1">
                  <LogOut size={10} /> Logout
                </button>
              </div>
