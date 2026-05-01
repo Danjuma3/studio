@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -23,17 +22,30 @@ import {
   Globe,
   Mail,
   Server,
-  PartyPopper
+  PartyPopper,
+  Video,
+  UploadCloud,
+  Loader2,
+  Play
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { generateMarketingVideo } from '@/ai/flows/marketing-video-flow';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function SupportWorkspacePage() {
   const { user } = useUser();
   const { ingredients, recipes, issues, reportIssue, updateSystemAlert } = useInventory();
+  
+  // Bug Report State
   const [bugTitle, setBugTitle] = useState('');
   const [bugDesc, setBugDesc] = useState('');
+
+  // Video AI State
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null);
 
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
 
@@ -57,15 +69,9 @@ export default function SupportWorkspacePage() {
         totalRecipes: recipes.length,
         activeSupportTickets: issues.filter(i => i.status !== 'fixed').length,
       },
-      pantryHealth: ingredients.map(i => ({ name: i.name, stock: i.currentStock, min: i.minStock })),
-      recipes: recipes.map(r => ({ name: r.name, price: r.sellingPrice, itemCount: r.items.length }))
     };
-
     navigator.clipboard.writeText(JSON.stringify(diagnosticPayload, null, 2));
-    toast({
-      title: "Diagnostic Payload Ready",
-      description: "Data copied. Paste this to the Studio AI for swift troubleshooting.",
-    });
+    toast({ title: "Diagnostic Payload Ready", description: "Data copied to clipboard." });
   };
 
   const handleGrandOpeningBroadcast = () => {
@@ -74,22 +80,38 @@ export default function SupportWorkspacePage() {
       type: "market",
       active: true
     });
-    toast({
-      title: "Grand Opening Broadcasted!",
-      description: "The launch message is now visible to all users.",
-    });
+    toast({ title: "Grand Opening Broadcasted!", description: "The launch message is now visible to all users." });
   };
 
-  const handleSubmitBug = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!bugTitle || !bugDesc) return;
-    reportIssue(bugTitle, bugDesc, 'medium');
-    setBugTitle('');
-    setBugDesc('');
-    toast({
-      title: "Team Note Logged",
-      description: "This issue has been added to the internal tracking system.",
-    });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setSelectedPhoto(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleGenerateVideo = async () => {
+    if (!selectedPhoto) {
+      toast({ variant: "destructive", title: "Photo Required", description: "Please upload a photo of your face first." });
+      return;
+    }
+
+    setIsGeneratingVideo(true);
+    try {
+      const result = await generateMarketingVideo({
+        photoDataUri: selectedPhoto,
+        prompt: "Create a high-tech marketing video showing this person sitting in a modern room with a laptop. The screen shows the 'Kitchen Profit' app dashboard, and they are sliding through beautiful data charts and recipe interfaces."
+      });
+      setGeneratedVideo(result.videoUrl);
+      toast({ title: "Video Generated!", description: "Your marketing video is ready for review." });
+    } catch (error: any) {
+      console.error(error);
+      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Veo model is currently at capacity. Please try again later." });
+    } finally {
+      setIsGeneratingVideo(false);
+    }
   };
 
   return (
@@ -100,7 +122,7 @@ export default function SupportWorkspacePage() {
             <Database size={32} />
           </div>
           <div>
-            <h1 className="text-3xl font-headline font-bold text-black/60">Team Command Center</h1>
+            <h1 className="text-3xl font-headline font-bold text-black/60">Admin Command Center</h1>
             <p className="text-muted-foreground flex items-center gap-2">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-bold">ROOT ACCESS</Badge>
               Admin: chefdtanju@gmail.com
@@ -108,237 +130,246 @@ export default function SupportWorkspacePage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={handleGrandOpeningBroadcast}
-            className="rounded-xl h-12 px-6 border-primary text-primary hover:bg-primary/5"
-          >
+          <Button variant="outline" onClick={handleGrandOpeningBroadcast} className="rounded-xl h-12 px-6 border-primary text-primary hover:bg-primary/5">
             <PartyPopper className="mr-2 h-4 w-4" />
             Launch Grand Opening
           </Button>
-          <Button
-            variant="outline"
-            onClick={handleCopyDiagnostics}
-            className="rounded-xl h-12 px-6 border-dashed"
-          >
+          <Button variant="outline" onClick={handleCopyDiagnostics} className="rounded-xl h-12 px-6 border-dashed">
             <Copy className="mr-2 h-4 w-4" />
             Copy Health Data
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-none shadow-md bg-white">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
-              Active Tickets
-              <MessageSquare size={14} className="text-primary" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-black">{issues.filter(i => i.status !== 'fixed').length}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 font-bold">AWAITING RESOLUTION</p>
-          </CardContent>
-        </Card>
-        <Card className="border-none shadow-md bg-white">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
-              Global Stock
-              <Users size={14} className="text-primary" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-black">{ingredients.length}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 font-bold">TOTAL NODES TRACKED</p>
-          </CardContent>
-        </Card>
-        <Card className="border-none shadow-md bg-white">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
-              System Uptime
-              <CheckCircle2 size={14} className="text-green-500" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-black text-green-600">99.9%</div>
-            <p className="text-[10px] text-muted-foreground mt-1 font-bold">LIVE & PROFITABLE</p>
-          </CardContent>
-        </Card>
-        <Card className="border-none shadow-md bg-primary text-primary-foreground">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold uppercase opacity-80 flex justify-between items-center">
-              AI Readiness
-              <Sparkles size={14} />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-black">STABLE</div>
-            <p className="text-[10px] opacity-70 mt-1 font-bold">GEMINI 2.5 FLASH ONLINE</p>
-          </CardContent>
-        </Card>
-      </div>
+      <Tabs defaultValue="operations" className="space-y-8">
+        <TabsList className="bg-muted/50 p-1 rounded-xl h-12">
+          <TabsTrigger value="operations" className="rounded-lg px-8">System Operations</TabsTrigger>
+          <TabsTrigger value="marketing" className="rounded-lg px-8 flex gap-2">
+            <Video size={16} /> Marketing AI Lab
+          </TabsTrigger>
+        </TabsList>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2 space-y-8">
-          <Card className="border-none shadow-md bg-white overflow-hidden">
-            <CardHeader className="bg-muted/30 border-b">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Terminal size={20} className="text-primary" />
-                Diagnostic Console
-              </CardTitle>
-              <CardDescription>Real-time data integrity verification.</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="rounded-2xl bg-black p-6 text-green-400 font-mono text-[11px] h-64 overflow-y-auto shadow-2xl leading-relaxed">
-                <p className="text-green-500/50"># Kitchen Profit OS v2.0.4 - Diagnostic Mode</p>
-                <p className="text-white/30">--------------------------------------------------</p>
-                <p>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</p>
-                <p>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</p>
-                <p>&gt; Scanning Firestore Collections (Global Scope)...</p>
-                <p>&gt; Found {ingredients.length} ingredient nodes.</p>
-                <p>&gt; Found {recipes.length} recipe configurations.</p>
-                <p>&gt; Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</p>
-                <p>&gt; AI Model Link: STABLE</p>
-                <p>&gt; Memory Usage: OPTIMAL</p>
-                <p className="animate-pulse">&gt; Awaiting Command...</p>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="operations" className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
+                  Active Tickets <MessageSquare size={14} className="text-primary" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black">{issues.filter(i => i.status !== 'fixed').length}</div>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
+                  Global Stock <Users size={14} className="text-primary" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black">{ingredients.length}</div>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-md bg-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
+                  System Uptime <CheckCircle2 size={14} className="text-green-500" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black text-green-600">99.9%</div>
+              </CardContent>
+            </Card>
+            <Card className="border-none shadow-md bg-primary text-primary-foreground">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-bold uppercase opacity-80 flex justify-between items-center">
+                  AI Readiness <Sparkles size={14} />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-black">STABLE</div>
+              </CardContent>
+            </Card>
+          </div>
 
-          <Card className="border-none shadow-md bg-white">
-            <CardHeader className="border-b">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <History size={20} className="text-primary" />
-                Team Support Log
-              </CardTitle>
-              <CardDescription>Internal bug tracking and customer service tickets.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="divide-y">
-                {issues.length === 0 ? (
-                  <div className="p-12 text-center space-y-4">
-                    <CheckCircle2 size={48} className="mx-auto text-muted/30" />
-                    <p className="text-muted-foreground italic font-medium">All systems green. No active tickets.</p>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="xl:col-span-2 space-y-8">
+              <Card className="border-none shadow-md bg-white overflow-hidden">
+                <CardHeader className="bg-muted/30 border-b">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Terminal size={20} className="text-primary" />
+                    Diagnostic Console
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="rounded-2xl bg-black p-6 text-green-400 font-mono text-[11px] h-64 overflow-y-auto shadow-2xl leading-relaxed">
+                    <p className="text-green-500/50"># Kitchen Profit OS v2.0.4 - Diagnostic Mode</p>
+                    <p className="text-white/30">--------------------------------------------------</p>
+                    <p>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</p>
+                    <p>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</p>
+                    <p>&gt; Scanning Firestore Collections (Global Scope)...</p>
+                    <p>&gt; Found {ingredients.length} ingredient nodes.</p>
+                    <p>&gt; Found {recipes.length} recipe configurations.</p>
+                    <p>&gt; AI Model Link: STABLE</p>
+                    <p className="animate-pulse">&gt; Awaiting Command...</p>
                   </div>
-                ) : (
-                  issues.map((issue) => (
-                    <div key={issue.id} className="p-6 flex items-center justify-between hover:bg-muted/5 transition-colors">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-base">{issue.title}</span>
-                          <Badge variant={issue.severity === 'critical' ? 'destructive' : 'secondary'} className="text-[9px] px-2 font-bold">
-                            {issue.severity.toUpperCase()}
+                </CardContent>
+              </Card>
+
+              <Card className="border-none shadow-md bg-white">
+                <CardHeader className="border-b">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <History size={20} className="text-primary" />
+                    Support Log
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="divide-y">
+                    {issues.length === 0 ? (
+                      <div className="p-12 text-center text-muted-foreground italic">No active tickets.</div>
+                    ) : (
+                      issues.map((issue) => (
+                        <div key={issue.id} className="p-6 flex items-center justify-between hover:bg-muted/5 transition-colors">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold">{issue.title}</span>
+                              <Badge variant={issue.severity === 'critical' ? 'destructive' : 'secondary'} className="text-[9px]">
+                                {issue.severity.toUpperCase()}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{issue.description}</p>
+                          </div>
+                          <Badge className={issue.status === 'fixed' ? 'bg-green-500' : 'bg-amber-500'}>
+                            {issue.status.toUpperCase()}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{issue.description}</p>
-                        <div className="flex items-center gap-4 text-[10px] text-muted-foreground font-bold">
-                          <span className="flex items-center gap-1"><History size={10} /> {new Date(issue.createdAt).toLocaleDateString()}</span>
-                          <span className="flex items-center gap-1"><Users size={10} /> ADMIN REPORTED</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Badge className={issue.status === 'fixed' ? 'bg-green-500' : 'bg-amber-500'}>
-                          {issue.status.toUpperCase()}
-                        </Badge>
-                        <Button variant="ghost" size="sm" className="text-[10px] h-7 font-black">MANAGE</Button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-8">
-          <Card className="border-none shadow-xl bg-black text-white overflow-hidden">
-            <div className="p-6 bg-white/5 border-b border-white/10">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Globe size={20} className="text-primary" />
-                Domain Infrastructure
-              </CardTitle>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-            <CardContent className="pt-6 space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="flex items-center gap-3">
-                    <Globe size={18} className="text-primary" />
-                    <div>
-                      <p className="text-xs font-bold">kitchenprof.ng</p>
-                      <p className="text-[10px] text-white/40">Status: Pending Registration</p>
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="text-[8px] border-white/20 text-white/60">CHECKING</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="flex items-center gap-3">
-                    <Mail size={18} className="text-primary" />
-                    <div>
-                      <p className="text-xs font-bold">legal@kitchenprof.ng</p>
-                      <p className="text-[10px] text-white/40">Status: Awaiting Domain</p>
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="text-[8px] border-white/20 text-white/60">QUEUED</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="flex items-center gap-3">
+            <div className="space-y-8">
+              <Card className="border-none shadow-xl bg-black text-white overflow-hidden">
+                <CardHeader className="bg-white/5 border-b border-white/10">
+                  <CardTitle className="text-lg flex items-center gap-2"><Globe size={20} className="text-primary" /> Domain Infrastructure</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-4">
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
                     <Server size={18} className="text-green-500" />
-                    <div>
-                      <p className="text-xs font-bold">Firebase App Hosting</p>
-                      <p className="text-[10px] text-white/40">Status: Active & Live</p>
+                    <div><p className="text-xs font-bold">kitchenprof.ng</p><p className="text-[10px] text-white/40">Status: Pointing to App Hosting</p></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="marketing" className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
+          <Card className="border-none shadow-xl overflow-hidden bg-white">
+            <CardHeader className="bg-primary/5 border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl font-headline font-bold flex items-center gap-3">
+                    <Video className="text-primary" size={28} />
+                    Veo AI Video Lab
+                  </CardTitle>
+                  <CardDescription>Generate high-tech marketing videos using your photo as a reference.</CardDescription>
+                </div>
+                <Badge className="bg-primary px-3">POWERED BY GEMINI VEO</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <Label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">1. Reference Photo</Label>
+                    <div className="relative group">
+                      <div className="w-full aspect-video rounded-3xl border-2 border-dashed border-primary/20 bg-muted/30 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-primary/40">
+                        {selectedPhoto ? (
+                          <img src={selectedPhoto} className="w-full h-full object-cover" alt="Reference" />
+                        ) : (
+                          <>
+                            <UploadCloud size={48} className="text-primary/20 mb-4" />
+                            <p className="text-sm font-medium text-muted-foreground">Upload your face/picture</p>
+                            <p className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 1MB</p>
+                          </>
+                        )}
+                      </div>
+                      <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                      {selectedPhoto && (
+                        <Button variant="secondary" size="sm" className="absolute bottom-4 right-4 rounded-full" onClick={() => setSelectedPhoto(null)}>
+                          Change Photo
+                        </Button>
+                      )}
                     </div>
                   </div>
-                  <Badge className="bg-green-500 text-[8px] h-4">ACTIVE</Badge>
-                </div>
-              </div>
 
-              <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 space-y-3 mt-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Domain Note:</p>
-                <p className="text-[11px] leading-relaxed text-white/80">
-                  Once you register <strong>kitchenprof.ng</strong> via <strong>Whogohost</strong>, you can point your DNS settings to this Firebase instance to activate official branding.
-                </p>
+                  <div className="space-y-4">
+                    <Label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">2. Marketing Scene</Label>
+                    <div className="p-6 rounded-2xl bg-muted/30 border space-y-4">
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <Play size={18} className="text-primary" />
+                        </div>
+                        <p className="text-sm leading-relaxed italic text-muted-foreground">
+                          "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Profit app, sliding through interfaces for stock taking and profit calculations."
+                        </p>
+                      </div>
+                      <Button onClick={handleGenerateVideo} disabled={isGeneratingVideo || !selectedPhoto} className="w-full h-12 bg-primary rounded-xl text-lg font-bold shadow-lg">
+                        {isGeneratingVideo ? (
+                          <><Loader2 className="mr-2 animate-spin" /> Brewing Cinematic Magic...</>
+                        ) : (
+                          <><Sparkles className="mr-2" /> Generate Marketing Video</>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Label className="text-sm font-bold uppercase tracking-widest text-muted-foreground">3. AI Studio Output</Label>
+                  <div className="w-full aspect-video rounded-3xl bg-black flex flex-col items-center justify-center relative overflow-hidden shadow-2xl">
+                    {generatedVideo ? (
+                      <video src={generatedVideo} controls className="w-full h-full" autoPlay loop />
+                    ) : (
+                      <div className="text-center p-8 space-y-4">
+                        <Video size={64} className="mx-auto text-white/10" />
+                        <p className="text-sm text-white/40 font-medium">Video output will appear here</p>
+                        {isGeneratingVideo && (
+                          <div className="space-y-2">
+                            <div className="w-48 h-1 bg-white/10 rounded-full mx-auto overflow-hidden">
+                              <div className="h-full bg-primary animate-progress" style={{ width: '40%' }}></div>
+                            </div>
+                            <p className="text-[10px] text-primary font-bold uppercase animate-pulse">Processing cinematic frames...</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {generatedVideo && (
+                    <Button variant="outline" className="w-full rounded-xl border-dashed" onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = generatedVideo!;
+                      link.download = 'kitchen-prof-marketing.mp4';
+                      link.click();
+                    }}>
+                      Download Campaign Video
+                    </Button>
+                  )}
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 flex gap-3">
+                    <Sparkles className="text-amber-500 shrink-0" size={16} />
+                    <p className="text-[10px] text-amber-800 leading-tight">
+                      <strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. Ensure your reference photo has good lighting on your face for the best person-consistency in the video.
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
-
-          <Card className="border-none shadow-md">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-base flex items-center gap-2 text-black/60">
-                <Bug size={18} className="text-destructive" />
-                Log Internal Anomaly
-              </CardTitle>
-              <CardDescription className="text-xs">Report system bugs to the team.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmitBug} className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-tight text-muted-foreground">Issue Summary</Label>
-                  <Input
-                    placeholder="e.g. Broken Margin Calculation"
-                    value={bugTitle}
-                    onChange={(e) => setBugTitle(e.target.value)}
-                    className="h-10 text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-tight text-muted-foreground">Technical Details</Label>
-                  <Textarea
-                    placeholder="Steps to reproduce..."
-                    className="h-28 text-sm resize-none"
-                    value={bugDesc}
-                    onChange={(e) => setBugDesc(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full bg-black text-white h-12 shadow-lg hover:bg-black/90 rounded-xl font-bold">
-                  Log Internal Ticket
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
