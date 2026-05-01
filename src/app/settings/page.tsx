@@ -18,7 +18,8 @@ import {
   Megaphone,
   HelpCircle,
   UploadCloud,
-  FileCode
+  FileCode,
+  FileImage
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -38,38 +39,8 @@ import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Switch } from '@/components/ui/switch';
-
-// Helper to ensure a valid URL is always passed to the Image component
-function getSafeLogoUrl(url?: string): string {
-  const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
-  
-  if (!url || typeof url !== 'string' || url.trim().length === 0) {
-    const placeholder = PlaceHolderImages.find(img => img.id === 'app-logo');
-    return placeholder?.imageUrl || fallback;
-  }
-  
-  const trimmed = url.trim();
-
-  // Handle standard paths and already-prefixed Base64
-  if (trimmed.startsWith('/') || trimmed.startsWith('data:')) {
-    return trimmed;
-  }
-
-  // Heuristic: If it's a very long string with no spaces, it's likely a raw Base64 that needs a prefix
-  if (trimmed.length > 100 && !trimmed.includes(' ')) {
-    return `data:image/png;base64,${trimmed}`;
-  }
-  
-  // Validate as a standard URL
-  try {
-    new URL(trimmed);
-    return trimmed;
-  } catch {
-    return fallback;
-  }
-}
+import { getSafeLogoUrl } from '../lib/branding';
 
 function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, onSuccess: any, onClose: any }) {
   const initializePayment = usePaystackPayment(config);
@@ -156,6 +127,29 @@ export default function SettingsPage() {
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "File too large",
+          description: "Please choose an image smaller than 1MB for optimal performance.",
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAdminConfig({ ...adminConfig, appLogoUrl: reader.result as string });
+        toast({
+          title: "Photo Converted",
+          description: "Your photo has been converted. Click 'Save Global Settings' to apply.",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSuccess = (reference: any) => {
     upgradePlan('pro');
     setIsUpgradeOpen(false);
@@ -217,31 +211,47 @@ export default function SettingsPage() {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs p-4 space-y-2">
-                            <p className="text-xs font-bold">How to use your own photo:</p>
+                            <p className="text-xs font-bold">Branding Guide:</p>
                             <div className="text-[10px] leading-relaxed space-y-2">
-                              <p><strong>1. Public Folder:</strong> Reference by filename (e.g., <code>/my-logo.png</code>).</p>
-                              <p><strong>2. Base64:</strong> Use an "Image to Base64" converter. Paste the string and the app will fix it.</p>
+                              <p><strong>1. Easy Upload:</strong> Use the "Choose Photo" button to convert a local file automatically.</p>
+                              <p><strong>2. Public Folder:</strong> Reference by filename (e.g., <code>/logo.png</code>) if hosting locally.</p>
+                              <p><strong>3. Base64:</strong> Paste a raw string and the app will auto-prefix it for you.</p>
                             </div>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <div className="space-y-2">
-                      <Label>App Logo URL / Path / Base64</Label>
-                      <div className="flex flex-col gap-2">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3 p-4 rounded-xl bg-muted/30 border border-dashed">
+                        <Label className="flex items-center gap-2">
+                          <UploadCloud size={14} className="text-primary" />
+                          Built-in Photo Converter
+                        </Label>
                         <Input 
-                          placeholder="e.g. data:image/png;base64,..."
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handleFileChange}
+                          className="h-10 bg-white cursor-pointer"
+                        />
+                        <p className="text-[10px] text-muted-foreground">Automatically turns any photo into a branding string.</p>
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label>Direct URL / Path / String</Label>
+                        <Input 
+                          placeholder="e.g. /logo.png or data:image/..."
                           value={adminConfig.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
                         <div className="flex flex-wrap items-center gap-4">
                           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                            <UploadCloud size={10} /> 
-                            Path: /filename.png
+                            <FileImage size={10} /> 
+                            /filename.png
                           </p>
                           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <FileCode size={10} /> 
-                            Supports Base64 Strings
+                            Auto-detected Base64
                           </p>
                         </div>
                       </div>
@@ -339,14 +349,14 @@ export default function SettingsPage() {
                     <h4 className="font-bold text-lg">Identity Control</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {isAdmin 
-                        ? "You are managing the branding dynamically. Your updates will affect all user dashboards instantly." 
+                        ? "You are managing the branding dynamically. Use the built-in photo converter to upload your official logo instantly." 
                         : "Branding is managed centrally by the platform administrator."}
                     </p>
                   </div>
                   <div className="p-4 bg-muted/30 rounded-xl border border-dashed flex items-center gap-3">
                     <HelpCircle className="text-primary" size={20} />
                     <p className="text-xs text-muted-foreground">
-                      Base64 strings are auto-detected. Paste the string and the app will handle the formatting.
+                      Base64 strings are auto-detected. Paste the string or use the "Choose Photo" button to apply your branding.
                     </p>
                   </div>
                 </div>

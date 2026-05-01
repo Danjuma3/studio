@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -6,39 +5,9 @@ import './globals.css';
 import { AppNavigation } from '@/components/Navigation';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useInventory } from './lib/store';
-
-// Helper to ensure a valid URL is always passed to the Image component
-function getSafeLogoUrl(url?: string): string {
-  const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
-  
-  if (!url || typeof url !== 'string' || url.trim().length === 0) {
-    const placeholder = PlaceHolderImages.find(img => img.id === 'app-logo');
-    return placeholder?.imageUrl || fallback;
-  }
-  
-  const trimmed = url.trim();
-
-  // Handle standard paths and already-prefixed Base64
-  if (trimmed.startsWith('/') || trimmed.startsWith('data:')) {
-    return trimmed;
-  }
-
-  // Heuristic: If it's a very long string with no spaces, it's likely a raw Base64 that needs a prefix
-  if (trimmed.length > 100 && !trimmed.includes(' ')) {
-    return `data:image/png;base64,${trimmed}`;
-  }
-  
-  // Validate as a standard URL
-  try {
-    new URL(trimmed);
-    return trimmed;
-  } catch {
-    return fallback;
-  }
-}
+import { getSafeLogoUrl } from './lib/branding';
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { systemPayment } = useInventory();
