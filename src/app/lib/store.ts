@@ -16,7 +16,9 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   accountNumber: "0000000000",
   accountName: "Kitchen Profit International",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  proPrice: 15,
+  globalStripePublicKey: "pk_live_global_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  proPrice: 25000,
+  proPriceUSD: 19.99,
   appLogoUrl: ""
 };
 
@@ -41,8 +43,6 @@ export function useInventory() {
   // Simple geolocation detection logic
   useEffect(() => {
     if ("geolocation" in navigator) {
-      // In a real app, you might use a reverse geocoding API here
-      // For now, we set a default based on locale
       const locale = navigator.language;
       if (locale.includes('NG')) {
         setLocation({

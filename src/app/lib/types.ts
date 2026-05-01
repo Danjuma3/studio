@@ -70,7 +70,9 @@ export interface SystemPaymentConfig {
   accountNumber: string;
   accountName: string;
   paystackPublicKey: string;
+  globalStripePublicKey?: string;
   proPrice: number;
+  proPriceUSD: number;
   appLogoUrl?: string;
 }
 
