@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -26,9 +27,7 @@ import {
   Filter, 
   Trash2, 
   Edit2, 
-  MoreVertical,
-  TrendingUp,
-  TrendingDown
+  MoreVertical
 } from 'lucide-react';
 import { 
   DropdownMenu, 
@@ -45,7 +44,7 @@ export default function InventoryPage() {
   
   const [newIngredient, setNewIngredient] = useState({
     name: '',
-    unit: 'kg' as any,
+    unitOfMeasure: 'kg' as any,
     bulkPrice: 0,
     retailPrice: 0,
     weeklyUsage: 0
@@ -57,8 +56,14 @@ export default function InventoryPage() {
 
   const handleAdd = () => {
     if (newIngredient.name && newIngredient.bulkPrice >= 0) {
-      addIngredient(newIngredient);
-      setNewIngredient({ name: '', unit: 'kg', bulkPrice: 0, retailPrice: 0, weeklyUsage: 0 });
+      addIngredient({
+        name: newIngredient.name,
+        unitOfMeasure: newIngredient.unitOfMeasure,
+        bulkUnitPrice: newIngredient.bulkPrice,
+        retailUnitPrice: newIngredient.retailPrice,
+        weeklyUsage: newIngredient.weeklyUsage
+      } as any);
+      setNewIngredient({ name: '', unitOfMeasure: 'kg', bulkPrice: 0, retailPrice: 0, weeklyUsage: 0 });
       setIsAddOpen(false);
     }
   };
@@ -68,7 +73,7 @@ export default function InventoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-headline font-bold">Ingredient Inventory</h1>
-          <p className="text-muted-foreground">Manage your pantry and track market pricing.</p>
+          <p className="text-muted-foreground">Manage your pantry and track market pricing across Lagos and Abuja.</p>
         </div>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
@@ -95,8 +100,8 @@ export default function InventoryPage() {
                   <label className="text-sm font-medium">Unit</label>
                   <select 
                     className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                    value={newIngredient.unit}
-                    onChange={(e) => setNewIngredient({...newIngredient, unit: e.target.value as any})}
+                    value={newIngredient.unitOfMeasure}
+                    onChange={(e) => setNewIngredient({...newIngredient, unitOfMeasure: e.target.value as any})}
                   >
                     <option value="kg">kg</option>
                     <option value="g">g</option>
@@ -104,6 +109,9 @@ export default function InventoryPage() {
                     <option value="ml">ml</option>
                     <option value="piece">piece</option>
                     <option value="bag">bag</option>
+                    <option value="crate">crate</option>
+                    <option value="bucket">bucket</option>
+                    <option value="paint_bucket">paint bucket</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -180,15 +188,19 @@ export default function InventoryPage() {
                 </TableRow>
               ) : (
                 filteredIngredients.map((ing) => {
-                  const saving = ing.retailPrice - ing.bulkPrice;
+                  const bulkPrice = ing.bulkUnitPrice || ing.bulkPrice || 0;
+                  const retailPrice = ing.retailUnitPrice || ing.retailPrice || 0;
+                  const saving = retailPrice - bulkPrice;
                   return (
                     <TableRow key={ing.id} className="hover:bg-accent/5 transition-colors group">
                       <TableCell className="font-medium">{ing.name}</TableCell>
                       <TableCell className="text-center">
-                        <Badge variant="outline" className="font-normal">{ing.unit}</Badge>
+                        <Badge variant="outline" className="font-normal capitalize">
+                          {ing.unitOfMeasure?.replace('_', ' ') || 'kg'}
+                        </Badge>
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">₦{ing.bulkPrice.toLocaleString()}</TableCell>
-                      <TableCell className="text-right tabular-nums">₦{ing.retailPrice.toLocaleString()}</TableCell>
+                      <TableCell className="text-right tabular-nums">₦{bulkPrice.toLocaleString()}</TableCell>
+                      <TableCell className="text-right tabular-nums">₦{retailPrice.toLocaleString()}</TableCell>
                       <TableCell className="text-right tabular-nums">
                         <span className={saving > 0 ? "text-primary font-medium" : "text-muted-foreground"}>
                           {saving > 0 ? `+₦${saving.toLocaleString()}` : '-'}
