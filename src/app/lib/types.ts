@@ -45,13 +45,13 @@ export interface ManagerTask {
   priority: 'low' | 'medium' | 'high';
 }
 
-export interface PaymentMethod {
+export interface SupportIssue {
   id: string;
-  type: 'card' | 'bank_transfer' | 'pos' | 'cash' | 'paystack';
-  provider: string;
-  lastFour?: string;
-  accountName?: string;
-  isDefault: boolean;
+  title: string;
+  description: string;
+  status: 'open' | 'investigating' | 'fixed';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  createdAt: string;
 }
 
 export type UserPlan = 'free' | 'pro' | 'enterprise';

@@ -4,10 +4,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { 
-  LayoutDashboard, 
-  PackageSearch, 
-  Calculator, 
+import {
+  LayoutDashboard,
+  PackageSearch,
+  Calculator,
   TrendingUp,
   Settings,
   ShieldCheck,
@@ -18,7 +18,8 @@ import {
   LogOut,
   User,
   ShieldAlert,
-  ChefHat
+  ChefHat,
+  LifeBuoy
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -75,10 +76,10 @@ export function AppNavigation() {
         <Link href="/" className="flex items-center gap-3 mb-4 group">
           <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform bg-primary/10 flex items-center justify-center">
             {currentLogoUrl ? (
-              <Image 
-                src={currentLogoUrl} 
-                alt="Kitchen Prof Logo" 
-                fill 
+              <Image
+                src={currentLogoUrl}
+                alt="Kitchen Prof Logo"
+                fill
                 className="object-cover"
                 unoptimized
               />
@@ -107,13 +108,13 @@ export function AppNavigation() {
           </div>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.name}>
-              <SidebarMenuButton 
-                asChild 
+              <SidebarMenuButton
+                asChild
                 isActive={pathname === item.href}
                 className={cn(
                   "flex items-center gap-3 py-6 px-4 rounded-xl transition-all duration-200",
-                  pathname === item.href 
-                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90" 
+                  pathname === item.href
+                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
                     : "hover:bg-accent hover:text-accent-foreground"
                 )}
               >
@@ -125,18 +126,38 @@ export function AppNavigation() {
             </SidebarMenuItem>
           ))}
 
+          {isAdmin && (
+            <SidebarMenuItem className="mt-2">
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/support'}
+                className={cn(
+                  "flex items-center gap-3 py-6 px-4 rounded-xl transition-all duration-200 border-2 border-dashed border-primary/20",
+                  pathname === '/support'
+                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+                    : "hover:bg-primary/5 text-primary"
+                )}
+              >
+                <Link href="/support">
+                  <LifeBuoy size={20} />
+                  <span className="font-bold">Support & AI Workspace</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
+
           <div className="px-3 mt-6 mb-2 border-t pt-4">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Legal & Info</p>
           </div>
           {secondaryNav.map((item) => (
             <SidebarMenuItem key={item.name}>
-              <SidebarMenuButton 
-                asChild 
+              <SidebarMenuButton
+                asChild
                 isActive={pathname === item.href}
                 className={cn(
                   "flex items-center gap-3 py-5 px-4 rounded-xl transition-all duration-200",
-                  pathname === item.href 
-                    ? "bg-primary/10 text-primary" 
+                  pathname === item.href
+                    ? "bg-primary/10 text-primary"
                     : "hover:bg-accent hover:text-accent-foreground text-muted-foreground"
                 )}
               >

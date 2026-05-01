@@ -141,6 +141,18 @@
         "active": { "type": "boolean" },
         "updatedAt": { "type": "string", "format": "date-time" }
       }
+    },
+    "SupportIssue": {
+      "title": "SupportIssue",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "investigating", "fixed"] },
+        "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "auth": {
@@ -195,6 +207,16 @@
             "$ref": "#/backend/entities/ManagerTask"
           },
           "description": "User-specific operational tasks."
+        }
+      },
+      {
+        "path": "/users/{userId}/issues/{issueId}",
+        "definition": {
+          "entityName": "SupportIssue",
+          "schema": {
+            "$ref": "#/backend/entities/SupportIssue"
+          },
+          "description": "Bug reports and support tracking."
         }
       },
       {
