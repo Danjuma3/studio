@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -57,11 +58,23 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body select-none;
+    -webkit-overflow-scrolling: touch;
+  }
+  input, textarea {
+    @apply select-text;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tight;
   }
+}
+
+.safe-area-inset {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
