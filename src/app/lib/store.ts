@@ -12,13 +12,14 @@ import {
 import { Ingredient, Recipe, StaffMember, ManagerTask, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert } from './types';
 
 // Stable default objects to prevent infinite re-render loops
+// appLogoUrl is empty to ensure no "initial" logo is shown
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   bankName: "GTBank",
   accountNumber: "0123456789",
   accountName: "Kitchen Prof Enterprise",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   proPrice: 11000,
-  appLogoUrl: "https://picsum.photos/seed/kitchen-prof-logo/512/512"
+  appLogoUrl: "" 
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {

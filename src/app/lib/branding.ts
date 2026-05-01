@@ -4,16 +4,20 @@ import { PlaceHolderImages } from './placeholder-images';
 /**
  * Ensures a valid URL or Base64 string is returned for the logo.
  * Handles raw Base64 strings by adding the necessary data URI prefix.
- * Falls back to a placeholder if the input is invalid or empty.
+ * Returns an empty string if no valid logo is found, allowing components to handle the empty state.
  */
 export function getSafeLogoUrl(url?: string): string {
-  const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
-  
   if (!url || typeof url !== 'string' || url.trim().length === 0) {
-    // Safety check: ensure PlaceHolderImages is treated as an array
+    // Check if there's a user-defined placeholder in the JSON
     const images = Array.isArray(PlaceHolderImages) ? PlaceHolderImages : [];
     const placeholder = images.find(img => img.id === 'app-logo');
-    return placeholder?.imageUrl || fallback;
+    
+    // If the placeholder is the old picsum link, ignore it to "remove" the initial logo
+    if (placeholder?.imageUrl && !placeholder.imageUrl.includes('picsum.photos')) {
+      return placeholder.imageUrl;
+    }
+    
+    return ''; // Return empty to prevent showing the "initial" logo
   }
   
   const trimmed = url.trim();
@@ -33,6 +37,6 @@ export function getSafeLogoUrl(url?: string): string {
     new URL(trimmed);
     return trimmed;
   } catch {
-    return fallback;
+    return '';
   }
 }
