@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo } from './types';
 
 const STORAGE_KEYS = {
   INGREDIENTS: 'kitchenprof_ingredients',
@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   STAFF: 'kitchenprof_staff',
   TASKS: 'kitchenprof_tasks',
   PAYMENTS: 'kitchenprof_payments',
+  SUBSCRIPTION: 'kitchenprof_subscription',
 };
 
 const SEED_INGREDIENTS: Ingredient[] = [
@@ -48,8 +49,13 @@ const SEED_TASKS: ManagerTask[] = [
 
 const SEED_PAYMENTS: PaymentMethod[] = [
   { id: 'p1', type: 'paystack', provider: 'Paystack', isDefault: true },
-  { id: 'p2', type: 'bank_transfer', provider: 'GTBank', accountName: "Buchi's Kitchen Ent.", isDefault: false },
 ];
+
+const DEFAULT_SUBSCRIPTION: SubscriptionInfo = {
+  plan: 'free',
+  status: 'active',
+  nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+};
 
 export function useInventory() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -57,6 +63,7 @@ export function useInventory() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [tasks, setTasks] = useState<ManagerTask[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [subscription, setSubscription] = useState<SubscriptionInfo>(DEFAULT_SUBSCRIPTION);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,6 +72,7 @@ export function useInventory() {
     const storedStaff = localStorage.getItem(STORAGE_KEYS.STAFF);
     const storedTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
     const storedPayments = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
+    const storedSub = localStorage.getItem(STORAGE_KEYS.SUBSCRIPTION);
 
     if (storedIngredients) setIngredients(JSON.parse(storedIngredients));
     else {
@@ -96,6 +104,12 @@ export function useInventory() {
       localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(SEED_PAYMENTS));
     }
 
+    if (storedSub) setSubscription(JSON.parse(storedSub));
+    else {
+      setSubscription(DEFAULT_SUBSCRIPTION);
+      localStorage.setItem(STORAGE_KEYS.SUBSCRIPTION, JSON.stringify(DEFAULT_SUBSCRIPTION));
+    }
+
     setLoading(false);
   }, []);
 
@@ -122,6 +136,11 @@ export function useInventory() {
   const savePayments = (newPayments: PaymentMethod[]) => {
     setPaymentMethods(newPayments);
     localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(newPayments));
+  };
+
+  const saveSubscription = (newSub: SubscriptionInfo) => {
+    setSubscription(newSub);
+    localStorage.setItem(STORAGE_KEYS.SUBSCRIPTION, JSON.stringify(newSub));
   };
 
   const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'lastUpdated'>) => {
@@ -177,12 +196,22 @@ export function useInventory() {
     savePayments(paymentMethods.map(p => ({ ...p, isDefault: p.id === id })));
   };
 
+  const upgradePlan = (plan: SubscriptionInfo['plan']) => {
+    saveSubscription({
+      ...subscription,
+      plan,
+      status: 'active',
+      nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+  };
+
   return {
     ingredients,
     recipes,
     staff,
     tasks,
     paymentMethods,
+    subscription,
     loading,
     addIngredient,
     updateIngredient,
@@ -194,5 +223,6 @@ export function useInventory() {
     addPaymentMethod,
     deletePaymentMethod,
     setDefaultPaymentMethod,
+    upgradePlan,
   };
 }

@@ -17,7 +17,10 @@ import {
   MoreVertical,
   ShieldCheck,
   Bell,
-  Zap
+  Zap,
+  Crown,
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -36,7 +39,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export default function SettingsPage() {
-  const { paymentMethods, addPaymentMethod, deletePaymentMethod, setDefaultPaymentMethod } = useInventory();
+  const { paymentMethods, addPaymentMethod, deletePaymentMethod, setDefaultPaymentMethod, subscription, upgradePlan } = useInventory();
   const [isAddingOpen, setIsAddingOpen] = useState(false);
   const [newMethod, setNewMethod] = useState({
     type: 'bank_transfer' as const,
@@ -69,11 +72,54 @@ export default function SettingsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold">Settings & Billing</h1>
-        <p className="text-muted-foreground">Manage your business profile and payment preferences.</p>
+        <p className="text-muted-foreground">Manage your business profile, subscription, and payment preferences.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
+          {/* Subscription Section */}
+          <Card className="border-none shadow-md overflow-hidden bg-white">
+            <CardHeader className="bg-primary/5 border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <Crown className="text-primary" size={24} />
+                    Current Plan
+                  </CardTitle>
+                  <CardDescription>Control your restaurant's access level.</CardDescription>
+                </div>
+                <Badge className={subscription.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
+                  {subscription.plan.toUpperCase()} PLAN
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
+                <div className="space-y-2">
+                  <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Next billing date: <span className="font-medium text-foreground">{new Date(subscription.nextBillingDate).toLocaleDateString()}</span>
+                  </p>
+                  <ul className="space-y-1 mt-4">
+                    <li className="text-xs flex items-center gap-2">
+                      <CheckCircle2 size={14} className="text-primary" /> Unlimited Recipes & Ingredients
+                    </li>
+                    <li className="text-xs flex items-center gap-2">
+                      <CheckCircle2 size={14} className={subscription.plan === 'pro' ? 'text-primary' : 'text-muted-foreground'} /> 
+                      AI Performance Audits ({subscription.plan === 'pro' ? 'Unlimited' : '3 left'})
+                    </li>
+                  </ul>
+                </div>
+                {subscription.plan === 'free' && (
+                  <Button onClick={() => upgradePlan('pro')} className="bg-primary hover:bg-primary/90 rounded-xl h-12 px-8 shadow-lg group">
+                    <Sparkles className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
+                    Upgrade to Pro (₦5,000/mo)
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="border-none shadow-md">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
@@ -218,30 +264,6 @@ export default function SettingsPage() {
               )}
             </CardContent>
           </Card>
-
-          <Card className="border-none shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl">Business Profile</CardTitle>
-              <CardDescription>Update your restaurant details.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Restaurant Name</Label>
-                  <Input defaultValue="Buchi's Kitchen" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Owner Handle</Label>
-                  <Input defaultValue="@buchi_kitchen_lagos" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Business Address</Label>
-                <Input defaultValue="12 Admiralty Way, Lekki Phase 1, Lagos" />
-              </div>
-              <Button className="bg-primary w-fit px-8">Update Profile</Button>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="space-y-6">
@@ -259,29 +281,20 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-md overflow-hidden">
+          <Card className="border-none shadow-md overflow-hidden bg-white">
             <CardHeader className="bg-muted/50 pb-4">
               <CardTitle className="text-base flex items-center gap-2">
                 <Bell size={18} />
-                Notifications
+                Monetization Tip
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="divide-y">
-                <div className="p-4 flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <p className="text-sm font-medium">Market Price Alerts</p>
-                    <p className="text-xs text-muted-foreground">Notify when Mile 12 prices fluctuate.</p>
-                  </div>
-                  <input type="checkbox" className="h-4 w-4 rounded border-gray-300" defaultChecked />
-                </div>
-                <div className="p-4 flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <p className="text-sm font-medium">Cost Overruns</p>
-                    <p className="text-xs text-muted-foreground">Alert when recipe margins drop below 20%.</p>
-                  </div>
-                  <input type="checkbox" className="h-4 w-4 rounded border-gray-300" defaultChecked />
-                </div>
+            <CardContent className="p-4 space-y-4">
+              <div className="bg-accent/10 p-4 rounded-xl space-y-2">
+                <p className="text-xs font-bold text-primary">REVENUE OPPORTUNITY</p>
+                <p className="text-sm">Partner with suppliers to offer 1-click replenishment and earn 2-5% commission per order.</p>
+                <Button variant="link" size="sm" className="p-0 h-auto text-xs text-primary font-bold">
+                  Learn how <ChevronRight size={12} />
+                </Button>
               </div>
             </CardContent>
           </Card>

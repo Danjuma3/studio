@@ -49,3 +49,11 @@ export interface PaymentMethod {
   accountName?: string;
   isDefault: boolean;
 }
+
+export type UserPlan = 'free' | 'pro' | 'enterprise';
+
+export interface SubscriptionInfo {
+  plan: UserPlan;
+  status: 'active' | 'past_due' | 'canceled';
+  nextBillingDate: string;
+}
