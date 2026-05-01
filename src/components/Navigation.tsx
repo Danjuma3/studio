@@ -54,6 +54,31 @@ const secondaryNav = [
   { name: 'Terms & Rules', href: '/terms', icon: FileText },
 ];
 
+/**
+ * Renders the logo with permanent white puzzle lines
+ */
+function PuzzleBrandedLogo({ url, size = 48 }: { url: string; size?: number }) {
+  if (!url) return <ChefHat size={size * 0.5} className="text-primary opacity-60" />;
+
+  return (
+    <div className="relative w-full h-full grid grid-cols-2 grid-rows-2">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="relative overflow-hidden border-[0.5px] border-white/80">
+          <div
+            className="absolute w-[200%] h-[200%]"
+            style={{
+              backgroundImage: `url(${url})`,
+              backgroundSize: '100% 100%',
+              left: `-${(i % 2) * 100}%`,
+              top: `-${Math.floor(i / 2) * 100}%`,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function AppNavigation() {
   const pathname = usePathname();
   const { systemPayment } = useInventory();
@@ -74,18 +99,8 @@ export function AppNavigation() {
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-3 mb-4 group">
-          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center p-2">
-            {currentLogoUrl ? (
-              <Image
-                src={currentLogoUrl}
-                alt="Kitchen Profit Logo"
-                fill
-                className="object-contain p-1.5 opacity-70"
-                unoptimized
-              />
-            ) : (
-              <ChefHat size={24} className="text-primary opacity-60" />
-            )}
+          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center">
+            <PuzzleBrandedLogo url={currentLogoUrl} size={48} />
           </div>
           <div className="flex-1 overflow-hidden">
             <div className="font-brand font-black text-sm text-primary leading-[1.1] tracking-tighter truncate uppercase">Kitchen Profit Professional</div>

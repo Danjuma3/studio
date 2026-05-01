@@ -22,13 +22,13 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
 
     // Initialize shattered positions
     const initialOffsets = [0, 1, 2, 3].map(() => ({
-      x: (Math.random() - 0.5) * 600,
-      y: (Math.random() - 0.5) * 600,
-      r: (Math.random() - 0.5) * 180,
+      x: (Math.random() - 0.5) * 800,
+      y: (Math.random() - 0.5) * 800,
+      r: (Math.random() - 0.5) * 270,
     }));
     setOffsets(initialOffsets);
 
-    // Sequence the assembly: Faster sequence for snappier feel
+    // Sequence the assembly over the requested 5 seconds
     const interval = setInterval(() => {
       setAssembledCount((prev) => {
         if (prev >= 4) {
@@ -37,7 +37,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
         }
         return prev + 1;
       });
-    }, 500);
+    }, 1100); // Distributed over 5s roughly
 
     return () => clearInterval(interval);
   }, [imageUrl]);
@@ -65,7 +65,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
               return (
                 <div
                   key={i}
-                  className="relative overflow-hidden transition-all duration-[800ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  className="relative overflow-hidden transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
                   style={{
                     transform: isAssembled 
                       ? 'translate(0, 0) rotate(0) scale(1)' 
@@ -85,7 +85,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
                     }}
                   />
                   {/* Permanent Obvious Thin White Line Separation */}
-                  <div className="absolute inset-0 border-[0.5px] border-white/80 shadow-[inset_0_0_2px_rgba(255,255,255,0.5)]" />
+                  <div className="absolute inset-0 border-[1px] border-white shadow-[inset_0_0_4px_rgba(255,255,255,0.8)]" />
                 </div>
               );
             })}
@@ -104,7 +104,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
             KITCHEN PROFIT
           </h2>
           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.5em] opacity-40">
-            Master Your Margins
+            Managing margins for food business
           </p>
         </div>
         

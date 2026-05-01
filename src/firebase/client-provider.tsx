@@ -40,10 +40,10 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
     };
     fetchLogo();
 
-    // 3. SNAPPY LOADING: Reduced forced display timer from 7s to 2.5s for better responsiveness
+    // 3. PREMIUM INITIALIZATION: Restored to 5 seconds as requested for branding experience
     const timer = setTimeout(() => {
       setIsInitializing(false);
-    }, 2500);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);

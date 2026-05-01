@@ -11,6 +11,31 @@ import { useInventory } from './lib/store';
 import { getSafeLogoUrl } from './lib/branding';
 import { ChefHat } from 'lucide-react';
 
+/**
+ * Mobile-specific puzzle logo component
+ */
+function MobilePuzzleLogo({ url }: { url: string }) {
+  if (!url) return <ChefHat className="text-primary w-5 h-5 opacity-60" />;
+
+  return (
+    <div className="relative w-full h-full grid grid-cols-2 grid-rows-2">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="relative overflow-hidden border-[0.25px] border-white/80">
+          <div
+            className="absolute w-[200%] h-[200%]"
+            style={{
+              backgroundImage: `url(${url})`,
+              backgroundSize: '100% 100%',
+              left: `-${(i % 2) * 100}%`,
+              top: `-${Math.floor(i / 2) * 100}%`,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { systemPayment } = useInventory();
   const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
@@ -23,19 +48,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <header className="h-16 flex items-center gap-4 border-b px-6 sticky top-0 bg-background/80 backdrop-blur-md z-30 pt-[safe-area-inset-top]">
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1 flex items-center md:hidden">
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden mr-2 flex items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 shadow-sm p-1.5">
-                {currentLogoUrl ? (
-                  <Image 
-                    src={currentLogoUrl} 
-                    alt="Kitchen Profit" 
-                    fill 
-                    className="object-contain p-1 opacity-80"
-                    priority
-                    unoptimized 
-                  />
-                ) : (
-                  <ChefHat className="text-primary w-5 h-5 opacity-60" />
-                )}
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden mr-2 flex items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 shadow-sm">
+                <MobilePuzzleLogo url={currentLogoUrl} />
               </div>
               <span className="font-brand font-bold text-primary text-sm tracking-tight truncate uppercase">Kitchen Profit Professional</span>
             </div>
