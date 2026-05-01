@@ -119,6 +119,17 @@
         "completed": { "type": "boolean" },
         "priority": { "type": "string", "enum": ["low", "medium", "high"] }
       }
+    },
+    "SystemPaymentConfig": {
+      "title": "SystemPaymentConfig",
+      "type": "object",
+      "properties": {
+        "bankName": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "accountName": { "type": "string" },
+        "paystackPublicKey": { "type": "string" },
+        "proPrice": { "type": "number" }
+      }
     }
   },
   "auth": {
@@ -173,6 +184,16 @@
             "$ref": "#/backend/entities/ManagerTask"
           },
           "description": "User-specific operational tasks."
+        }
+      },
+      {
+        "path": "/system/payment",
+        "definition": {
+          "entityName": "SystemPaymentConfig",
+          "schema": {
+            "$ref": "#/backend/entities/SystemPaymentConfig"
+          },
+          "description": "Global platform payment settings."
         }
       }
     ]

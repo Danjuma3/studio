@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -26,7 +27,8 @@ import {
   Copy,
   ExternalLink,
   Image as ImageIcon,
-  FileCode
+  FileCode,
+  Save
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -70,16 +72,36 @@ function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, o
 export default function SettingsPage() {
   const { user } = useUser();
   const { toast } = useToast();
-  const { paymentMethods, addPaymentMethod, deletePaymentMethod, setDefaultPaymentMethod, subscription, upgradePlan } = useInventory();
+  const { 
+    paymentMethods, 
+    addPaymentMethod, 
+    deletePaymentMethod, 
+    setDefaultPaymentMethod, 
+    subscription, 
+    upgradePlan,
+    systemPayment,
+    updateSystemPaymentConfig
+  } = useInventory();
+  
   const [isAddingOpen, setIsAddingOpen] = useState(false);
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   
+  // Admin Edit State
+  const [adminConfig, setAdminConfig] = useState(systemPayment);
+  
   const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+  const isAdmin = user?.email === 'chefdtanju@gmail.com';
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (systemPayment) {
+      setAdminConfig(systemPayment);
+    }
+  }, [systemPayment]);
 
   const [newMethod, setNewMethod] = useState({
     type: 'bank_transfer' as const,
@@ -89,25 +111,28 @@ export default function SettingsPage() {
     isDefault: false
   });
 
-  const OFFICIAL_PAYMENT_INFO = {
-    bankName: "GTBank",
-    accountNumber: "0123456789",
-    accountName: "Kitchen Prof Enterprise",
-    reference: `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}`,
-    amount: 11000 * 100,
-    publicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  };
+  const paymentReference = useMemo(() => {
+    return `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}-${Date.now()}`;
+  }, [user]);
 
-  // Memoize config to ensure stability and prevent hydration mismatch on reference
+  // Paystack Config
   const paystackConfig = useMemo(() => {
-    if (!mounted || !user) return null;
+    if (!mounted || !user || !systemPayment?.paystackPublicKey) return null;
     return {
-      reference: OFFICIAL_PAYMENT_INFO.reference + '-' + Date.now(),
+      reference: paymentReference,
       email: user?.email || "customer@kitchenprof.ng",
-      amount: OFFICIAL_PAYMENT_INFO.amount,
-      publicKey: OFFICIAL_PAYMENT_INFO.publicKey,
+      amount: systemPayment.proPrice * 100,
+      publicKey: systemPayment.paystackPublicKey,
     };
-  }, [mounted, user]);
+  }, [mounted, user, systemPayment, paymentReference]);
+
+  const handleAdminSave = () => {
+    updateSystemPaymentConfig(adminConfig);
+    toast({
+      title: "Settings Updated",
+      description: "Global payment details have been updated successfully.",
+    });
+  };
 
   const onSuccess = (reference: any) => {
     upgradePlan('pro');
@@ -166,6 +191,65 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           
+          {/* Admin Payment Settings (Only for Admin) */}
+          {isAdmin && (
+            <Card className="border-2 border-primary/20 shadow-xl overflow-hidden bg-white animate-in slide-in-from-top duration-500">
+              <CardHeader className="bg-primary/10 border-b">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <ShieldCheck className="text-primary" size={24} />
+                  Platform Admin: Payment Config
+                </CardTitle>
+                <CardDescription>Update the global account details end-users see when upgrading.</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Bank Name</Label>
+                    <Input 
+                      value={adminConfig.bankName} 
+                      onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Account Number</Label>
+                    <Input 
+                      value={adminConfig.accountNumber} 
+                      onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Account Name</Label>
+                    <Input 
+                      value={adminConfig.accountName} 
+                      onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Monthly Pro Price (₦)</Label>
+                    <Input 
+                      type="number"
+                      value={adminConfig.proPrice} 
+                      onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value)})}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Paystack Public Key</Label>
+                  <Input 
+                    value={adminConfig.paystackPublicKey} 
+                    onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
+                <Button onClick={handleAdminSave} className="bg-primary gap-2">
+                  <Save size={18} />
+                  Save Global Settings
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
+
           {/* Branding Section */}
           <Card className="border-none shadow-md overflow-hidden bg-white">
             <CardHeader className="bg-muted/30 border-b">
@@ -192,10 +276,9 @@ export default function SettingsPage() {
                   <div className="space-y-1">
                     <h4 className="font-bold text-lg">App Logo</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      To update your logo across the entire app (Sidebar, Favicon, and Mobile Home Screen), please edit the following configuration file:
+                      To update your logo across the entire app, please edit:
                     </p>
                   </div>
-                  
                   <div className="p-4 rounded-xl bg-muted/50 border flex items-center justify-between group">
                     <div className="flex items-center gap-3">
                       <FileCode className="text-primary" size={20} />
@@ -209,13 +292,6 @@ export default function SettingsPage() {
                     >
                       <Copy size={14} className="mr-2" /> Copy Path
                     </Button>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-100">
-                    <p className="text-xs text-amber-800 flex items-center gap-2">
-                      <Info size={14} className="shrink-0" />
-                      Tip: Upload your image to the <strong>public/</strong> folder and then update the <strong>imageUrl</strong> in the JSON file to point to your new file (e.g. "/my-logo.png").
-                    </p>
                   </div>
                 </div>
               </div>
@@ -241,54 +317,10 @@ export default function SettingsPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
                 <div className="space-y-4 flex-1">
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Next billing date: <span className="font-medium text-foreground">{new Date(subscription.nextBillingDate).toLocaleDateString()}</span>
-                    </p>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <div className="p-3 rounded-lg border bg-muted/5">
-                      <p className="text-[10px] font-bold uppercase text-primary mb-2 flex items-center gap-1">
-                        <Info size={10} /> Free Tier Includes
-                      </p>
-                      <ul className="space-y-1.5">
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Basic Stock Taking
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> 3 AI Audits / Month
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Limited Market Trend Updates
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="p-3 rounded-lg border bg-primary/5 border-primary/10">
-                      <p className="text-[10px] font-bold uppercase text-primary mb-2 flex items-center gap-1">
-                        <Zap size={10} /> Pro Benefits
-                      </p>
-                      <ul className="space-y-1.5">
-                        <li className="text-[11px] flex items-center gap-2 font-bold text-primary">
-                          <Calculator size={12} /> Full Plate Costing Tool
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Unlimited AI Audits
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2 font-bold text-primary">
-                          <CheckCircle2 size={12} className="text-primary" /> Full Market Trend Updates
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Multi-Staff Access
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Priority Market Sync
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                  <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Next billing: <span className="font-medium text-foreground">{new Date(subscription.nextBillingDate).toLocaleDateString()}</span>
+                  </p>
                 </div>
 
                 {subscription.plan === 'free' && (
@@ -300,7 +332,7 @@ export default function SettingsPage() {
                             <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
                             Upgrade to Pro
                           </span>
-                          <span className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">₦11,000 / month</span>
+                          <span className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">₦{systemPayment.proPrice.toLocaleString()} / month</span>
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[450px]">
@@ -309,221 +341,57 @@ export default function SettingsPage() {
                             <Sparkles className="text-primary" />
                             Activate Pro Account
                           </DialogTitle>
-                          <DialogDescription>
-                            Complete your payment to unlock professional margin analysis.
-                          </DialogDescription>
                         </DialogHeader>
                         
                         <div className="space-y-6 py-4">
-                          <div className="space-y-4">
-                            {paystackConfig && (
-                              <PaystackActivateButton 
-                                config={paystackConfig} 
-                                onSuccess={onSuccess} 
-                                onClose={onClose} 
-                              />
-                            )}
-                            
-                            <div className="relative w-full py-2">
-                              <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-                              <div className="relative flex justify-center text-[10px] uppercase font-bold"><span className="bg-white px-2 text-muted-foreground">Or Pay via Bank Transfer</span></div>
-                            </div>
+                          {paystackConfig && (
+                            <PaystackActivateButton 
+                              config={paystackConfig} 
+                              onSuccess={onSuccess} 
+                              onClose={onClose} 
+                            />
+                          )}
+                          
+                          <div className="relative w-full py-2">
+                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+                            <div className="relative flex justify-center text-[10px] uppercase font-bold"><span className="bg-white px-2 text-muted-foreground">Or Pay via Bank Transfer</span></div>
+                          </div>
 
-                            <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-3">
-                              <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Bank Name</span>
-                                <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.bankName}</span>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Number</span>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm font-mono font-bold">{OFFICIAL_PAYMENT_INFO.accountNumber}</span>
-                                  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.accountNumber, "Account Number")}>
-                                    <Copy size={12} />
-                                  </Button>
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Name</span>
-                                <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.accountName}</span>
-                              </div>
+                          <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase">Bank Name</span>
+                              <span className="text-sm font-bold">{systemPayment.bankName}</span>
                             </div>
-
-                            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-1">
-                              <p className="text-[10px] font-bold text-primary uppercase">Payment Reference</p>
-                              <div className="flex items-center justify-between">
-                                <span className="text-lg font-mono font-black text-primary">{OFFICIAL_PAYMENT_INFO.reference}</span>
-                                <Button variant="outline" size="sm" className="h-8 border-primary/20 text-primary" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.reference, "Reference")}>
-                                  <Copy size={14} className="mr-2" /> Copy
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Number</span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-mono font-bold">{systemPayment.accountNumber}</span>
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(systemPayment.accountNumber, "Account Number")}>
+                                  <Copy size={12} />
                                 </Button>
                               </div>
                             </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Name</span>
+                              <span className="text-sm font-bold">{systemPayment.accountName}</span>
+                            </div>
+                          </div>
 
-                            <Button variant="outline" className="w-full h-12 text-muted-foreground" onClick={() => {
-                              upgradePlan('pro');
-                              setIsUpgradeOpen(false);
-                              toast({ title: "Transfer Notification Sent", description: "Our team will verify your transfer and activate your Pro status within 24 hours." });
-                            }}>
-                              I've already transferred ₦11,000
-                            </Button>
+                          <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-1">
+                            <p className="text-[10px] font-bold text-primary uppercase">Payment Reference</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-lg font-mono font-black text-primary">{paymentReference.split('-')[1]}</span>
+                              <Button variant="outline" size="sm" className="h-8 border-primary/20 text-primary" onClick={() => handleCopy(paymentReference.split('-')[1], "Reference")}>
+                                <Copy size={14} className="mr-2" /> Copy
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                        <DialogFooter className="text-[10px] text-center text-muted-foreground flex flex-col items-center">
-                          <div className="flex items-center gap-1 mb-1">
-                            <ShieldCheck size={10} /> Secure Platform Billing
-                          </div>
-                          Questions? Email legal@kitchenprof.ng
-                        </DialogFooter>
                       </DialogContent>
                     </Dialog>
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-xl">Saved Payment Methods</CardTitle>
-                <CardDescription>Your personal methods for market procurement.</CardDescription>
-              </div>
-              <Dialog open={isAddingOpen} onOpenChange={setIsAddingOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="rounded-xl">
-                    <Plus size={16} className="mr-2" /> Add New
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Payment Method</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="space-y-2">
-                      <Label>Type</Label>
-                      <select 
-                        className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                        value={newMethod.type}
-                        onChange={(e) => setNewMethod({...newMethod, type: e.target.value as any})}
-                      >
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="card">Card</option>
-                        <option value="paystack">Paystack</option>
-                        <option value="pos">POS Terminal</option>
-                        <option value="cash">Cash / Wallet</option>
-                      </select>
-                    </div>
-                    {newMethod.type !== 'paystack' && (
-                      <div className="space-y-2">
-                        <Label>Provider / Bank Name</Label>
-                        <Input 
-                          placeholder="e.g. GTBank, Visa, Moniepoint" 
-                          value={newMethod.provider}
-                          onChange={(e) => setNewMethod({...newMethod, provider: e.target.value})}
-                        />
-                      </div>
-                    )}
-                    {newMethod.type === 'bank_transfer' ? (
-                      <div className="space-y-2">
-                        <Label>Account Name</Label>
-                        <Input 
-                          placeholder="e.g. Buchi's Kitchen Ent." 
-                          value={newMethod.accountName}
-                          onChange={(e) => setNewMethod({...newMethod, accountName: e.target.value})}
-                        />
-                      </div>
-                    ) : newMethod.type === 'card' ? (
-                      <div className="space-y-2">
-                        <Label>Last 4 Digits (Optional)</Label>
-                        <Input 
-                          placeholder="e.g. 4242" 
-                          value={newMethod.lastFour}
-                          onChange={(e) => setNewMethod({...newMethod, lastFour: e.target.value})}
-                        />
-                      </div>
-                    ) : null}
-                    <div className="flex items-center space-x-2">
-                      <input 
-                        type="checkbox" 
-                        id="isDefault" 
-                        className="rounded border-gray-300"
-                        checked={newMethod.isDefault}
-                        onChange={(e) => setNewMethod({...newMethod, isDefault: e.target.checked})}
-                      />
-                      <Label htmlFor="isDefault">Set as default payment method</Label>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsAddingOpen(false)}>Cancel</Button>
-                    <Button onClick={handleAdd} className="bg-primary">Add Method</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {paymentMethods.length === 0 ? (
-                <div className="text-center py-12 border-2 border-dashed rounded-xl text-muted-foreground">
-                  No payment methods added yet.
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {paymentMethods.map((method) => (
-                    <div 
-                      key={method.id} 
-                      className={`p-4 rounded-2xl border-2 transition-all relative group ${method.isDefault ? 'border-primary/40 bg-primary/5' : 'border-transparent bg-muted/30 hover:bg-muted/50'}`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
-                            {getMethodIcon(method.type)}
-                          </div>
-                          <div>
-                            <p className="font-bold text-sm">{method.provider}</p>
-                            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-                              {method.type.replace('_', ' ')} {method.lastFour ? `•••• ${method.lastFour}` : ''}
-                            </p>
-                          </div>
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                              <MoreVertical size={14} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            {!method.isDefault && (
-                              <DropdownMenuItem 
-                                className="cursor-pointer"
-                                onClick={() => setDefaultPaymentMethod(method.id)}
-                              >
-                                Set as Default
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem 
-                              className="text-destructive cursor-pointer"
-                              onClick={() => deletePaymentMethod(method.id)}
-                            >
-                              <Trash2 size={14} className="mr-2" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                      
-                      {method.accountName && (
-                        <p className="mt-3 text-xs font-medium text-muted-foreground px-1">
-                          Account: {method.accountName}
-                        </p>
-                      )}
-
-                      {method.isDefault && (
-                        <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-primary uppercase">
-                          <CheckCircle2 size={12} /> Default
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>
@@ -538,26 +406,8 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm opacity-90 leading-relaxed">
-                Payments are processed through Paystack, a PCI DSS Level 1 certified processor. Kitchen Prof does not store your card details.
+                Payments are processed through Paystack. Kitchen Prof does not store your card details.
               </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-md overflow-hidden bg-white">
-            <CardHeader className="bg-muted/50 pb-4">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Bell size={18} />
-                Monetization Tip
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 space-y-4">
-              <div className="bg-accent/10 p-4 rounded-xl space-y-2">
-                <p className="text-xs font-bold text-primary">REVENUE OPPORTUNITY</p>
-                <p className="text-sm">Partner with suppliers to offer 1-click replenishment and earn 2-5% commission per order.</p>
-                <Button variant="link" size="sm" className="p-0 h-auto text-xs text-primary font-bold">
-                  Learn how <ChevronRight size={12} />
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </div>

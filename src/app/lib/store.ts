@@ -2,19 +2,26 @@
 "use client";
 
 import { useState } from 'react';
-import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useUser, useCollection, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { 
   updateDocumentNonBlocking, 
   deleteDocumentNonBlocking, 
   setDocumentNonBlocking 
 } from '@/firebase/non-blocking-updates';
-import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan, SystemPaymentConfig } from './types';
 
 export function useInventory() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const [currentPlan, setCurrentPlan] = useState<UserPlan>('free');
+
+  // System Payment Config
+  const systemPaymentRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'system', 'payment');
+  }, [firestore]);
+  const { data: systemPayment, isLoading: isSystemLoading } = useDoc<SystemPaymentConfig>(systemPaymentRef);
 
   // Ingredients Collection
   const ingredientsQuery = useMemoFirebase(() => {
@@ -50,6 +57,12 @@ export function useInventory() {
     return collection(firestore, 'users', user.uid, 'payments');
   }, [firestore, user]);
   const { data: paymentMethods } = useCollection<PaymentMethod>(paymentsQuery);
+
+  const updateSystemPaymentConfig = (updates: Partial<SystemPaymentConfig>) => {
+    if (!firestore) return;
+    const docRef = doc(firestore, 'system', 'payment');
+    setDocumentNonBlocking(docRef, updates, { merge: true });
+  };
 
   const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt' | 'currentStock' | 'minStock'>) => {
     if (!firestore || !user) return;
@@ -141,8 +154,15 @@ export function useInventory() {
     staff: staff || [],
     tasks: tasks || [],
     paymentMethods: paymentMethods || [],
+    systemPayment: systemPayment || {
+      bankName: "GTBank",
+      accountNumber: "0123456789",
+      accountName: "Kitchen Prof Enterprise",
+      paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      proPrice: 11000
+    },
     subscription: { plan: currentPlan, status: 'active', nextBillingDate: new Date().toISOString() } as SubscriptionInfo,
-    loading: isUserLoading || isIngredientsLoading || isRecipesLoading,
+    loading: isUserLoading || isIngredientsLoading || isRecipesLoading || isSystemLoading,
     addIngredient,
     updateIngredient,
     deleteIngredient,
@@ -153,6 +173,7 @@ export function useInventory() {
     addPaymentMethod,
     deletePaymentMethod,
     setDefaultPaymentMethod,
-    upgradePlan, 
+    upgradePlan,
+    updateSystemPaymentConfig
   };
 }

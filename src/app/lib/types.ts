@@ -61,3 +61,11 @@ export interface SubscriptionInfo {
   status: 'active' | 'past_due' | 'canceled';
   nextBillingDate: string;
 }
+
+export interface SystemPaymentConfig {
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  paystackPublicKey: string;
+  proPrice: number;
+}
