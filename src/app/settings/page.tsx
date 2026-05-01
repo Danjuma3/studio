@@ -18,7 +18,8 @@ import {
   Save,
   Megaphone,
   HelpCircle,
-  UploadCloud
+  UploadCloud,
+  FileCode
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -190,12 +191,11 @@ export default function SettingsPage() {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs p-4 space-y-2">
-                            <p className="text-xs font-bold">How to use an image from your computer:</p>
-                            <p className="text-[10px] leading-relaxed">
-                              1. Place your image file inside the project's <strong>public/</strong> folder.<br/>
-                              2. Enter the filename here starting with a slash (e.g., <strong>/mylogo.png</strong>).<br/>
-                              3. Alternatively, paste a <strong>Data URI</strong> (base64 string) directly.
-                            </p>
+                            <p className="text-xs font-bold">How to use your own photo:</p>
+                            <div className="text-[10px] leading-relaxed space-y-2">
+                              <p><strong>1. Public Folder Method:</strong> Place your image in the <code>public/</code> folder and enter the filename here starting with a slash (e.g., <code>/my-logo.png</code>).</p>
+                              <p><strong>2. Data URI Method:</strong> Use an online tool to convert your photo to a "Base64 string" and paste that entire string here.</p>
+                            </div>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -204,14 +204,20 @@ export default function SettingsPage() {
                       <Label>App Logo URL / Path</Label>
                       <div className="flex flex-col gap-2">
                         <Input 
-                          placeholder="e.g. /my-logo.png or https://domain.com/logo.png"
+                          placeholder="e.g. /my-logo.png or data:image/png;base64,..."
                           value={adminConfig.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
-                        <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                          <UploadCloud size={10} /> 
-                          To use a photo from your PC, upload it to your public folder and enter the path here.
-                        </p>
+                        <div className="flex items-center gap-4">
+                          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <UploadCloud size={10} /> 
+                            Path: /filename.png
+                          </p>
+                          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <FileCode size={10} /> 
+                            Supports Base64 Data URIs
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -311,6 +317,12 @@ export default function SettingsPage() {
                       {isAdmin 
                         ? "You are managing the branding dynamically via the Admin Panel above. You can use local files from your public folder or online URLs." 
                         : "Branding is managed centrally by the platform administrator."}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-muted/30 rounded-xl border border-dashed flex items-center gap-3">
+                    <HelpCircle className="text-primary" size={20} />
+                    <p className="text-xs text-muted-foreground">
+                      To use a file from your computer, check the <strong>README</strong> for instructions on the <code>public/</code> folder.
                     </p>
                   </div>
                 </div>

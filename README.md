@@ -4,10 +4,12 @@
 Kitchen Prof is an intelligent food cost control and margin analysis platform designed specifically for the volatile restaurant market in Lagos, Nigeria.
 
 ## 📥 How to Download This Project
-To take your code with you:
+To take your code with you and add your own photos:
 1. Click the **Download** icon in the top-right corner of the Firebase Studio interface.
 2. Save the ZIP file to your computer.
-3. Unzip the folder to access all source code, configurations, and AI flows.
+3. Unzip the folder.
+4. **To add your logo**: Place your image file (e.g., `logo.png`) into the `public/` folder.
+5. In the app's Admin Settings, set the Logo URL to `"/logo.png"`.
 
 ## 🚀 First Time Admin Setup
 To access the global administrative features:
@@ -31,17 +33,11 @@ This app is built on a standard modern stack (Next.js 15, Firebase, Tailwind). I
    ```bash
    npm run dev
    ```
-5. **Genkit UI**: To test AI prompts locally, run:
-   ```bash
-   npm run genkit:dev
-   ```
 
 ## 🖼️ Branding (How to Swap the Logo)
-To change the app's logo and icon across all screens:
-1. Upload your new image to the `public/` folder (e.g., name it `my-logo.png`).
-2. Open `src/app/lib/placeholder-images.json`.
-3. Update the `imageUrl` for the `app-logo` entry to point to your new file (e.g., `"/my-logo.png"`).
-4. Alternatively, if logged in as Admin, use the **Settings** page to update the logo dynamically via the Admin Panel.
+To change the app's logo across all screens:
+1. **Option A (Data URI)**: Convert your image to a Base64 string online and paste it into the Logo URL field in Settings.
+2. **Option B (Public Folder)**: If running locally, put `my-logo.png` in the `public/` folder and use the path `"/my-logo.png"` in Settings.
 
 ## 🔐 Security & Administration
 - **Admin**: `chefdtanju@gmail.com` has global administrative access.
