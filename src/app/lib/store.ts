@@ -2,9 +2,8 @@
 "use client";
 
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 import { 
-  addDocumentNonBlocking, 
   updateDocumentNonBlocking, 
   deleteDocumentNonBlocking, 
   setDocumentNonBlocking 
@@ -50,13 +49,15 @@ export function useInventory() {
   }, [firestore, user]);
   const { data: paymentMethods } = useCollection<PaymentMethod>(paymentsQuery);
 
-  const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt' | 'currentStock' | 'minStock'>) => {
     if (!firestore || !user) return;
     const colRef = collection(firestore, 'users', user.uid, 'ingredients');
     const newDocId = Math.random().toString(36).substr(2, 9);
     setDocumentNonBlocking(doc(colRef, newDocId), {
       ...ingredient,
       id: newDocId,
+      currentStock: 0,
+      minStock: 5,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }, { merge: true });
@@ -74,13 +75,14 @@ export function useInventory() {
     deleteDocumentNonBlocking(docRef);
   };
 
-  const addRecipe = (recipe: Omit<Recipe, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addRecipe = (recipe: Omit<Recipe, 'id' | 'createdAt' | 'updatedAt' | 'sellingPrice'>) => {
     if (!firestore || !user) return;
     const colRef = collection(firestore, 'users', user.uid, 'recipes');
     const newDocId = Math.random().toString(36).substr(2, 9);
     setDocumentNonBlocking(doc(colRef, newDocId), {
       ...recipe,
       id: newDocId,
+      sellingPrice: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }, { merge: true });
@@ -145,6 +147,6 @@ export function useInventory() {
     addPaymentMethod,
     deletePaymentMethod,
     setDefaultPaymentMethod,
-    upgradePlan: (plan: any) => {}, // Placeholder
+    upgradePlan: (plan: any) => {}, 
   };
 }
