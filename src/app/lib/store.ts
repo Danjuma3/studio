@@ -34,15 +34,15 @@ export function useInventory() {
   const firestore = useFirestore();
   const [currentPlan, setCurrentPlan] = useState<UserPlan>('free');
   const [location, setLocation] = useState<UserLocation>({
-    country: 'United States',
-    city: 'New York',
+    country: 'Global',
+    city: 'Regional Hub',
     currency: 'USD',
     currencySymbol: '$'
   });
 
   // Simple geolocation detection logic
   useEffect(() => {
-    if ("geolocation" in navigator) {
+    if (typeof window !== 'undefined' && "geolocation" in navigator) {
       const locale = navigator.language;
       if (locale.includes('NG')) {
         setLocation({
