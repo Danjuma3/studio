@@ -43,6 +43,36 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Switch } from '@/components/ui/switch';
 
+// Helper to ensure a valid URL is always passed to the Image component
+function getSafeLogoUrl(url?: string): string {
+  const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  
+  if (!url || typeof url !== 'string' || url.trim().length === 0) {
+    const placeholder = PlaceHolderImages.find(img => img.id === 'app-logo');
+    return placeholder?.imageUrl || fallback;
+  }
+  
+  const trimmed = url.trim();
+
+  // Handle standard paths and already-prefixed Base64
+  if (trimmed.startsWith('/') || trimmed.startsWith('data:')) {
+    return trimmed;
+  }
+
+  // Heuristic: If it's a very long string with no spaces, it's likely a raw Base64 that needs a prefix
+  if (trimmed.length > 100 && !trimmed.includes(' ')) {
+    return `data:image/png;base64,${trimmed}`;
+  }
+  
+  // Validate as a standard URL
+  try {
+    new URL(trimmed);
+    return trimmed;
+  } catch {
+    return fallback;
+  }
+}
+
 function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, onSuccess: any, onClose: any }) {
   const initializePayment = usePaystackPayment(config);
   
@@ -78,7 +108,6 @@ export default function SettingsPage() {
   const hasSyncedConfig = useRef(false);
   const hasSyncedAlert = useRef(false);
 
-  const placeholderLogo = PlaceHolderImages.find(img => img.id === 'app-logo');
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
 
   useEffect(() => {
@@ -155,8 +184,6 @@ export default function SettingsPage() {
     });
   };
 
-  const currentLogoUrl = systemPayment?.appLogoUrl || placeholderLogo?.imageUrl || '';
-
   if (!mounted) return null;
 
   return (
@@ -195,7 +222,7 @@ export default function SettingsPage() {
                             <p className="text-xs font-bold">How to use your own photo:</p>
                             <div className="text-[10px] leading-relaxed space-y-2">
                               <p><strong>1. Public Folder:</strong> Reference by filename (e.g., <code>/my-logo.png</code>).</p>
-                              <p><strong>2. Base64:</strong> Use an "Image to Base64" converter. Ensure the string starts with <code>data:image/...;base64,</code> or paste the raw string and the app will try to fix it.</p>
+                              <p><strong>2. Base64:</strong> Use an "Image to Base64" converter. Paste the string and the app will fix it.</p>
                             </div>
                           </TooltipContent>
                         </Tooltip>
@@ -217,10 +244,6 @@ export default function SettingsPage() {
                           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <FileCode size={10} /> 
                             Supports Base64 Strings
-                          </p>
-                          <p className="text-[10px] text-primary flex items-center gap-1 font-bold">
-                            <Info size={10} />
-                            Format: data:image/png;base64,...
                           </p>
                         </div>
                       </div>
@@ -325,7 +348,7 @@ export default function SettingsPage() {
                   <div className="p-4 bg-muted/30 rounded-xl border border-dashed flex items-center gap-3">
                     <HelpCircle className="text-primary" size={20} />
                     <p className="text-xs text-muted-foreground">
-                      Base64 strings should be long text blocks. The app will auto-detect them if you paste the direct output from an encoder.
+                      Base64 strings are auto-detected. Paste the string and the app will handle the formatting.
                     </p>
                   </div>
                 </div>
@@ -344,7 +367,7 @@ export default function SettingsPage() {
                   <CardDescription>Control your restaurant's access level.</CardDescription>
                 </div>
                 <Badge className={subscription.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
-                  {subscription.plan.toUpperCase()} PLAN
+                  {subscription.plan.toUpperCase() PLAN}
                 </Badge>
               </div>
             </CardHeader>
