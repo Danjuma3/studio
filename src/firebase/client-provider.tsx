@@ -3,6 +3,7 @@
 import React, { useState, useEffect, type ReactNode } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
 import { initializeFirebase } from '@/firebase';
+import { PuzzleLoader } from '@/components/PuzzleLoader';
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
@@ -13,12 +14,17 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
 
   useEffect(() => {
     // Initialize Firebase only on the client side after mount
-    setFirebaseServices(initializeFirebase());
+    // Simulate a slight delay to allow the puzzle animation to be appreciated
+    const timer = setTimeout(() => {
+      setFirebaseServices(initializeFirebase());
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  // Prevent rendering until Firebase is initialized on the client
+  // Show the PuzzleLoader until Firebase is initialized
   if (!firebaseServices) {
-    return null;
+    return <PuzzleLoader />;
   }
 
   return (
