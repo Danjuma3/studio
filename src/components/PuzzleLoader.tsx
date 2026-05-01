@@ -9,69 +9,69 @@ interface PuzzleLoaderProps {
 
 export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
   const [finalImageUrl, setFinalImageUrl] = useState<string>('');
-  
-  const gridSize = 2; // 2x2 grid for 4 distinct segments
-  const pieces = Array.from({ length: gridSize * gridSize }, (_, i) => i);
-  const [mounted, setMounted] = useState(false);
-  const [offsets, setOffsets] = useState<{x: number, y: number, r: number}[]>([]);
+  const [assembledCount, setAssembledCount] = useState(0);
+  const [offsets, setOffsets] = useState<{ x: number; y: number; r: number }[]>([]);
 
-  // Sequential order for the 4 segments (Top-Left, Top-Right, Bottom-Right, Bottom-Left)
-  const sequentialOrder = [0, 1, 3, 2];
+  const gridSize = 2; // 2x2 grid for 4 quadrants
+  const pieces = [0, 1, 3, 2]; // Spiral sequence (TL -> TR -> BR -> BL)
 
   useEffect(() => {
-    // Resolve logo URL
-    const logo = getSafeLogoUrl(imageUrl);
-    setFinalImageUrl(logo);
+    // Resolve the branding logo
+    setFinalImageUrl(getSafeLogoUrl(imageUrl));
 
-    // Initial shattered state: wide spread and rotated
-    const initialOffsets = pieces.map(() => ({
-      x: (Math.random() - 0.5) * 1000,
-      y: (Math.random() - 0.5) * 1000,
-      r: (Math.random() - 0.5) * 360,
+    // Initialize shattered positions
+    const initialOffsets = [0, 1, 2, 3].map(() => ({
+      x: (Math.random() - 0.5) * 600,
+      y: (Math.random() - 0.5) * 600,
+      r: (Math.random() - 0.5) * 180,
     }));
-    
     setOffsets(initialOffsets);
-    
-    // Trigger assembly sequence
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 500);
-    return () => clearTimeout(timer);
+
+    // Sequence the assembly: 1 piece every 1.5 seconds
+    const interval = setInterval(() => {
+      setAssembledCount((prev) => {
+        if (prev >= 4) {
+          clearInterval(interval);
+          return 4;
+        }
+        return prev + 1;
+      });
+    }, 1400);
+
+    return () => clearInterval(interval);
   }, [imageUrl]);
 
-  if (offsets.length === 0) {
-    return <div className="fixed inset-0 z-[100] bg-background" />;
-  }
+  if (offsets.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background overflow-hidden">
-      {/* Background depth effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background overflow-hidden select-none">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
       
-      {/* Enlarged Logo Container */}
-      <div className="relative w-72 h-72 md:w-96 md:h-96 mb-20 shadow-2xl rounded-[2rem] overflow-hidden bg-white border border-muted/50">
+      {/* Premium Logo Container */}
+      <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mb-16 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden bg-white border border-white/20">
         {finalImageUrl ? (
           <div className="grid grid-cols-2 grid-rows-2 w-full h-full relative">
-            {pieces.map((i) => {
+            {[0, 1, 2, 3].map((i) => {
               const row = Math.floor(i / gridSize);
               const col = i % gridSize;
-              const offset = offsets[i];
               
-              // Find the piece's place in the 1-2-3-4 sequence
-              const sequenceIndex = sequentialOrder.indexOf(i);
-              // 1.2 seconds delay between each piece for a clear rhythmic build
-              const delay = sequenceIndex * 1200; 
+              // Find where this piece is in our custom sequential order
+              const sequencePos = pieces.indexOf(i) + 1;
+              const isAssembled = assembledCount >= sequencePos;
+              const offset = offsets[i];
 
               return (
                 <div
                   key={i}
-                  className="relative overflow-hidden transition-all duration-[1800ms] cubic-bezier(0.25, 1, 0.5, 1)"
+                  className="relative overflow-hidden transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
                   style={{
-                    transform: mounted 
+                    transform: isAssembled 
                       ? 'translate(0, 0) rotate(0) scale(1)' 
-                      : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg) scale(0.4)`,
-                    opacity: mounted ? 1 : 0,
-                    transitionDelay: `${delay}ms`,
+                      : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg) scale(0.6)`,
+                    opacity: isAssembled ? 1 : 0.15,
+                    filter: isAssembled ? 'grayscale(0)' : 'grayscale(1) blur(2px)',
+                    zIndex: isAssembled ? 10 : 1,
                   }}
                 >
                   <div
@@ -83,51 +83,49 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
                       top: `-${row * 100}%`,
                     }}
                   />
-                  {/* Subtle edge highlight for segments */}
-                  <div className="absolute inset-0 border-[0.5px] border-black/5 pointer-events-none" />
+                  {/* Quadrant Separation Glow */}
+                  <div className="absolute inset-0 border-[0.5px] border-black/5" />
                 </div>
               );
             })}
           </div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+          <div className="w-full h-full flex items-center justify-center bg-muted/10">
+            <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
           </div>
         )}
       </div>
       
-      {/* Branding and Loader */}
-      <div className="text-center space-y-8 z-10">
+      {/* Branding Reveal */}
+      <div className="text-center space-y-6">
         <div className="space-y-1">
-          <h2 className={`text-4xl font-headline font-black text-primary tracking-tighter transition-all duration-1000 transform ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+          <h2 className="text-5xl font-headline font-black text-primary tracking-tighter animate-in fade-in slide-in-from-bottom-4 duration-1000">
             KITCHEN PROF
           </h2>
-          <p className={`text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] transition-all duration-1000 delay-300 transform ${mounted ? 'translate-y-0 opacity-60' : 'translate-y-4 opacity-0'}`}>
+          <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.5em] opacity-40">
             Master Your Margins
           </p>
         </div>
         
-        <div className="flex flex-col items-center gap-6">
-          <div className="w-64 h-1.5 bg-muted rounded-full overflow-hidden relative shadow-inner">
-             <div className="absolute inset-0 bg-primary/10" />
-             <div className="h-full bg-primary animate-[loading_7s_linear_infinite]" />
+        {/* Sleek Progress Bar */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-64 h-1 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-primary transition-all duration-1000 ease-out"
+              style={{ width: `${(assembledCount / 4) * 100}%` }}
+            />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-            <p className="text-[9px] text-primary font-bold uppercase tracking-[0.4em] opacity-80">
-              Initializing Market Hubs
+          <div className="flex items-center gap-3">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <p className="text-[9px] text-primary font-black uppercase tracking-[0.3em] opacity-70">
+              {assembledCount < 4 ? `Calibrating Hub ${assembledCount + 1}` : 'Synchronized'}
             </p>
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes loading {
-          0% { width: 0%; transform: translateX(-100%); }
-          15% { width: 10%; transform: translateX(0); }
-          100% { width: 100%; transform: translateX(0); }
-        }
-      `}</style>
     </div>
   );
 }
