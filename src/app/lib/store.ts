@@ -18,7 +18,7 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   accountName: "Kitchen Prof Enterprise",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   proPrice: 11000,
-  appLogoUrl: ""
+  appLogoUrl: "https://picsum.photos/seed/kitchen-prof-logo/512/512"
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {

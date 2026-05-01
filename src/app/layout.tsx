@@ -11,17 +11,28 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useInventory } from './lib/store';
 
+// Helper to ensure a valid URL is always passed to the Image component
+function getSafeLogoUrl(url?: string): string {
+  const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  if (!url || typeof url !== 'string' || url.trim().length === 0) {
+    const placeholder = PlaceHolderImages.find(img => img.id === 'app-logo');
+    return placeholder?.imageUrl || fallback;
+  }
+  
+  // Accept relative paths and data URIs immediately
+  if (url.startsWith('/') || url.startsWith('data:')) return url;
+  
+  try {
+    new URL(url);
+    return url;
+  } catch {
+    return fallback;
+  }
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { systemPayment } = useInventory();
-  const logoPlaceholder = PlaceHolderImages.find(img => img.id === 'app-logo');
-  
-  // Robust URL fallback logic to prevent 'Failed to construct URL' error
-  // We prioritize strings that look like valid URLs or local paths.
-  const currentLogoUrl = [
-    systemPayment?.appLogoUrl,
-    logoPlaceholder?.imageUrl,
-    'https://picsum.photos/seed/kitchen-prof-logo/512/512'
-  ].find(url => typeof url === 'string' && url.trim().length > 0) || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -38,7 +49,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   fill 
                   className="object-cover"
                   priority
-                  unoptimized={currentLogoUrl.startsWith('data:')}
+                  unoptimized // Allow any external URL for custom branding
                 />
               </div>
               <span className="font-headline font-bold text-primary">Kitchen Prof</span>

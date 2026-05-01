@@ -36,6 +36,24 @@ import { signOut } from 'firebase/auth';
 import { Badge } from '@/components/ui/badge';
 import { useInventory } from '@/app/lib/store';
 
+// Helper to ensure a valid URL is always passed to the Image component
+function getSafeLogoUrl(url?: string): string {
+  const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  if (!url || typeof url !== 'string' || url.trim().length === 0) {
+    const placeholder = PlaceHolderImages.find(img => img.id === 'app-logo');
+    return placeholder?.imageUrl || fallback;
+  }
+  
+  if (url.startsWith('/') || url.startsWith('data:')) return url;
+  
+  try {
+    new URL(url);
+    return url;
+  } catch {
+    return fallback;
+  }
+}
+
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Stock Taking', href: '/stock', icon: PackageSearch },
@@ -55,7 +73,6 @@ const secondaryNav = [
 export function AppNavigation() {
   const pathname = usePathname();
   const { systemPayment } = useInventory();
-  const placeholderLogo = PlaceHolderImages.find(img => img.id === 'app-logo');
   const { user } = useUser();
   const auth = useAuth();
 
@@ -67,11 +84,7 @@ export function AppNavigation() {
 
   if (!user && pathname === '/login') return null;
 
-  const currentLogoUrl = [
-    systemPayment?.appLogoUrl,
-    placeholderLogo?.imageUrl,
-    'https://picsum.photos/seed/kitchen-prof-logo/512/512'
-  ].find(url => typeof url === 'string' && url.trim().length > 0) || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
 
   return (
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
@@ -83,8 +96,7 @@ export function AppNavigation() {
               alt="Kitchen Prof Logo" 
               fill 
               className="object-cover"
-              data-ai-hint={placeholderLogo?.imageHint}
-              unoptimized={currentLogoUrl.startsWith('data:')}
+              unoptimized
             />
           </div>
           <div>
