@@ -11,11 +11,16 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useInventory } from './lib/store';
 
-// We wrap the body content in a client component to handle the dynamic logo
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { systemPayment } = useInventory();
   const logoPlaceholder = PlaceHolderImages.find(img => img.id === 'app-logo');
-  const currentLogoUrl = systemPayment?.appLogoUrl || logoPlaceholder?.imageUrl || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  
+  // Robust URL fallback logic
+  const currentLogoUrl = [
+    systemPayment?.appLogoUrl,
+    logoPlaceholder?.imageUrl,
+    'https://picsum.photos/seed/kitchen-prof-logo/512/512'
+  ].find(url => typeof url === 'string' && url.trim() !== '') || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -26,14 +31,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1 flex items-center md:hidden">
               <div className="relative w-8 h-8 rounded-lg overflow-hidden mr-2">
-                {currentLogoUrl && (
-                  <Image 
-                    src={currentLogoUrl} 
-                    alt="Kitchen Prof" 
-                    fill 
-                    className="object-cover"
-                  />
-                )}
+                <Image 
+                  src={currentLogoUrl} 
+                  alt="Kitchen Prof" 
+                  fill 
+                  className="object-cover"
+                />
               </div>
               <span className="font-headline font-bold text-primary">Kitchen Prof</span>
             </div>

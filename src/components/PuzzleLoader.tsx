@@ -4,10 +4,6 @@
 import React, { useEffect, useState } from 'react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
-/**
- * A loading screen that breaks the app logo into a puzzle grid.
- * Fixes hydration error by generating random offsets only after mounting.
- */
 export function PuzzleLoader() {
   const logo = PlaceHolderImages.find((img) => img.id === 'app-logo');
   const imageUrl = logo?.imageUrl || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
@@ -18,7 +14,6 @@ export function PuzzleLoader() {
   const [offsets, setOffsets] = useState<{x: number, y: number, r: number}[]>([]);
 
   useEffect(() => {
-    // Generate random offsets once on the client to avoid hydration mismatch
     const initialOffsets = pieces.map(() => ({
       x: (Math.random() - 0.5) * 400,
       y: (Math.random() - 0.5) * 400,
@@ -33,7 +28,6 @@ export function PuzzleLoader() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Return a stable shell before offsets are generated on the client
   if (offsets.length === 0) {
     return <div className="fixed inset-0 z-[100] bg-background" />;
   }
