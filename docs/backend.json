@@ -21,7 +21,7 @@
         },
         "unitOfMeasure": {
           "type": "string",
-          "description": "The standard unit of measure for this ingredient (e.g., 'kg', 'liter', 'piece', 'g')."
+          "description": "The standard unit of measure for this ingredient (e.g., 'kg', 'liter', 'piece', 'g', 'bag', 'crate', 'bucket')."
         },
         "bulkUnitPrice": {
           "type": "number",
@@ -30,6 +30,14 @@
         "retailUnitPrice": {
           "type": "number",
           "description": "The price per unit of measure when the ingredient is purchased at retail."
+        },
+        "currentStock": {
+          "type": "number",
+          "description": "Current quantity in the pantry."
+        },
+        "minStock": {
+          "type": "number",
+          "description": "Threshold for low stock alerts."
         },
         "createdAt": {
           "type": "string",
@@ -70,6 +78,10 @@
           "type": "string",
           "description": "A detailed description or instructions for the recipe."
         },
+        "sellingPrice": {
+          "type": "number",
+          "description": "The intended price for the finished dish."
+        },
         "createdAt": {
           "type": "string",
           "description": "Timestamp indicating when the recipe record was created.",
@@ -88,51 +100,25 @@
         "updatedAt"
       ]
     },
-    "RecipeIngredient": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "RecipeIngredient",
+    "StaffMember": {
+      "title": "StaffMember",
       "type": "object",
-      "description": "Links a specific ingredient to a specific recipe, including the quantity of that ingredient used in the recipe.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the RecipeIngredient entity."
-        },
-        "recipeId": {
-          "type": "string",
-          "description": "Reference to the Recipe this ingredient belongs to."
-        },
-        "ingredientId": {
-          "type": "string",
-          "description": "Reference to the Ingredient used in this recipe."
-        },
-        "quantity": {
-          "type": "number",
-          "description": "The amount of the ingredient used in the recipe."
-        },
-        "notes": {
-          "type": "string",
-          "description": "Any specific preparation notes."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when this record was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when this record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "recipeId",
-        "ingredientId",
-        "quantity",
-        "createdAt",
-        "updatedAt"
-      ]
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["Chef", "Server", "Cleaner", "Sous Chef"] },
+        "status": { "type": "string", "enum": ["active", "on-break", "off-duty"] }
+      }
+    },
+    "ManagerTask": {
+      "title": "ManagerTask",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "task": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
     }
   },
   "auth": {
@@ -167,6 +153,26 @@
             "$ref": "#/backend/entities/Recipe"
           },
           "description": "User-specific recipe data."
+        }
+      },
+      {
+        "path": "/users/{userId}/staff/{staffId}",
+        "definition": {
+          "entityName": "StaffMember",
+          "schema": {
+            "$ref": "#/backend/entities/StaffMember"
+          },
+          "description": "User-specific staff management data."
+        }
+      },
+      {
+        "path": "/users/{userId}/tasks/{taskId}",
+        "definition": {
+          "entityName": "ManagerTask",
+          "schema": {
+            "$ref": "#/backend/entities/ManagerTask"
+          },
+          "description": "User-specific operational tasks."
         }
       }
     ]

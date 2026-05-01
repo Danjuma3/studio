@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -28,9 +29,9 @@ export default function TermsPage() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-xl font-bold">3. Local Storage and Data Privacy</h2>
+            <h2 className="text-xl font-bold">3. Data Privacy (NDPR)</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              In this version, Kitchen Prof stores your inventory and recipe data locally on your device's browser (Local Storage). You are responsible for maintaining the security of your device. We comply with the Nigeria Data Protection Regulation (NDPR) regarding the handling of business information provided during the use of this service.
+              Kitchen Prof securely stores your inventory and recipe data in Firestore. You are responsible for maintaining the security of your account credentials. We comply with the Nigeria Data Protection Regulation (NDPR) regarding the handling of business information provided during the use of this service.
             </p>
           </section>
 
@@ -44,7 +45,7 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="text-xl font-bold">5. Subscription and Billing</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Pro features are billed monthly. Cancellation of a subscription will result in the loss of access to AI-driven audits at the end of the current billing cycle. No refunds are provided for partial months of service.
+              Pro features are billed monthly. Cancellation of a subscription will result in the loss of access to automated plate costing and AI-driven audits at the end of the current billing cycle. No refunds are provided for partial months of service.
             </p>
           </section>
 

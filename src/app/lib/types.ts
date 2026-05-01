@@ -1,5 +1,5 @@
 
-export type UnitOfMeasure = 'kg' | 'g' | 'L' | 'ml' | 'piece' | 'bag' | 'crate';
+export type UnitOfMeasure = 'kg' | 'g' | 'L' | 'ml' | 'piece' | 'bag' | 'crate' | 'bucket' | 'paint_bucket';
 
 export interface Ingredient {
   id: string;
