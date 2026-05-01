@@ -8,18 +8,15 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Smartphone, 
   Star, 
-  Download, 
   Share2, 
-  ShieldCheck, 
   Info,
   ChevronLeft,
-  Search,
-  ChevronRight,
-  ChefHat
+  ChevronRight
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BrandedLogo } from '@/components/BrandedLogo';
 
 export default function StorePreviewPage() {
   const { systemPayment, location } = useInventory();
@@ -46,13 +43,11 @@ export default function StorePreviewPage() {
       <div className="flex-1 overflow-y-auto bg-white custom-scrollbar">
         {/* Header Info */}
         <div className="p-5 flex gap-5">
-          <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-lg border relative flex items-center justify-center bg-primary/5">
-            {currentLogoUrl ? (
-              <Image src={currentLogoUrl} alt="Logo" fill className="object-cover" unoptimized />
-            ) : (
-              <ChefHat className="text-primary w-12 h-12" />
-            )}
-          </div>
+          <BrandedLogo 
+            url={currentLogoUrl} 
+            size={96} 
+            className="rounded-2xl shadow-lg border" 
+          />
           <div className="flex-1">
             <h1 className="text-xl font-headline font-black leading-tight text-gray-900">Kitchen Profit Professional</h1>
             <p className="text-xs text-blue-500 font-medium mt-1">Managing margins for food business</p>

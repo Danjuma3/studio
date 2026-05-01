@@ -19,7 +19,6 @@ import {
   Megaphone,
   HelpCircle,
   UploadCloud,
-  ChefHat,
   CreditCard,
   Globe
 } from 'lucide-react';
@@ -40,9 +39,9 @@ import {
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
-import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import { getSafeLogoUrl } from '@/app/lib/branding';
+import { BrandedLogo } from '@/components/BrandedLogo';
 
 function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, onSuccess: any, onClose: any }) {
   const initializePayment = usePaystackPayment(config);
@@ -109,7 +108,7 @@ export default function SettingsPage() {
     return {
       reference: paymentReference,
       email: user?.email || "customer@kitchenprof.ng",
-      amount: systemPayment.proPrice * 100,
+      amount: (systemPayment?.proPrice || 0) * 100,
       publicKey: systemPayment.paystackPublicKey,
     };
   }, [mounted, user, systemPayment, paymentReference]);
@@ -133,7 +132,6 @@ export default function SettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Allow up to 10MB to match server limits
       if (file.size > 10 * 1024 * 1024) {
         toast({
           variant: "destructive",
@@ -197,9 +195,10 @@ export default function SettingsPage() {
 
   const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
   const isAfricanRegion = location.currency === 'NGN';
+  
   const proDisplayPrice = isAfricanRegion 
-    ? `${location.currencySymbol}${systemPayment.proPrice.toLocaleString()}`
-    : `$${systemPayment.proPriceUSD.toLocaleString()}`;
+    ? `${location.currencySymbol}${(systemPayment?.proPrice || 0).toLocaleString()}`
+    : `$${(systemPayment?.proPriceUSD || 0).toLocaleString()}`;
 
   if (!mounted) return null;
 
@@ -266,7 +265,7 @@ export default function SettingsPage() {
                         <Label>Direct URL / Path / String</Label>
                         <Input 
                           placeholder="e.g. /logo.png or data:image/..."
-                          value={adminConfig.appLogoUrl || ''} 
+                          value={adminConfig?.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
                       </div>
@@ -278,10 +277,10 @@ export default function SettingsPage() {
                       <Globe size={16} /> Global Pricing & Keys
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>Regional Price (₦)</Label><Input type="number" value={adminConfig.proPrice} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value) || 0})}/></div>
-                      <div className="space-y-2"><Label>Global Price ($)</Label><Input type="number" step="0.01" value={adminConfig.proPriceUSD} onChange={(e) => setAdminConfig({...adminConfig, proPriceUSD: parseFloat(e.target.value) || 0})}/></div>
-                      <div className="space-y-2"><Label>Paystack Public Key</Label><Input value={adminConfig.paystackPublicKey} onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}/></div>
-                      <div className="space-y-2"><Label>Global Gateway Key</Label><Input value={adminConfig.globalStripePublicKey} onChange={(e) => setAdminConfig({...adminConfig, globalStripePublicKey: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Regional Price (₦)</Label><Input type="number" value={adminConfig?.proPrice || 0} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value) || 0})}/></div>
+                      <div className="space-y-2"><Label>Global Price ($)</Label><Input type="number" step="0.01" value={adminConfig?.proPriceUSD || 0} onChange={(e) => setAdminConfig({...adminConfig, proPriceUSD: parseFloat(e.target.value) || 0})}/></div>
+                      <div className="space-y-2"><Label>Paystack Public Key</Label><Input value={adminConfig?.paystackPublicKey || ''} onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Global Gateway Key</Label><Input value={adminConfig?.globalStripePublicKey || ''} onChange={(e) => setAdminConfig({...adminConfig, globalStripePublicKey: e.target.value})}/></div>
                     </div>
                   </div>
 
@@ -290,9 +289,9 @@ export default function SettingsPage() {
                       <Building2 size={16} /> Bank Details (Regional)
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>Bank Name</Label><Input value={adminConfig.bankName} onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}/></div>
-                      <div className="space-y-2"><Label>Account Number</Label><Input value={adminConfig.accountNumber} onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}/></div>
-                      <div className="space-y-2"><Label>Account Name</Label><Input value={adminConfig.accountName} onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Bank Name</Label><Input value={adminConfig?.bankName || ''} onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Account Number</Label><Input value={adminConfig?.accountNumber || ''} onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Account Name</Label><Input value={adminConfig?.accountName || ''} onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}/></div>
                     </div>
                   </div>
                 </CardContent>
@@ -313,7 +312,7 @@ export default function SettingsPage() {
                     <Label>Global Alert Message</Label>
                     <Input 
                       placeholder="e.g. URGENT: Global shipping delays detected!"
-                      value={adminAlert.message}
+                      value={adminAlert?.message || ''}
                       onChange={(e) => setAdminAlert({...adminAlert, message: e.target.value})}
                     />
                   </div>
@@ -322,7 +321,7 @@ export default function SettingsPage() {
                       <Label>Alert Type</Label>
                       <select 
                         className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                        value={adminAlert.type}
+                        value={adminAlert?.type || 'info'}
                         onChange={(e) => setAdminAlert({...adminAlert, type: e.target.value as any})}
                       >
                         <option value="info">Information</option>
@@ -333,7 +332,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="flex items-center gap-3 pt-8">
                       <Switch 
-                        checked={adminAlert.active}
+                        checked={adminAlert?.active || false}
                         onCheckedChange={(checked) => setAdminAlert({...adminAlert, active: checked})}
                       />
                       <Label>Broadcast Active</Label>
@@ -360,19 +359,11 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-                <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-muted shadow-inner bg-muted/20 flex items-center justify-center">
-                  {currentLogoUrl ? (
-                    <Image 
-                      src={currentLogoUrl} 
-                      alt="Current Logo" 
-                      fill 
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <ChefHat size={48} className="text-primary/20" />
-                  )}
-                </div>
+                <BrandedLogo 
+                  url={currentLogoUrl} 
+                  size={128} 
+                  className="rounded-3xl border-4 border-muted" 
+                />
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
                     <div className="font-bold text-lg">Identity Control</div>
@@ -396,20 +387,20 @@ export default function SettingsPage() {
                   <div className="text-sm text-muted-foreground">Manage your access to professional margin tools.</div>
                 </div>
                 <Badge className={subscription.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
-                  {subscription.plan.toUpperCase()} PLAN
+                  {(subscription?.plan || 'free').toUpperCase()} PLAN
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
                 <div className="space-y-4 flex-1">
-                  <div className="font-bold text-lg capitalize">{subscription.plan} Member</div>
+                  <div className="font-bold text-lg capitalize">{subscription?.plan || 'free'} Member</div>
                   <div className="text-sm text-muted-foreground">
                     Plan status: <span className="font-medium text-foreground">Active ({location.country} Hub)</span>
                   </div>
                 </div>
 
-                {subscription.plan === 'free' && (
+                {subscription?.plan === 'free' && (
                   <div className="shrink-0 pt-2">
                     <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
                       <DialogTrigger asChild>
@@ -435,11 +426,13 @@ export default function SettingsPage() {
                             
                             {isAfricanRegion ? (
                               <div className="space-y-3">
-                                <PaystackActivateButton 
-                                  config={paystackConfig} 
-                                  onSuccess={onSuccess} 
-                                  onClose={onClose} 
-                                />
+                                {paystackConfig && (
+                                  <PaystackActivateButton 
+                                    config={paystackConfig} 
+                                    onSuccess={onSuccess} 
+                                    onClose={onClose} 
+                                  />
+                                )}
                                 <div className="relative w-full py-2">
                                   <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
                                   <div className="relative flex justify-center text-[10px] uppercase font-bold"><span className="bg-white px-2 text-muted-foreground">Or Local Bank Transfer</span></div>
@@ -447,13 +440,13 @@ export default function SettingsPage() {
                                 <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-3">
                                   <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Bank Name</span>
-                                    <span className="text-sm font-bold">{systemPayment.bankName}</span>
+                                    <span className="text-sm font-bold">{systemPayment?.bankName || 'Global Hub Bank'}</span>
                                   </div>
                                   <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Number</span>
                                     <div className="flex items-center gap-2">
-                                      <span className="text-sm font-mono font-bold">{systemPayment.accountNumber}</span>
-                                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(systemPayment.accountNumber, "Account Number")}>
+                                      <span className="text-sm font-mono font-bold">{systemPayment?.accountNumber || '0000000000'}</span>
+                                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(systemPayment?.accountNumber || '0000000000', "Account Number")}>
                                         <Copy size={12} />
                                       </Button>
                                     </div>
