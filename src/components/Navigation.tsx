@@ -11,7 +11,9 @@ import {
   Settings,
   ShieldCheck,
   CookingPot,
-  Store
+  Store,
+  Info,
+  FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -36,6 +38,11 @@ const navItems = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
+const secondaryNav = [
+  { name: 'About App', href: '/about', icon: Info },
+  { name: 'Terms & Rules', href: '/terms', icon: FileText },
+];
+
 export function AppNavigation() {
   const pathname = usePathname();
 
@@ -54,6 +61,9 @@ export function AppNavigation() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu className="px-2">
+          <div className="px-3 mb-2">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Main Operations</p>
+          </div>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton 
@@ -69,6 +79,29 @@ export function AppNavigation() {
                 <Link href={item.href}>
                   <item.icon size={20} />
                   <span className="font-medium">{item.name}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+
+          <div className="px-3 mt-6 mb-2 border-t pt-4">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Legal & Info</p>
+          </div>
+          {secondaryNav.map((item) => (
+            <SidebarMenuItem key={item.name}>
+              <SidebarMenuButton 
+                asChild 
+                isActive={pathname === item.href}
+                className={cn(
+                  "flex items-center gap-3 py-5 px-4 rounded-xl transition-all duration-200",
+                  pathname === item.href 
+                    ? "bg-primary/10 text-primary" 
+                    : "hover:bg-accent hover:text-accent-foreground text-muted-foreground"
+                )}
+              >
+                <Link href={item.href}>
+                  <item.icon size={18} />
+                  <span className="text-sm">{item.name}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
