@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -40,7 +41,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
-import { getSafeLogoUrl } from '../lib/branding';
+import { getSafeLogoUrl } from '@/app/lib/branding';
 
 function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, onSuccess: any, onClose: any }) {
   const initializePayment = usePaystackPayment(config);
@@ -228,11 +229,11 @@ export default function SettingsPage() {
                           <UploadCloud size={14} className="text-primary" />
                           Built-in Photo Converter
                         </Label>
-                        <Input 
+                        <input 
                           type="file" 
                           accept="image/*" 
                           onChange={handleFileChange}
-                          className="h-10 bg-white cursor-pointer"
+                          className="w-full text-xs h-10 bg-white cursor-pointer border rounded-md p-1"
                         />
                         <p className="text-[10px] text-muted-foreground">Automatically turns any photo into a branding string.</p>
                       </div>

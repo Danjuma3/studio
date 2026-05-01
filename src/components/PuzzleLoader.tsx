@@ -2,11 +2,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { getSafeLogoUrl } from '@/app/lib/branding';
 
-export function PuzzleLoader() {
-  const logo = PlaceHolderImages.find((img) => img.id === 'app-logo');
-  const imageUrl = logo?.imageUrl || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+interface PuzzleLoaderProps {
+  imageUrl?: string;
+}
+
+export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
+  // Use the provided imageUrl or fallback to the standard app logo placeholder
+  const [finalImageUrl, setFinalImageUrl] = useState<string>('');
   
   const gridSize = 4; // 4x4 grid
   const pieces = Array.from({ length: gridSize * gridSize }, (_, i) => i);
@@ -14,6 +18,10 @@ export function PuzzleLoader() {
   const [offsets, setOffsets] = useState<{x: number, y: number, r: number}[]>([]);
 
   useEffect(() => {
+    // Resolve logo URL on mount to avoid SSR issues
+    setFinalImageUrl(getSafeLogoUrl(imageUrl));
+
+    // Generate random offsets only once on mount to avoid hydration mismatches
     const initialOffsets = pieces.map(() => ({
       x: (Math.random() - 0.5) * 400,
       y: (Math.random() - 0.5) * 400,
@@ -22,13 +30,14 @@ export function PuzzleLoader() {
     
     setOffsets(initialOffsets);
     
+    // Small delay to allow initial render before starting animation
     const timer = setTimeout(() => {
       setMounted(true);
     }, 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [imageUrl]);
 
-  if (offsets.length === 0) {
+  if (offsets.length === 0 || !finalImageUrl) {
     return <div className="fixed inset-0 z-[100] bg-background" />;
   }
 
@@ -56,7 +65,7 @@ export function PuzzleLoader() {
                 <div
                   className="absolute w-[400%] h-[400%]"
                   style={{
-                    backgroundImage: `url(${imageUrl})`,
+                    backgroundImage: `url(${finalImageUrl})`,
                     backgroundSize: '100% 100%',
                     left: `-${col * 100}%`,
                     top: `-${row * 100}%`,

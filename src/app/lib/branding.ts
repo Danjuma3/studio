@@ -1,3 +1,4 @@
+
 import { PlaceHolderImages } from './placeholder-images';
 
 /**
@@ -9,7 +10,9 @@ export function getSafeLogoUrl(url?: string): string {
   const fallback = 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
   
   if (!url || typeof url !== 'string' || url.trim().length === 0) {
-    const placeholder = PlaceHolderImages.find(img => img.id === 'app-logo');
+    // Safety check: ensure PlaceHolderImages is treated as an array
+    const images = Array.isArray(PlaceHolderImages) ? PlaceHolderImages : [];
+    const placeholder = images.find(img => img.id === 'app-logo');
     return placeholder?.imageUrl || fallback;
   }
   
