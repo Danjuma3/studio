@@ -27,7 +27,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 {currentLogoUrl ? (
                   <Image 
                     src={currentLogoUrl} 
-                    alt="Kitchen Prof" 
+                    alt="Kitchen Profit" 
                     fill 
                     className="object-cover"
                     priority
@@ -37,7 +37,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <ChefHat className="text-primary w-5 h-5" />
                 )}
               </div>
-              <span className="font-headline font-bold text-primary">Kitchen Prof</span>
+              <span className="font-headline font-bold text-primary">Kitchen Profit</span>
             </div>
             <div className="flex-1 hidden md:block">
             </div>

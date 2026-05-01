@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -27,7 +28,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
     }));
     setOffsets(initialOffsets);
 
-    // Sequence the assembly: 1 piece every 1.5 seconds
+    // Sequence the assembly: 1 piece every 1.4 seconds
     const interval = setInterval(() => {
       setAssembledCount((prev) => {
         if (prev >= 4) {
@@ -100,7 +101,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
       <div className="text-center space-y-6">
         <div className="space-y-1">
           <h2 className="text-5xl font-headline font-black text-primary tracking-tighter animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            KITCHEN PROF
+            KITCHEN PROFIT
           </h2>
           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.5em] opacity-40">
             Master Your Margins

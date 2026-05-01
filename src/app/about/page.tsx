@@ -11,7 +11,7 @@ export default function AboutPage() {
         <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-3xl text-white mb-4 shadow-xl">
           <ChefHat size={48} />
         </div>
-        <h1 className="text-4xl font-headline font-bold">About Kitchen Prof</h1>
+        <h1 className="text-4xl font-headline font-bold">About Kitchen Profit</h1>
         <p className="text-xl text-muted-foreground leading-relaxed">
           The ultimate intelligent companion for Lagos restaurant owners to master their margins and dominate the market.
         </p>
@@ -24,7 +24,7 @@ export default function AboutPage() {
             Our Mission
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            In the fast-paced and volatile food market of Lagos, pricing errors can destroy a restaurant in weeks. Kitchen Prof was built to bridge the gap between the chaos of Mile 12 market prices and your kitchen's profitability. We empower chefs and managers with data-driven clarity.
+            In the fast-paced and volatile food market of Lagos, pricing errors can destroy a restaurant in weeks. Kitchen Profit was built to bridge the gap between the chaos of Mile 12 market prices and your kitchen's profitability. We empower chefs and managers with data-driven clarity.
           </p>
         </div>
         <div className="space-y-4">
@@ -33,7 +33,7 @@ export default function AboutPage() {
             Why It Matters
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            Most restaurants lose 15-20% of their potential profit through unoptimized procurement and inaccurate costing. Kitchen Prof automates the math so you can focus on the food, ensuring your business remains "Live & Profitable" every single day.
+            Most restaurants lose 15-20% of their potential profit through unoptimized procurement and inaccurate costing. Kitchen Profit automates the math so you can focus on the food, ensuring your business remains "Live & Profitable" every single day.
           </p>
         </div>
       </div>

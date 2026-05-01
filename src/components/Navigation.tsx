@@ -78,7 +78,7 @@ export function AppNavigation() {
             {currentLogoUrl ? (
               <Image
                 src={currentLogoUrl}
-                alt="Kitchen Prof Logo"
+                alt="Kitchen Profit Logo"
                 fill
                 className="object-cover"
                 unoptimized
@@ -88,7 +88,7 @@ export function AppNavigation() {
             )}
           </div>
           <div>
-            <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Prof</h1>
+            <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Profit</h1>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-tighter font-semibold">food cost control/Analysis</p>
           </div>
         </Link>
@@ -189,7 +189,7 @@ export function AppNavigation() {
           </SidebarMenuButton>
         )}
         <div className="text-[10px] text-muted-foreground text-center pt-2">
-          &copy; {new Date().getFullYear()} Kitchen Prof Lagos
+          &copy; {new Date().getFullYear()} Kitchen Profit Lagos
         </div>
       </SidebarFooter>
       <SidebarRail />
