@@ -126,48 +126,24 @@ export default function MarketUpdatePage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold">Oyingbo Market</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>Avg Change</span>
-                    <span className="text-green-600">-2.1%</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold">Oyingbo Market</span>
+                  <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold">Makoko (Seafood)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-blue-50 text-blue-700 border-blue-200">High Supply</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>Price Drop</span>
-                    <span className="text-blue-600">-12%</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold">Makoko (Seafood)</span>
+                  <Badge variant="outline" className="text-[10px] h-5 bg-blue-50 text-blue-700 border-blue-200">High Supply</Badge>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold">Oko-Oba (Beef/Meat)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Rising</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>Market Alert</span>
-                    <span className="text-amber-600">Restricted Supply</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold">Oko-Oba (Beef/Meat)</span>
+                  <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Rising</Badge>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold">Dei-Dei (Abuja Hub)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Steady</Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>Logistics Info</span>
-                    <span className="text-muted-foreground">Routes Open</span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold">Dei-Dei (Abuja Hub)</span>
+                  <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Steady</Badge>
                 </div>
               </div>
 
