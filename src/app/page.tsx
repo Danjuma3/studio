@@ -55,10 +55,9 @@ export default function Dashboard() {
           <p className="text-muted-foreground text-lg">Managing margins for food business</p>
         </div>
         <div className="text-right">
-          <p className="text-xs font-bold text-primary uppercase tracking-widest">Regional Hub Status</p>
           <div className="flex items-center gap-2 text-green-600 font-bold">
             <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-            SYNCHRONIZED & ACTIVE
+            LIVE & PROFITABLE
           </div>
         </div>
       </div>
@@ -79,7 +78,7 @@ export default function Dashboard() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-0.5">
               <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">
-                {systemAlert.type === 'market' ? 'Global Market Intelligence' : 'System Notice'}
+                {systemAlert.type === 'market' ? 'Market Intelligence' : 'System Notice'}
               </div>
               <Badge variant="outline" className="text-[8px] h-4 py-0 font-bold">LATEST</Badge>
             </div>
@@ -89,7 +88,7 @@ export default function Dashboard() {
           </div>
           {mounted && (
             <div className="hidden md:block text-right pr-4">
-              <div className="text-[10px] text-muted-foreground font-medium">Updated</div>
+              <div className="text-[10px] text-muted-foreground font-medium">Synced</div>
               <div className="text-[10px] font-bold">{new Date(systemAlert.updatedAt).toLocaleTimeString()}</div>
             </div>
           )}
@@ -105,7 +104,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-4">
               <div className="text-4xl font-black">{ingredients.length - lowStockCount} / {ingredients.length}</div>
-              <p className="text-xs text-muted-foreground mt-1 font-medium">Optimal regional inventory levels</p>
+              <p className="text-xs text-muted-foreground mt-1 font-medium">Optimal inventory levels</p>
               {lowStockCount > 0 && (
                 <div className="mt-4 flex items-center gap-1 text-xs text-destructive font-bold bg-destructive/5 p-2 rounded-lg">
                   <AlertCircle size={14} /> {lowStockCount} items need restocking
@@ -123,7 +122,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-4">
               <div className="text-4xl font-black">{recipes.length - highCostRecipes} / {recipes.length}</div>
-              <p className="text-xs text-muted-foreground mt-1 font-medium">Global target margin compliance</p>
+              <p className="text-xs text-muted-foreground mt-1 font-medium">Target margin compliance</p>
               {highCostRecipes > 0 && (
                 <div className="mt-4 flex items-center gap-1 text-xs text-amber-500 font-bold bg-amber-50 p-2 rounded-lg">
                   <TrendingUp size={14} /> {highCostRecipes} recipes need price review
@@ -141,7 +140,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pt-4">
               <div className="text-4xl font-black">₦{totalPotentialProfit.toLocaleString()}</div>
-              <p className="text-xs opacity-70 mt-1 font-medium">Estimated total potential</p>
+              <p className="text-xs opacity-70 mt-1 font-medium">Estimated potential</p>
               <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground bg-black/10 p-2 rounded-lg">
                 <TrendingDown size={14} /> AI optimization suggestions ready
               </div>
@@ -150,35 +149,30 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* High-Tech Scrabble-Style Ad Card */}
       <div className="relative p-1 lg:p-4 group">
         <div className="grid grid-cols-2 grid-rows-2 gap-4 h-full min-h-[400px]">
-          {/* Quadrant 1: Top Left */}
           <div className="bg-white/40 backdrop-blur-md rounded-3xl p-8 border border-white/60 shadow-xl flex flex-col justify-end transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 duration-500">
             <Globe className="text-primary mb-4" size={40} />
             <h3 className="text-xl font-headline font-bold">Global Intelligence</h3>
             <p className="text-sm text-muted-foreground mt-2">Sync with international pricing nodes.</p>
           </div>
-          {/* Quadrant 2: Top Right */}
           <div className="bg-primary/5 rounded-3xl p-8 border border-primary/10 shadow-lg flex flex-col justify-start transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 duration-500">
             <div className="flex-1" />
             <Activity className="text-primary mb-4" size={40} />
             <h3 className="text-xl font-headline font-bold">Live Pulse</h3>
             <p className="text-sm text-muted-foreground mt-2">Real-time market volatility tracking.</p>
           </div>
-          {/* Quadrant 3: Bottom Left */}
           <div className="bg-accent/5 rounded-3xl p-8 border border-accent/10 shadow-lg flex flex-col justify-end transition-transform group-hover:translate-y-1 group-hover:-translate-x-1 duration-500">
             <Layers className="text-primary mb-4" size={40} />
             <h3 className="text-xl font-headline font-bold">Margin Protection</h3>
             <p className="text-sm text-muted-foreground mt-2">AI-driven food cost containment.</p>
           </div>
-          {/* Quadrant 4: Bottom Right (Main Action) */}
           <div className="bg-primary text-primary-foreground rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center transition-transform group-hover:translate-y-1 group-hover:translate-x-1 duration-500">
             <h2 className="text-2xl font-headline font-black uppercase tracking-tighter leading-none mb-4">The Golden Rule</h2>
             <p className="text-xs opacity-90 mb-6 font-medium">Protect your cost percentage across any market.</p>
             <Button asChild size="lg" variant="secondary" className="w-full rounded-2xl h-12 shadow-xl hover:scale-105 transition-all">
               <Link href="/market" className="flex items-center">
-                Detect Hub <ArrowRight size={18} className="ml-2" />
+                Get Intelligence <ArrowRight size={18} className="ml-2" />
               </Link>
             </Button>
           </div>

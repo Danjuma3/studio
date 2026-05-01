@@ -15,6 +15,7 @@ interface BrandedLogoProps {
 /**
  * Premium Branded Logo component that handles the "Puzzle" aesthetic
  * with permanent obvious white lines and high-end frosted glass effect.
+ * Sit under a semi-transparent white background as requested.
  */
 export function BrandedLogo({ 
   url, 
@@ -24,7 +25,7 @@ export function BrandedLogo({
 }: BrandedLogoProps) {
   if (!url) {
     return (
-      <div className={cn("flex items-center justify-center bg-white/40 backdrop-blur-md rounded-xl border border-white/50 shadow-sm", className)} style={{ width: size, height: size }}>
+      <div className={cn("flex items-center justify-center bg-white/60 backdrop-blur-md rounded-xl border border-white/80 shadow-sm", className)} style={{ width: size, height: size }}>
         <ChefHat size={size * 0.6} className="text-primary opacity-60" />
       </div>
     );
@@ -33,13 +34,13 @@ export function BrandedLogo({
   return (
     <div 
       className={cn(
-        "relative overflow-hidden bg-white/40 backdrop-blur-md border border-white/50 shadow-sm", 
+        "relative overflow-hidden bg-white/60 backdrop-blur-md border border-white/80 shadow-sm", 
         className
       )}
       style={{ width: size, height: size }}
     >
       {showPuzzleLines ? (
-        <div className="grid grid-cols-2 grid-rows-2 w-full h-full p-[1px] bg-white">
+        <div className="grid grid-cols-2 grid-rows-2 w-full h-full p-[2px] bg-white">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="relative overflow-hidden border-[1px] border-white">
               <div
@@ -51,6 +52,8 @@ export function BrandedLogo({
                   top: `-${Math.floor(i / 2) * 100}%`,
                 }}
               />
+              {/* Added a white fade overlay to give it that "under white background" look */}
+              <div className="absolute inset-0 bg-white/10" />
             </div>
           ))}
         </div>
@@ -58,7 +61,9 @@ export function BrandedLogo({
         <div 
           className="w-full h-full bg-cover bg-center" 
           style={{ backgroundImage: `url(${url})` }} 
-        />
+        >
+          <div className="absolute inset-0 bg-white/10" />
+        </div>
       )}
     </div>
   );

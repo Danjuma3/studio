@@ -37,7 +37,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
         }
         return prev + 1;
       });
-    }, 1100); // Distributed over 5s roughly
+    }, 1100); 
 
     return () => clearInterval(interval);
   }, [imageUrl]);
@@ -50,14 +50,13 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
       
       {/* Premium Logo Container */}
-      <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mb-16 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden bg-white border border-white/20">
+      <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mb-16 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden bg-white/60 backdrop-blur-md border border-white/40">
         {finalImageUrl ? (
           <div className="grid grid-cols-2 grid-rows-2 w-full h-full relative p-[2px] bg-white">
             {[0, 1, 2, 3].map((i) => {
               const row = Math.floor(i / gridSize);
               const col = i % gridSize;
               
-              // Find where this piece is in our custom sequential order
               const sequencePos = pieces.indexOf(i) + 1;
               const isAssembled = assembledCount >= sequencePos;
               const offset = offsets[i];
@@ -84,8 +83,8 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
                       top: `-${row * 100}%`,
                     }}
                   />
-                  {/* Obvious permanent white separation */}
-                  <div className="absolute inset-0 border-[1px] border-white shadow-[inset_0_0_4px_rgba(255,255,255,0.8)]" />
+                  {/* Permanent obvious white separation and fade overlay */}
+                  <div className="absolute inset-0 bg-white/10 border-[1px] border-white shadow-[inset_0_0_8px_rgba(255,255,255,0.8)]" />
                 </div>
               );
             })}
@@ -108,7 +107,6 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
           </p>
         </div>
         
-        {/* Sleek Progress Bar */}
         <div className="flex flex-col items-center gap-4">
           <div className="w-64 h-1 bg-muted rounded-full overflow-hidden">
             <div 
@@ -122,7 +120,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
             <p className="text-[9px] text-primary font-black uppercase tracking-[0.3em] opacity-70">
-              {assembledCount < 4 ? `Calibrating Hub ${assembledCount + 1}` : 'Synchronized'}
+              {assembledCount < 4 ? `Synchronizing Intelligence` : 'Platform Ready'}
             </p>
           </div>
         </div>
