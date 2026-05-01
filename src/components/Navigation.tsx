@@ -71,7 +71,7 @@ export function AppNavigation() {
     systemPayment?.appLogoUrl,
     placeholderLogo?.imageUrl,
     'https://picsum.photos/seed/kitchen-prof-logo/512/512'
-  ].find(url => typeof url === 'string' && url.trim() !== '') || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
+  ].find(url => typeof url === 'string' && url.trim().length > 0) || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
 
   return (
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
@@ -84,6 +84,7 @@ export function AppNavigation() {
               fill 
               className="object-cover"
               data-ai-hint={placeholderLogo?.imageHint}
+              unoptimized={currentLogoUrl.startsWith('data:')}
             />
           </div>
           <div>
