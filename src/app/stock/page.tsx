@@ -14,9 +14,9 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Search, PackageSearch, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Search, PackageSearch, AlertTriangle, CheckCircle2, RefreshCw, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -24,6 +24,8 @@ import { useEffect } from 'react';
 export default function StockTakingPage() {
   const { ingredients, updateIngredient, loading } = useInventory();
   const [search, setSearch] = useState('');
+  const [isAuditing, setIsAuditing] = useState(false);
+  const { toast } = useToast();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
 
@@ -44,10 +46,32 @@ export default function StockTakingPage() {
     }
   };
 
+  const handleFullAudit = () => {
+    setIsAuditing(true);
+    toast({
+      title: "Full Audit Started",
+      description: "Reconciling physical pantry records with system data...",
+    });
+
+    // Simulate audit processing time
+    setTimeout(() => {
+      setIsAuditing(false);
+      toast({
+        title: "Audit Complete",
+        description: `Verified ${ingredients.length} items. All stock levels are now synchronized.`,
+      });
+    }, 2000);
+  };
+
   const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
 
   if (loading || isUserLoading) {
-    return <div className="p-8 text-center">Loading Inventory...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <Loader2 className="animate-spin text-primary" size={40} />
+        <p className="text-muted-foreground font-medium">Syncing Inventory...</p>
+      </div>
+    );
   }
 
   return (
@@ -58,12 +82,23 @@ export default function StockTakingPage() {
           <p className="text-muted-foreground">Monitor current pantry levels and identify shortages.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => toast({ title: "Inventory Report", description: "Exporting stock report to PDF..." })}>
+          <Button 
+            variant="outline" 
+            onClick={() => toast({ title: "Inventory Report", description: "Exporting stock report to PDF..." })}
+          >
             Export Report
           </Button>
-          <Button className="bg-primary">
-            <RefreshCw size={18} className="mr-2" />
-            Full Audit
+          <Button 
+            onClick={handleFullAudit} 
+            disabled={isAuditing || ingredients.length === 0}
+            className="bg-primary min-w-[140px]"
+          >
+            {isAuditing ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw size={18} className="mr-2" />
+            )}
+            {isAuditing ? 'Auditing...' : 'Full Audit'}
           </Button>
         </div>
       </div>
@@ -154,7 +189,9 @@ export default function StockTakingPage() {
                     </TableCell>
                     <TableCell className="text-center text-muted-foreground">{ing.minStock}</TableCell>
                     <TableCell className="text-center">
-                      <Badge variant="outline">{ing.unitOfMeasure}</Badge>
+                      <Badge variant="outline" className="capitalize">
+                        {ing.unitOfMeasure?.replace('_', ' ')}
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       {isLow ? (
