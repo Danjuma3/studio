@@ -15,7 +15,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { systemPayment } = useInventory();
   const logoPlaceholder = PlaceHolderImages.find(img => img.id === 'app-logo');
   
-  // Robust URL fallback logic
+  // Robust URL fallback logic to prevent 'Failed to construct URL' error
   const currentLogoUrl = [
     systemPayment?.appLogoUrl,
     logoPlaceholder?.imageUrl,
@@ -31,12 +31,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1 flex items-center md:hidden">
               <div className="relative w-8 h-8 rounded-lg overflow-hidden mr-2">
-                <Image 
-                  src={currentLogoUrl} 
-                  alt="Kitchen Prof" 
-                  fill 
-                  className="object-cover"
-                />
+                {currentLogoUrl && (
+                  <Image 
+                    src={currentLogoUrl} 
+                    alt="Kitchen Prof" 
+                    fill 
+                    className="object-cover"
+                    priority
+                  />
+                )}
               </div>
               <span className="font-headline font-bold text-primary">Kitchen Prof</span>
             </div>
