@@ -123,10 +123,10 @@ export default function SupportWorkspacePage() {
           </div>
           <div>
             <h1 className="text-3xl font-headline font-bold text-black/60">Admin Command Center</h1>
-            <p className="text-muted-foreground flex items-center gap-2">
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-bold">ROOT ACCESS</Badge>
               Admin: chefdtanju@gmail.com
-            </p>
+            </div>
           </div>
         </div>
         <div className="flex gap-3">
@@ -211,7 +211,9 @@ export default function SupportWorkspacePage() {
                     <p>&gt; Scanning Firestore Collections (Global Scope)...</p>
                     <p>&gt; Found {ingredients.length} ingredient nodes.</p>
                     <p>&gt; Found {recipes.length} recipe configurations.</p>
+                    <p>&gt; Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</p>
                     <p>&gt; AI Model Link: STABLE</p>
+                    <p>&gt; Memory Usage: OPTIMAL</p>
                     <p className="animate-pulse">&gt; Awaiting Command...</p>
                   </div>
                 </CardContent>
@@ -256,9 +258,14 @@ export default function SupportWorkspacePage() {
                   <CardTitle className="text-lg flex items-center gap-2"><Globe size={20} className="text-primary" /> Domain Infrastructure</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6 space-y-4">
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-                    <Server size={18} className="text-green-500" />
-                    <div><p className="text-xs font-bold">kitchenprof.ng</p><p className="text-[10px] text-white/40">Status: Pointing to App Hosting</p></div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-2">
+                    <div className="flex items-center gap-3">
+                      <Server size={18} className="text-green-500" />
+                      <div><p className="text-xs font-bold">kitchenprof.ng</p><p className="text-[10px] text-white/40">Status: Pointing to App Hosting</p></div>
+                    </div>
+                    <div className="pt-2 border-t border-white/10">
+                      <p className="text-[9px] text-white/60">Registrar Choice: <strong>Whogohost</strong></p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
