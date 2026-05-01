@@ -19,7 +19,7 @@ export default function CostPercentagePage() {
     return recipe.items.reduce((sum, item) => {
       const ingredient = ingredients.find(ing => ing.id === item.ingredientId);
       if (!ingredient) return sum;
-      const price = strategy === 'bulk' ? (ingredient.bulkUnitPrice || ingredient.bulkPrice || 0) : (ingredient.retailUnitPrice || ingredient.retailPrice || 0);
+      const price = strategy === 'bulk' ? (ingredient.bulkUnitPrice || 0) : (ingredient.retailUnitPrice || 0);
       return sum + (price * item.quantity);
     }, 0);
   };
@@ -31,7 +31,6 @@ export default function CostPercentagePage() {
     }
   };
 
-  // Restrict access for Free Tier
   if (subscription.plan === 'free') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8 animate-in fade-in duration-500">
@@ -160,11 +159,11 @@ export default function CostPercentagePage() {
                     {recipe.items.slice(0, 3).map((item, idx) => {
                       const ing = ingredients.find(i => i.id === item.ingredientId);
                       if (!ing) return null;
-                      const itemCost = (strategy === 'bulk' ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : (ing.retailUnitPrice || ing.retailPrice || 0)) * item.quantity;
+                      const itemCost = (strategy === 'bulk' ? (ing.bulkUnitPrice || 0) : (ing.retailUnitPrice || 0)) * item.quantity;
                       const itemPercentage = (itemCost / (cost || 1)) * 100;
                       return (
                         <div key={idx} className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">{ing.name} ({item.quantity}{ing.unitOfMeasure?.replace('_', ' ')})</span>
+                          <span className="text-muted-foreground">{ing.name} ({item.quantity}{ing.unitOfMeasure})</span>
                           <div className="flex gap-4">
                             <span className="tabular-nums">₦{itemCost.toLocaleString()}</span>
                             <span className="font-bold text-primary w-10 text-right">{itemPercentage.toFixed(0)}%</span>

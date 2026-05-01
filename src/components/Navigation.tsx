@@ -177,9 +177,9 @@ export function AppNavigation() {
                {user.email?.[0].toUpperCase() || 'U'}
              </div>
              <div className="flex-1 overflow-hidden">
-               <p className="text-[10px] font-bold truncate">{user.email}</p>
-               <button onClick={handleLogout} className="text-[9px] text-black/60 hover:underline flex items-center gap-1">
-                 <LogOut size={10} /> Logout
+               <p className="text-[10px] font-bold truncate text-black/60">{user.email}</p>
+               <button onClick={handleLogout} className="text-[9px] text-black/60 hover:underline flex items-center gap-1 font-bold">
+                 <LogOut size={10} className="text-black/60" /> LOGOUT
                </button>
              </div>
           </div>
