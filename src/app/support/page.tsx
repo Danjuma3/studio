@@ -78,7 +78,7 @@ export default function SupportWorkspacePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Increased to 10MB to accommodate high resolution marketing photos
+      // Standardized to 10MB to match server limits
       if (file.size > 10 * 1024 * 1024) {
         toast({ 
           variant: "destructive", 

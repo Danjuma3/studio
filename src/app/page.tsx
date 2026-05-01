@@ -77,19 +77,19 @@ export default function Dashboard() {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-0.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">
+              <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">
                 {systemAlert.type === 'market' ? 'Global Market Intelligence' : 'System Notice'}
-              </p>
+              </div>
               <Badge variant="outline" className="text-[8px] h-4 py-0 font-bold">LATEST</Badge>
             </div>
-            <p className="text-sm font-bold leading-tight">
+            <div className="text-sm font-bold leading-tight">
               {systemAlert.message}
-            </p>
+            </div>
           </div>
           {mounted && (
             <div className="hidden md:block text-right pr-4">
-              <p className="text-[10px] text-muted-foreground font-medium">Updated</p>
-              <p className="text-[10px] font-bold">{new Date(systemAlert.updatedAt).toLocaleTimeString()}</p>
+              <div className="text-[10px] text-muted-foreground font-medium">Updated</div>
+              <div className="text-[10px] font-bold">{new Date(systemAlert.updatedAt).toLocaleTimeString()}</div>
             </div>
           )}
         </div>

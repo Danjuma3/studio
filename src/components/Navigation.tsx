@@ -88,8 +88,8 @@ export function AppNavigation() {
             )}
           </div>
           <div className="flex-1 overflow-hidden">
-            <h1 className="font-brand font-black text-sm text-primary leading-[1.1] tracking-tighter truncate uppercase">Kitchen Profit Professional</h1>
-            <p className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-tighter font-semibold">Managing margins for food business</p>
+            <div className="font-brand font-black text-sm text-primary leading-[1.1] tracking-tighter truncate uppercase">Kitchen Profit Professional</div>
+            <div className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-tighter font-semibold">Managing margins for food business</div>
           </div>
         </Link>
         {isAdmin && (
@@ -104,7 +104,7 @@ export function AppNavigation() {
       <SidebarContent>
         <SidebarMenu className="px-2">
           <div className="px-3 mb-2">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Main Operations</p>
+            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Main Operations</div>
           </div>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.name}>
@@ -147,7 +147,7 @@ export function AppNavigation() {
           )}
 
           <div className="px-3 mt-6 mb-2 border-t pt-4">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Legal & Info</p>
+            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Legal & Info</div>
           </div>
           {secondaryNav.map((item) => (
             <SidebarMenuItem key={item.name}>
@@ -177,7 +177,7 @@ export function AppNavigation() {
                {user.email?.[0].toUpperCase() || 'U'}
              </div>
              <div className="flex-1 overflow-hidden">
-               <p className="text-[10px] font-bold truncate text-black/60">{user.email}</p>
+               <div className="text-[10px] font-bold truncate text-black/60">{user.email}</div>
                <button onClick={handleLogout} className="text-[9px] text-black/60 hover:underline flex items-center gap-1 font-bold">
                  <LogOut size={10} className="text-black/60" /> LOGOUT
                </button>

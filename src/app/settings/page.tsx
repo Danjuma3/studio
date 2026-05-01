@@ -227,9 +227,9 @@ export default function SettingsPage() {
                 <CardContent className="pt-6 space-y-6">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                      <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                         <ImageIcon size={16} /> App Branding
-                      </h3>
+                      </div>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -276,9 +276,9 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="space-y-4 border-t pt-6">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                       <Globe size={16} /> Global Pricing & Keys
-                    </h3>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Regional Price (₦)</Label><Input type="number" value={adminConfig.proPrice} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value) || 0})}/></div>
                       <div className="space-y-2"><Label>Global Price ($)</Label><Input type="number" step="0.01" value={adminConfig.proPriceUSD} onChange={(e) => setAdminConfig({...adminConfig, proPriceUSD: parseFloat(e.target.value) || 0})}/></div>
@@ -288,9 +288,9 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="space-y-4 border-t pt-6">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                       <Building2 size={16} /> Bank Details (Regional)
-                    </h3>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Bank Name</Label><Input value={adminConfig.bankName} onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}/></div>
                       <div className="space-y-2"><Label>Account Number</Label><Input value={adminConfig.accountNumber} onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}/></div>
@@ -377,10 +377,10 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
-                    <h4 className="font-bold text-lg">Identity Control</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <div className="font-bold text-lg">Identity Control</div>
+                    <div className="text-sm text-muted-foreground leading-relaxed">
                       Branding is managed centrally by the platform administrator to ensure a consistent global experience.
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -405,7 +405,7 @@ export default function SettingsPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
                 <div className="space-y-4 flex-1">
-                  <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
+                  <div className="font-bold text-lg capitalize">{subscription.plan} Member</div>
                   <div className="text-sm text-muted-foreground">
                     Plan status: <span className="font-medium text-foreground">Active ({location.country} Hub)</span>
                   </div>
@@ -433,7 +433,7 @@ export default function SettingsPage() {
                         
                         <div className="space-y-6 py-4">
                           <div className="space-y-3">
-                            <p className="text-sm text-muted-foreground">Select your preferred payment method for the <strong>{location.country}</strong> hub.</p>
+                            <div className="text-sm text-muted-foreground">Select your preferred payment method for the <strong>{location.country}</strong> hub.</div>
                             
                             {isAfricanRegion ? (
                               <div className="space-y-3">
@@ -500,9 +500,9 @@ export default function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm opacity-90 leading-relaxed">
+              <div className="text-sm opacity-90 leading-relaxed">
                 Payments are processed through regional secure nodes (Paystack/Stripe). Kitchen Profit International does not store sensitive card data.
-              </p>
+              </div>
             </CardContent>
           </Card>
         </div>
