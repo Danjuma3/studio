@@ -19,7 +19,7 @@ export default function CostPercentagePage() {
     return recipe.items.reduce((sum, item) => {
       const ingredient = ingredients.find(ing => ing.id === item.ingredientId);
       if (!ingredient) return sum;
-      const price = strategy === 'bulk' ? ingredient.bulkPrice : ingredient.retailPrice;
+      const price = strategy === 'bulk' ? (ingredient.bulkUnitPrice || ingredient.bulkPrice || 0) : (ingredient.retailUnitPrice || ingredient.retailPrice || 0);
       return sum + (price * item.quantity);
     }, 0);
   };
@@ -53,7 +53,7 @@ export default function CostPercentagePage() {
           <CardHeader className="text-center">
             <CardTitle className="text-xl flex items-center justify-center gap-2">
               <Crown className="text-primary" size={24} />
-              Kitchen Prof Pro
+              Kitchen Profit Pro
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -160,11 +160,11 @@ export default function CostPercentagePage() {
                     {recipe.items.slice(0, 3).map((item, idx) => {
                       const ing = ingredients.find(i => i.id === item.ingredientId);
                       if (!ing) return null;
-                      const itemCost = (strategy === 'bulk' ? ing.bulkPrice : ing.retailPrice) * item.quantity;
+                      const itemCost = (strategy === 'bulk' ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : (ing.retailUnitPrice || ing.retailPrice || 0)) * item.quantity;
                       const itemPercentage = (itemCost / (cost || 1)) * 100;
                       return (
                         <div key={idx} className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">{ing.name} ({item.quantity}{ing.unit})</span>
+                          <span className="text-muted-foreground">{ing.name} ({item.quantity}{ing.unitOfMeasure?.replace('_', ' ')})</span>
                           <div className="flex gap-4">
                             <span className="tabular-nums">₦{itemCost.toLocaleString()}</span>
                             <span className="font-bold text-primary w-10 text-right">{itemPercentage.toFixed(0)}%</span>
@@ -184,8 +184,8 @@ export default function CostPercentagePage() {
                   </Button>
                 </CardFooter>
               </Card>
-            )
-          )
+            );
+          })
         )}
       </div>
     </div>
