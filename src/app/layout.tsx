@@ -37,14 +37,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <ChefHat className="text-primary w-5 h-5" />
                 )}
               </div>
-              <span className="font-headline font-bold text-primary">Kitchen Profit</span>
+              <span className="font-headline font-bold text-primary text-sm truncate">Kitchen Profit Professional</span>
             </div>
             <div className="flex-1 hidden md:block">
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold">Buchi's Kitchen</p>
-                <p className="text-xs text-primary font-medium tracking-wide">@buchi_kitchen_lagos</p>
+                <p className="text-xs text-primary font-medium tracking-wide">Managing Margins</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-white shadow-md border-2 border-white">
                 BK
