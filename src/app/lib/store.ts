@@ -14,17 +14,17 @@ import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, Subscriptio
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   bankName: "GTBank",
   accountNumber: "0123456789",
-  accountName: "Kitchen Prof Enterprise",
+  accountName: "Kitchen Profit Enterprise",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   proPrice: 11000,
   appLogoUrl: ""
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {
-  message: "Welcome to Kitchen Prof! Update your prices for accuracy.",
-  type: "info",
+  message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROFIT! Start mastering your margins today.",
+  type: "market",
   active: true,
-  updatedAt: "2024-01-01T00:00:00.000Z"
+  updatedAt: new Date().toISOString()
 };
 
 export function useInventory() {

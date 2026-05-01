@@ -22,7 +22,8 @@ import {
   MessageSquare,
   Globe,
   Mail,
-  Server
+  Server,
+  PartyPopper
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -30,7 +31,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 export default function SupportWorkspacePage() {
   const { user } = useUser();
-  const { ingredients, recipes, issues, reportIssue } = useInventory();
+  const { ingredients, recipes, issues, reportIssue, updateSystemAlert } = useInventory();
   const [bugTitle, setBugTitle] = useState('');
   const [bugDesc, setBugDesc] = useState('');
 
@@ -67,6 +68,18 @@ export default function SupportWorkspacePage() {
     });
   };
 
+  const handleGrandOpeningBroadcast = () => {
+    updateSystemAlert({
+      message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROFIT! Start mastering your margins today.",
+      type: "market",
+      active: true
+    });
+    toast({
+      title: "Grand Opening Broadcasted!",
+      description: "The launch message is now visible to all users.",
+    });
+  };
+
   const handleSubmitBug = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bugTitle || !bugDesc) return;
@@ -97,18 +110,19 @@ export default function SupportWorkspacePage() {
         <div className="flex gap-3">
           <Button
             variant="outline"
+            onClick={handleGrandOpeningBroadcast}
+            className="rounded-xl h-12 px-6 border-primary text-primary hover:bg-primary/5"
+          >
+            <PartyPopper className="mr-2 h-4 w-4" />
+            Launch Grand Opening
+          </Button>
+          <Button
+            variant="outline"
             onClick={handleCopyDiagnostics}
             className="rounded-xl h-12 px-6 border-dashed"
           >
             <Copy className="mr-2 h-4 w-4" />
             Copy Health Data
-          </Button>
-          <Button
-            className="bg-primary text-white rounded-xl h-12 px-8 shadow-xl"
-            onClick={() => toast({ title: "System Refresh", description: "Refreshing all global data nodes..." })}
-          >
-            <Activity className="mr-2 h-4 w-4" />
-            Sync All Hubs
           </Button>
         </div>
       </div>
