@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from 'react';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { 
@@ -8,11 +9,12 @@ import {
   deleteDocumentNonBlocking, 
   setDocumentNonBlocking 
 } from '@/firebase/non-blocking-updates';
-import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan } from './types';
 
 export function useInventory() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
+  const [currentPlan, setCurrentPlan] = useState<UserPlan>('free');
 
   // Ingredients Collection
   const ingredientsQuery = useMemoFirebase(() => {
@@ -129,13 +131,17 @@ export function useInventory() {
     });
   };
 
+  const upgradePlan = (plan: UserPlan) => {
+    setCurrentPlan(plan);
+  };
+
   return {
     ingredients: ingredients || [],
     recipes: recipes || [],
     staff: staff || [],
     tasks: tasks || [],
     paymentMethods: paymentMethods || [],
-    subscription: { plan: 'free', status: 'active', nextBillingDate: new Date().toISOString() } as SubscriptionInfo,
+    subscription: { plan: currentPlan, status: 'active', nextBillingDate: new Date().toISOString() } as SubscriptionInfo,
     loading: isUserLoading || isIngredientsLoading || isRecipesLoading,
     addIngredient,
     updateIngredient,
@@ -147,6 +153,6 @@ export function useInventory() {
     addPaymentMethod,
     deletePaymentMethod,
     setDefaultPaymentMethod,
-    upgradePlan: (plan: any) => {}, 
+    upgradePlan, 
   };
 }

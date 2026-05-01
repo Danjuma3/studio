@@ -18,10 +18,21 @@ export default function Dashboard() {
   const { ingredients, recipes } = useInventory();
 
   const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
+  
+  // Dynamic calculation for potential profit across all recipes
+  const totalPotentialProfit = recipes.reduce((acc, recipe) => {
+    const cost = recipe.items.reduce((sum, item) => {
+      const ing = ingredients.find(i => i.id === item.ingredientId);
+      const price = ing ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : 0;
+      return sum + (price * item.quantity);
+    }, 0);
+    return acc + Math.max(0, recipe.sellingPrice - cost);
+  }, 0);
+
   const highCostRecipes = recipes.filter(r => {
     const cost = r.items.reduce((sum, item) => {
       const ing = ingredients.find(i => i.id === item.ingredientId);
-      return sum + (ing ? (ing.bulkUnitPrice || 0) * item.quantity : 0);
+      return sum + (ing ? (ing.bulkUnitPrice || ing.bulkPrice || 0) * item.quantity : 0);
     }, 0);
     return r.sellingPrice > 0 && (cost / r.sellingPrice) > 0.35;
   }).length;
@@ -86,8 +97,8 @@ export default function Dashboard() {
               <TrendingUp className="h-5 w-5 opacity-80" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">₦{((recipes[0]?.sellingPrice || 0) * 0.65).toLocaleString()}</div>
-              <p className="text-xs opacity-70 mt-1 font-medium">Est. Profit per standard batch</p>
+              <div className="text-4xl font-black">₦{totalPotentialProfit.toLocaleString()}</div>
+              <p className="text-xs opacity-70 mt-1 font-medium">Est. Total Potential Profit</p>
               <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground bg-black/10 p-2 rounded-lg">
                 <TrendingDown size={14} /> AI optimization suggestions ready
               </div>
