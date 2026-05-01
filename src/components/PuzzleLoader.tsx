@@ -28,7 +28,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
     }));
     setOffsets(initialOffsets);
 
-    // Sequence the assembly: 1 piece every 1.4 seconds
+    // Sequence the assembly: Faster sequence for snappier feel
     const interval = setInterval(() => {
       setAssembledCount((prev) => {
         if (prev >= 4) {
@@ -37,7 +37,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
         }
         return prev + 1;
       });
-    }, 1400);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [imageUrl]);
@@ -65,7 +65,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
               return (
                 <div
                   key={i}
-                  className="relative overflow-hidden transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  className="relative overflow-hidden transition-all duration-[800ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
                   style={{
                     transform: isAssembled 
                       ? 'translate(0, 0) rotate(0) scale(1)' 
@@ -84,8 +84,8 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
                       top: `-${row * 100}%`,
                     }}
                   />
-                  {/* Quadrant Separation Glow */}
-                  <div className="absolute inset-0 border-[0.5px] border-black/5" />
+                  {/* Permanent Obvious Thin White Line Separation */}
+                  <div className="absolute inset-0 border-[0.5px] border-white/80 shadow-[inset_0_0_2px_rgba(255,255,255,0.5)]" />
                 </div>
               );
             })}

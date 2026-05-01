@@ -40,15 +40,15 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
     };
     fetchLogo();
 
-    // 3. Start the 7-second display timer
+    // 3. SNAPPY LOADING: Reduced forced display timer from 7s to 2.5s for better responsiveness
     const timer = setTimeout(() => {
       setIsInitializing(false);
-    }, 7000);
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Show the PuzzleLoader while initializing or waiting for the 7s timer
+  // Show the PuzzleLoader while initializing
   if (isInitializing || !firebaseServices) {
     return <PuzzleLoader imageUrl={puzzleImageUrl} />;
   }
