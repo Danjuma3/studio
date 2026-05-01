@@ -297,11 +297,11 @@ export default function SupportWorkspacePage() {
                         {selectedPhoto ? (
                           <img src={selectedPhoto} className="w-full h-full object-cover" alt="Reference" />
                         ) : (
-                          <>
+                          <div className="flex flex-col items-center justify-center">
                             <UploadCloud size={48} className="text-primary/20 mb-4" />
                             <div className="text-sm font-medium text-muted-foreground">Upload your face/picture</div>
                             <div className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 10MB</div>
-                          </>
+                          </div>
                         )}
                       </div>
                       <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
@@ -326,9 +326,13 @@ export default function SupportWorkspacePage() {
                       </div>
                       <Button onClick={handleGenerateVideo} disabled={isGeneratingVideo || !selectedPhoto} className="w-full h-12 bg-primary rounded-xl text-lg font-bold shadow-lg">
                         {isGeneratingVideo ? (
-                          <><Loader2 className="mr-2 animate-spin" /> Brewing Cinematic Magic...</>
+                          <div className="flex items-center justify-center">
+                            <Loader2 className="mr-2 animate-spin" /> Brewing Cinematic Magic...
+                          </div>
                         ) : (
-                          <><Sparkles className="mr-2" /> Generate Marketing Video</>
+                          <div className="flex items-center justify-center">
+                            <Sparkles className="mr-2" /> Generate Marketing Video
+                          </div>
                         )}
                       </Button>
                     </div>
@@ -368,7 +372,7 @@ export default function SupportWorkspacePage() {
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 flex gap-3">
                     <Sparkles className="text-amber-500 shrink-0" size={16} />
                     <div className="text-[10px] text-amber-800 leading-tight">
-                      <strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. High-res photos are handled up to 10MB.
+                      <div><strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. High-res photos are handled up to 10MB.</div>
                     </div>
                   </div>
                 </div>

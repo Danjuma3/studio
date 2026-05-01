@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A marketing video generation AI agent using Google Veo.
@@ -10,7 +11,6 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/google-genai';
-import { Readable } from 'stream';
 
 const MarketingVideoInputSchema = z.object({
   photoDataUri: z.string().describe("A photo of the user as a data URI (base64)."),
@@ -35,9 +35,9 @@ const marketingVideoFlow = ai.defineFlow(
   },
   async (input) => {
     const model = googleAI.model('veo-2.0-generate-001');
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
 
     // Remove data uri prefix to get raw base64 for the prompt
-    const base64Image = input.photoDataUri.split(',')[1];
     const mimeType = input.photoDataUri.split(';')[0].split(':')[1] || 'image/jpeg';
 
     let { operation } = await ai.generate({
@@ -74,9 +74,8 @@ const marketingVideoFlow = ai.defineFlow(
       throw new Error('Failed to find the generated video in the output');
     }
 
-    // Fetch the video from the Google URL and convert to base64 data URI
-    const fetch = (await import('node-fetch')).default;
-    const response = await fetch(`${videoPart.media.url}&key=${process.env.GEMINI_API_KEY}`);
+    // Fetch the video from the Google URL and convert to base64 data URI using native fetch
+    const response = await fetch(`${videoPart.media.url}&key=${apiKey}`);
     
     if (!response.ok) {
       throw new Error(`Failed to fetch video: ${response.statusText}`);
