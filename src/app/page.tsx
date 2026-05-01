@@ -1,15 +1,14 @@
 "use client";
 
 import { useInventory } from './lib/store';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { 
-  TrendingDown, 
   TrendingUp, 
   AlertCircle, 
-  CheckCircle2,
-  Package,
-  CookingPot,
-  ArrowRight
+  PackageSearch,
+  Calculator,
+  ArrowRight,
+  TrendingDown
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -17,128 +16,98 @@ import { Button } from '@/components/ui/button';
 export default function Dashboard() {
   const { ingredients, recipes } = useInventory();
 
-  const totalInventoryValue = ingredients.reduce((sum, ing) => sum + (ing.weeklyUsage * ing.bulkPrice), 0);
-  const potentialSavings = ingredients.reduce((sum, ing) => sum + (ing.weeklyUsage * (ing.retailPrice - ing.bulkPrice)), 0);
+  const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
+  const highCostRecipes = recipes.filter(r => {
+    const cost = r.items.reduce((sum, item) => {
+      const ing = ingredients.find(i => i.id === item.ingredientId);
+      return sum + (ing ? ing.bulkPrice * item.quantity : 0);
+    }, 0);
+    return (cost / r.sellingPrice) > 0.35;
+  }).length;
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-headline font-bold text-foreground">Aba'ka, Welcome Back!</h1>
-        <p className="text-muted-foreground">Here's what's happening in your kitchen today.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-none shadow-md bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Ingredients</CardTitle>
-            <Package className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{ingredients.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">In your inventory</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-none shadow-md bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Recipes</CardTitle>
-            <CookingPot className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{recipes.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Costed recipes</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-md bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Weekly Value</CardTitle>
-            <TrendingUp className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">₦{totalInventoryValue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground mt-1">Est. weekly usage</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-md bg-accent/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-primary">Potential Savings</CardTitle>
-            <TrendingDown className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">₦{potentialSavings.toLocaleString()}</div>
-            <p className="text-xs text-primary/80 mt-1">By buying in bulk</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-4">
-          <h2 className="text-xl font-headline font-semibold flex items-center gap-2">
-            Recent Ingredients
-            <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">New</span>
-          </h2>
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <div className="divide-y">
-              {ingredients.slice(0, 5).map((ing) => (
-                <div key={ing.id} className="p-4 flex items-center justify-between hover:bg-accent/5 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                      {ing.name[0]}
-                    </div>
-                    <div>
-                      <p className="font-medium">{ing.name}</p>
-                      <p className="text-xs text-muted-foreground">{ing.unit}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-primary">₦{ing.bulkPrice.toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">Bulk Price</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="p-4 border-t bg-muted/30">
-              <Button asChild variant="link" className="p-0 h-auto text-primary">
-                <Link href="/inventory" className="flex items-center gap-1">
-                  Manage Inventory <ArrowRight size={14} />
-                </Link>
-              </Button>
-            </div>
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-3xl font-headline font-bold text-foreground">Aba'ka, Welcome!</h1>
+          <p className="text-muted-foreground">Quick snapshot of your 3 key interfaces.</p>
+        </div>
+        <div className="text-right">
+          <p className="text-xs font-bold text-primary uppercase tracking-widest">Kitchen Status</p>
+          <div className="flex items-center gap-2 text-green-600 font-bold">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            LIVE & PROFITABLE
           </div>
         </div>
+      </div>
 
-        <div className="space-y-4">
-          <h2 className="text-xl font-headline font-semibold">Insights & Status</h2>
-          <Card className="border-none shadow-md overflow-hidden">
-            <CardContent className="p-0">
-              <div className="p-4 space-y-4">
-                <div className="flex gap-3">
-                  <AlertCircle className="text-amber-500 shrink-0" size={20} />
-                  <div>
-                    <p className="text-sm font-medium">Market Price Alert</p>
-                    <p className="text-xs text-muted-foreground">Onions prices increased by 15% in Lagos markets this week.</p>
-                  </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link href="/stock" className="group">
+          <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-white group-hover:translate-y-[-4px]">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">1. Stock Taking</CardTitle>
+              <PackageSearch className="h-5 w-5 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{ingredients.length - lowStockCount} / {ingredients.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">Ingredients in healthy stock</p>
+              {lowStockCount > 0 && (
+                <div className="mt-4 flex items-center gap-1 text-xs text-destructive font-bold">
+                  <AlertCircle size={14} /> {lowStockCount} items need attention
                 </div>
-                <div className="flex gap-3">
-                  <CheckCircle2 className="text-primary shrink-0" size={20} />
-                  <div>
-                    <p className="text-sm font-medium">Cost Audit Complete</p>
-                    <p className="text-xs text-muted-foreground">All 5 active recipes are within their profit margin targets.</p>
-                  </div>
+              )}
+            </CardContent>
+          </Card>
+        </Link>
+        
+        <Link href="/costing" className="group">
+          <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-white group-hover:translate-y-[-4px]">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">2. Cost Percentage</CardTitle>
+              <Calculator className="h-5 w-5 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{recipes.length - highCostRecipes} / {recipes.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">Recipes with healthy Food Cost %</p>
+              {highCostRecipes > 0 && (
+                <div className="mt-4 flex items-center gap-1 text-xs text-amber-500 font-bold">
+                  <TrendingUp size={14} /> {highCostRecipes} recipes above target cost
                 </div>
-              </div>
-              <div className="p-4 bg-primary/5 border-t">
-                <p className="text-xs font-medium text-primary mb-2">Optimization Suggestion:</p>
-                <p className="text-xs text-muted-foreground">Switching to bulk purchases for Tomato Paste could save you ₦6,000 this month.</p>
-                <Button asChild variant="outline" size="sm" className="mt-4 w-full border-primary/20 hover:bg-primary/10">
-                  <Link href="/insights">View All Insights</Link>
-                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/profit" className="group">
+          <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-primary text-primary-foreground group-hover:translate-y-[-4px]">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-bold opacity-80 uppercase tracking-tight">3. Profit Calculator</CardTitle>
+              <TrendingUp className="h-5 w-5 opacity-80" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">₦{((recipes[0]?.sellingPrice || 0) * 0.65).toLocaleString()}</div>
+              <p className="text-xs opacity-70 mt-1">Est. Profit per standard batch</p>
+              <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground">
+                <TrendingDown size={14} /> AI Optimization available
               </div>
             </CardContent>
           </Card>
+        </Link>
+      </div>
+
+      <div className="p-8 rounded-3xl bg-white border-2 border-dashed flex flex-col items-center justify-center text-center space-y-4">
+        <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center text-primary">
+          <Calculator size={32} />
         </div>
+        <div>
+          <h2 className="text-2xl font-headline font-bold">The Golden Rule of Restaurant Profit</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto mt-2">
+            Keep your <b>Cost Percentage</b> below 35% and your <b>Stock</b> lean. EkoPlateCost's <b>Auto Profit Calculator</b> will handle the rest by finding hidden savings in Mile 12 market prices.
+          </p>
+        </div>
+        <Button asChild className="rounded-xl h-12 px-8">
+          <Link href="/profit">Run AI Performance Audit <ArrowRight size={18} className="ml-2" /></Link>
+        </Button>
       </div>
     </div>
   );

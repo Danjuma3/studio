@@ -5,12 +5,11 @@ import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   ChefHat, 
-  Package, 
-  Lightbulb, 
+  PackageSearch, 
+  Calculator, 
   TrendingUp,
-  CookingPot,
-  ShieldCheck,
-  Settings
+  Settings,
+  ShieldCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -20,17 +19,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
   SidebarRail,
   SidebarFooter
 } from '@/components/ui/sidebar';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Inventory', href: '/inventory', icon: Package },
-  { name: 'Recipes', href: '/recipes', icon: CookingPot },
-  { name: 'Cost Insights', href: '/insights', icon: Lightbulb },
-  { name: 'Market Updates', href: '/market', icon: TrendingUp },
+  { name: 'Stock Taking', href: '/stock', icon: PackageSearch },
+  { name: 'Cost Percentage', href: '/costing', icon: Calculator },
+  { name: 'Profit Calculator', href: '/profit', icon: TrendingUp },
   { name: 'Manager Tools', href: '/manager', icon: ShieldCheck },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];

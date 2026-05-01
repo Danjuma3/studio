@@ -7,6 +7,8 @@ export interface Ingredient {
   bulkPrice: number;
   retailPrice: number;
   weeklyUsage: number;
+  currentStock: number;
+  minStock: number;
   lastUpdated: string;
 }
 
@@ -19,6 +21,7 @@ export interface Recipe {
   id: string;
   name: string;
   description: string;
+  sellingPrice: number;
   items: RecipeItem[];
 }
 
@@ -41,7 +44,7 @@ export interface ManagerTask {
 export interface PaymentMethod {
   id: string;
   type: 'card' | 'bank_transfer' | 'pos' | 'cash' | 'paystack';
-  provider: string; // e.g. "GTBank", "Visa", "Moniepoint", "Paystack"
+  provider: string;
   lastFour?: string;
   accountName?: string;
   isDefault: boolean;
