@@ -5,7 +5,7 @@ import { useInventory } from '../lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, RefreshCw, Calendar, MapPin, CheckCircle2, ShoppingCart, Lock, Sparkles, LineChart as ChartIcon } from 'lucide-react';
+import { RefreshCw, Calendar, MapPin, ShoppingCart, Lock, Sparkles, LineChart as ChartIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from "@/components/ui/chart";
-import { Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartData = [
   { month: "Jan", grains: 4500, meat: 8200, veg: 2100 },
@@ -83,7 +83,6 @@ export default function MarketUpdatePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          {/* Pro Feature: Trend Chart */}
           <Card className="border-none shadow-md bg-white overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between bg-muted/20">
               <div>
@@ -91,7 +90,9 @@ export default function MarketUpdatePage() {
                   <ChartIcon size={20} className="text-primary" />
                   Price Trend Analysis
                 </CardTitle>
-                <CardDescription>5-month volatility tracking for Lagos Hubs</CardDescription>
+                <CardDescription>
+                  {isPro ? "Full historical tracking for Lagos Hubs" : "Limited market trend updates"}
+                </CardDescription>
               </div>
               {!isPro && <Badge variant="secondary" className="gap-1"><Lock size={12} /> Pro Only</Badge>}
             </CardHeader>
@@ -153,7 +154,6 @@ export default function MarketUpdatePage() {
                     </Button>
                   </div>
                   <div className="w-full opacity-20 grayscale">
-                    {/* Blurred Background Chart for preview */}
                     <div className="h-64 bg-muted rounded-xl w-full"></div>
                   </div>
                 </div>
@@ -240,48 +240,6 @@ export default function MarketUpdatePage() {
                   <span className="text-xs font-bold">Oyingbo Market</span>
                   <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
                 </div>
-
-                <div className="relative group">
-                  <div className={`flex items-center justify-between ${!isPro ? 'blur-[2px] opacity-40 select-none' : ''}`}>
-                    <span className="text-xs font-bold">Makoko (Seafood)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-blue-50 text-blue-700 border-blue-200">High Supply</Badge>
-                  </div>
-                  {!isPro && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] bg-primary/10 text-primary border-primary/20 border">
-                        <Link href="/settings"><Lock size={10} className="mr-1" /> Unlock Pro</Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
-                <div className="relative group">
-                  <div className={`flex items-center justify-between ${!isPro ? 'blur-[2px] opacity-40 select-none' : ''}`}>
-                    <span className="text-xs font-bold">Oko-Oba (Beef/Meat)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Rising</Badge>
-                  </div>
-                  {!isPro && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] bg-primary/10 text-primary border-primary/20 border">
-                        <Link href="/settings"><Lock size={10} className="mr-1" /> Unlock Pro</Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
-                <div className="relative group">
-                  <div className={`flex items-center justify-between ${!isPro ? 'blur-[2px] opacity-40 select-none' : ''}`}>
-                    <span className="text-xs font-bold">Dei-Dei (Abuja Hub)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Steady</Badge>
-                  </div>
-                  {!isPro && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] bg-primary/10 text-primary border-primary/20 border">
-                        <Link href="/settings"><Lock size={10} className="mr-1" /> Unlock Pro</Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
               </div>
 
               <div className="pt-4 border-t space-y-3">
@@ -289,25 +247,12 @@ export default function MarketUpdatePage() {
                 <div className="flex gap-2">
                   <ShoppingCart className="text-primary shrink-0" size={14} />
                   <p className="text-[11px] text-muted-foreground">
-                    Beef prices at <strong>Oko-Oba</strong> are up 15% due to haulage costs. Consider frozen alternatives.
+                    Beef prices at <strong>Oko-Oba</strong> are up 15%. Consider alternatives.
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {!isPro && (
-            <Card className="bg-primary/5 border-primary/20 border-dashed border-2 rounded-2xl">
-              <CardContent className="p-6 text-center space-y-3">
-                <Sparkles className="mx-auto text-primary" size={24} />
-                <h4 className="font-bold text-sm">Full Market Trend Updates</h4>
-                <p className="text-xs text-muted-foreground">Get real-time trends for Oko-Oba, Dei-Dei, and Makoko hubs.</p>
-                <Button asChild className="w-full bg-primary h-10 text-xs rounded-xl shadow-md">
-                  <Link href="/settings">Upgrade to Pro</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </div>

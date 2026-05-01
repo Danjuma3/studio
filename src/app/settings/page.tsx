@@ -8,22 +8,15 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { 
-  CreditCard, 
-  CheckCircle2, 
   Building2, 
-  Smartphone, 
-  Wallet,
-  ShieldCheck,
-  Zap,
+  ShieldCheck, 
   Crown,
   Sparkles,
   Copy,
   ExternalLink,
   Image as ImageIcon,
-  FileCode,
   Save,
   Megaphone,
-  SwitchCamera,
   HelpCircle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -47,9 +40,6 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Switch } from '@/components/ui/switch';
 
-/**
- * Isolated Paystack button component to prevent SSR "window is not defined" errors.
- */
 function PaystackActivateButton({ config, onSuccess, onClose }: { config: any, onSuccess: any, onClose: any }) {
   const initializePayment = usePaystackPayment(config);
   
@@ -79,11 +69,9 @@ export default function SettingsPage() {
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   
-  // Admin Edit State
   const [adminConfig, setAdminConfig] = useState(systemPayment);
   const [adminAlert, setAdminAlert] = useState(systemAlert);
   
-  // Track if initial data has been synced to avoid infinite loops
   const hasSyncedConfig = useRef(false);
   const hasSyncedAlert = useRef(false);
 
@@ -94,7 +82,6 @@ export default function SettingsPage() {
     setMounted(true);
   }, []);
 
-  // Sync admin config when system data loads, but only once or if it significantly changes
   useEffect(() => {
     if (systemPayment && !hasSyncedConfig.current) {
       setAdminConfig(systemPayment);
@@ -102,7 +89,6 @@ export default function SettingsPage() {
     }
   }, [systemPayment]);
 
-  // Sync admin alert when system data loads, but only once or if it significantly changes
   useEffect(() => {
     if (systemAlert && !hasSyncedAlert.current) {
       setAdminAlert(systemAlert);
@@ -114,7 +100,6 @@ export default function SettingsPage() {
     return `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}-${Date.now()}`;
   }, [user]);
 
-  // Paystack Config
   const paystackConfig = useMemo(() => {
     if (!mounted || !user || !systemPayment?.paystackPublicKey) return null;
     return {
@@ -181,7 +166,6 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Admin System Settings (Only for Admin) */}
           {isAdmin && (
             <div className="space-y-6">
               <Card className="border-2 border-primary/20 shadow-xl overflow-hidden bg-white">
@@ -219,7 +203,6 @@ export default function SettingsPage() {
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
                       </div>
-                      <p className="text-[10px] text-muted-foreground italic">Tip: This URL updates the logo in the sidebar, mobile view, and puzzle loader.</p>
                     </div>
                   </div>
 
@@ -241,7 +224,6 @@ export default function SettingsPage() {
                 </CardFooter>
               </Card>
 
-              {/* Admin Broadcast Control */}
               <Card className="border-2 border-accent/20 shadow-xl overflow-hidden bg-white">
                 <CardHeader className="bg-accent/10 border-b">
                   <CardTitle className="text-xl flex items-center gap-2">
@@ -291,7 +273,6 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {/* Branding Section */}
           <Card className="border-none shadow-md overflow-hidden bg-white">
             <CardHeader className="bg-muted/30 border-b">
               <CardTitle className="text-xl flex items-center gap-2">
@@ -309,6 +290,7 @@ export default function SettingsPage() {
                       alt="Current Logo" 
                       fill 
                       className="object-cover"
+                      unoptimized
                     />
                   )}
                 </div>
@@ -318,7 +300,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {isAdmin 
                         ? "You are managing the branding dynamically via the Admin Panel above." 
-                        : "Branding is managed centrally by the platform administrator. Your logo is consistent across all interfaces."}
+                        : "Branding is managed centrally by the platform administrator."}
                     </p>
                   </div>
                 </div>
@@ -326,7 +308,6 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          {/* Subscription Section */}
           <Card className="border-none shadow-md overflow-hidden bg-white">
             <CardHeader className="bg-primary/5 border-b">
               <div className="flex items-center justify-between">
@@ -402,16 +383,6 @@ export default function SettingsPage() {
                             <div className="flex items-center justify-between">
                               <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Name</span>
                               <span className="text-sm font-bold">{systemPayment.accountName}</span>
-                            </div>
-                          </div>
-
-                          <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-1">
-                            <p className="text-[10px] font-bold text-primary uppercase">Payment Reference</p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-lg font-mono font-black text-primary">{paymentReference.split('-')[1]}</span>
-                              <Button variant="outline" size="sm" className="h-8 border-primary/20 text-primary" onClick={() => handleCopy(paymentReference.split('-')[1], "Reference")}>
-                                <Copy size={14} className="mr-2" /> Copy
-                              </Button>
                             </div>
                           </div>
                         </div>

@@ -1,7 +1,6 @@
 
 "use client";
 
-import type { Metadata, Viewport } from 'next';
 import Image from 'next/image';
 import './globals.css';
 import { AppNavigation } from '@/components/Navigation';
@@ -19,7 +18,6 @@ function getSafeLogoUrl(url?: string): string {
     return placeholder?.imageUrl || fallback;
   }
   
-  // Accept relative paths and data URIs immediately
   if (url.startsWith('/') || url.startsWith('data:')) return url;
   
   try {
@@ -49,7 +47,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   fill 
                   className="object-cover"
                   priority
-                  unoptimized // Allow any external URL for custom branding
+                  unoptimized 
                 />
               </div>
               <span className="font-headline font-bold text-primary">Kitchen Prof</span>

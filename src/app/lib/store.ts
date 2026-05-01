@@ -9,7 +9,7 @@ import {
   deleteDocumentNonBlocking, 
   setDocumentNonBlocking 
 } from '@/firebase/non-blocking-updates';
-import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert } from './types';
 
 // Stable default objects to prevent infinite re-render loops
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
