@@ -158,6 +158,7 @@ export default function SettingsPage() {
                       alt="Current Logo" 
                       fill 
                       className="object-cover"
+                      data-ai-hint={logo.imageHint}
                     />
                   )}
                 </div>
