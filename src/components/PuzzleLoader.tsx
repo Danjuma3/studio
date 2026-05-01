@@ -52,7 +52,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
       {/* Premium Logo Container */}
       <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mb-16 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden bg-white border border-white/20">
         {finalImageUrl ? (
-          <div className="grid grid-cols-2 grid-rows-2 w-full h-full relative">
+          <div className="grid grid-cols-2 grid-rows-2 w-full h-full relative p-[2px] bg-white">
             {[0, 1, 2, 3].map((i) => {
               const row = Math.floor(i / gridSize);
               const col = i % gridSize;
@@ -65,7 +65,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
               return (
                 <div
                   key={i}
-                  className="relative overflow-hidden transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  className="relative overflow-hidden transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1) border-[2px] border-white"
                   style={{
                     transform: isAssembled 
                       ? 'translate(0, 0) rotate(0) scale(1)' 
@@ -84,7 +84,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
                       top: `-${row * 100}%`,
                     }}
                   />
-                  {/* Permanent Obvious Thin White Line Separation */}
+                  {/* Obvious permanent white separation */}
                   <div className="absolute inset-0 border-[1px] border-white shadow-[inset_0_0_4px_rgba(255,255,255,0.8)]" />
                 </div>
               );

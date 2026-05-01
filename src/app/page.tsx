@@ -21,7 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
-  const { ingredients, recipes, systemAlert, location } = useInventory();
+  const { ingredients, recipes, systemAlert } = useInventory();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
           <h1 className="text-3xl lg:text-4xl font-brand font-black text-foreground tracking-tighter uppercase">Kitchen Profit Professional</h1>
-          <p className="text-muted-foreground text-lg">Managing margins for food business in {location.city}, {location.country}.</p>
+          <p className="text-muted-foreground text-lg">Managing margins for food business</p>
         </div>
         <div className="text-right">
           <p className="text-xs font-bold text-primary uppercase tracking-widest">Regional Hub Status</p>
@@ -140,8 +140,8 @@ export default function Dashboard() {
               <TrendingUp className="h-5 w-5 opacity-80" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">{location.currencySymbol}{totalPotentialProfit.toLocaleString()}</div>
-              <p className="text-xs opacity-70 mt-1 font-medium">Estimated total potential ({location.currency})</p>
+              <div className="text-4xl font-black">₦{totalPotentialProfit.toLocaleString()}</div>
+              <p className="text-xs opacity-70 mt-1 font-medium">Estimated total potential</p>
               <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground bg-black/10 p-2 rounded-lg">
                 <TrendingDown size={14} /> AI optimization suggestions ready
               </div>
