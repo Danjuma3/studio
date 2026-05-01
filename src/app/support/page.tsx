@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import {
   Terminal,
-  Bug,
   Sparkles,
   ShieldAlert,
   Copy,
@@ -17,10 +16,8 @@ import {
   History,
   Users,
   Database,
-  Activity,
   MessageSquare,
   Globe,
-  Mail,
   Server,
   PartyPopper,
   Video,
@@ -29,19 +26,13 @@ import {
   Play
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { generateMarketingVideo } from '@/ai/flows/marketing-video-flow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function SupportWorkspacePage() {
   const { user } = useUser();
-  const { ingredients, recipes, issues, reportIssue, updateSystemAlert } = useInventory();
+  const { ingredients, recipes, issues, updateSystemAlert } = useInventory();
   
-  // Bug Report State
-  const [bugTitle, setBugTitle] = useState('');
-  const [bugDesc, setBugDesc] = useState('');
-
   // Video AI State
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
@@ -76,7 +67,7 @@ export default function SupportWorkspacePage() {
 
   const handleGrandOpeningBroadcast = () => {
     updateSystemAlert({
-      message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROFIT! Start mastering your margins today.",
+      message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROFIT PROFESSIONAL! Start mastering your margins today.",
       type: "market",
       active: true
     });
@@ -86,6 +77,14 @@ export default function SupportWorkspacePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast({ 
+          variant: "destructive", 
+          title: "File too large", 
+          description: "Please upload an image smaller than 2MB for the AI Lab." 
+        });
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => setSelectedPhoto(reader.result as string);
       reader.readAsDataURL(file);
@@ -94,7 +93,7 @@ export default function SupportWorkspacePage() {
 
   const handleGenerateVideo = async () => {
     if (!selectedPhoto) {
-      toast({ variant: "destructive", title: "Photo Required", description: "Please upload a photo of your face first." });
+      toast({ variant: "destructive", title: "Photo Required", description: "Please upload a photo first." });
       return;
     }
 
@@ -102,13 +101,13 @@ export default function SupportWorkspacePage() {
     try {
       const result = await generateMarketingVideo({
         photoDataUri: selectedPhoto,
-        prompt: "Create a high-tech marketing video showing this person sitting in a modern room with a laptop. The screen shows the 'Kitchen Profit' app dashboard, and they are sliding through beautiful data charts and recipe interfaces."
+        prompt: "Create a high-tech marketing video showing this person sitting in a modern room with a laptop. The screen shows the 'Kitchen Profit Professional' app dashboard, and they are sliding through beautiful data charts and recipe interfaces."
       });
       setGeneratedVideo(result.videoUrl);
       toast({ title: "Video Generated!", description: "Your marketing video is ready for review." });
     } catch (error: any) {
       console.error(error);
-      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Veo model is currently at capacity. Please try again later." });
+      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Model at capacity. Please try again later." });
     } finally {
       setIsGeneratingVideo(false);
     }
@@ -123,9 +122,9 @@ export default function SupportWorkspacePage() {
           </div>
           <div>
             <h1 className="text-3xl font-headline font-bold text-black/60">Admin Command Center</h1>
-            <div className="text-muted-foreground flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-2 mt-1">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-bold">ROOT ACCESS</Badge>
-              Admin: chefdtanju@gmail.com
+              <span className="text-sm text-muted-foreground">Admin: chefdtanju@gmail.com</span>
             </div>
           </div>
         </div>
@@ -153,9 +152,9 @@ export default function SupportWorkspacePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="border-none shadow-md bg-white">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
+                <div className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
                   Active Tickets <MessageSquare size={14} className="text-primary" />
-                </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black">{issues.filter(i => i.status !== 'fixed').length}</div>
@@ -163,9 +162,9 @@ export default function SupportWorkspacePage() {
             </Card>
             <Card className="border-none shadow-md bg-white">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
+                <div className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
                   Global Stock <Users size={14} className="text-primary" />
-                </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black">{ingredients.length}</div>
@@ -173,9 +172,9 @@ export default function SupportWorkspacePage() {
             </Card>
             <Card className="border-none shadow-md bg-white">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
+                <div className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
                   System Uptime <CheckCircle2 size={14} className="text-green-500" />
-                </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black text-green-600">99.9%</div>
@@ -183,9 +182,9 @@ export default function SupportWorkspacePage() {
             </Card>
             <Card className="border-none shadow-md bg-primary text-primary-foreground">
               <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-bold uppercase opacity-80 flex justify-between items-center">
+                <div className="text-xs font-bold uppercase opacity-80 flex justify-between items-center">
                   AI Readiness <Sparkles size={14} />
-                </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black">STABLE</div>
@@ -204,17 +203,17 @@ export default function SupportWorkspacePage() {
                 </CardHeader>
                 <CardContent className="pt-6">
                   <div className="rounded-2xl bg-black p-6 text-green-400 font-mono text-[11px] h-64 overflow-y-auto shadow-2xl leading-relaxed">
-                    <p className="text-green-500/50"># Kitchen Profit OS v2.0.4 - Diagnostic Mode</p>
-                    <p className="text-white/30">--------------------------------------------------</p>
-                    <p>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</p>
-                    <p>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</p>
-                    <p>&gt; Scanning Firestore Collections (Global Scope)...</p>
-                    <p>&gt; Found {ingredients.length} ingredient nodes.</p>
-                    <p>&gt; Found {recipes.length} recipe configurations.</p>
-                    <p>&gt; Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</p>
-                    <p>&gt; AI Model Link: STABLE</p>
-                    <p>&gt; Memory Usage: OPTIMAL</p>
-                    <p className="animate-pulse">&gt; Awaiting Command...</p>
+                    <div className="text-green-500/50"># Kitchen Profit OS v2.0.4 - Diagnostic Mode</div>
+                    <div className="text-white/30">--------------------------------------------------</div>
+                    <div>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</div>
+                    <div>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</div>
+                    <div>&gt; Scanning Firestore Collections (Global Scope)...</div>
+                    <div>&gt; Found {ingredients.length} ingredient nodes.</div>
+                    <div>&gt; Found {recipes.length} recipe configurations.</div>
+                    <div>&gt; Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</div>
+                    <div>&gt; AI Model Link: STABLE</div>
+                    <div>&gt; Memory Usage: OPTIMAL</div>
+                    <div className="animate-pulse">&gt; Awaiting Command...</div>
                   </div>
                 </CardContent>
               </Card>
@@ -240,7 +239,7 @@ export default function SupportWorkspacePage() {
                                 {issue.severity.toUpperCase()}
                               </Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground">{issue.description}</p>
+                            <div className="text-sm text-muted-foreground">{issue.description}</div>
                           </div>
                           <Badge className={issue.status === 'fixed' ? 'bg-green-500' : 'bg-amber-500'}>
                             {issue.status.toUpperCase()}
@@ -261,10 +260,10 @@ export default function SupportWorkspacePage() {
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-2">
                     <div className="flex items-center gap-3">
                       <Server size={18} className="text-green-500" />
-                      <div><p className="text-xs font-bold">kitchenprof.ng</p><p className="text-[10px] text-white/40">Status: Pointing to App Hosting</p></div>
+                      <div><div className="text-xs font-bold">kitchenprof.ng</div><div className="text-[10px] text-white/40">Status: Pointing to App Hosting</div></div>
                     </div>
                     <div className="pt-2 border-t border-white/10">
-                      <p className="text-[9px] text-white/60">Registrar Choice: <strong>Whogohost</strong></p>
+                      <div className="text-[9px] text-white/60">Registrar Choice: <strong>Whogohost</strong></div>
                     </div>
                   </div>
                 </CardContent>
@@ -299,8 +298,8 @@ export default function SupportWorkspacePage() {
                         ) : (
                           <>
                             <UploadCloud size={48} className="text-primary/20 mb-4" />
-                            <p className="text-sm font-medium text-muted-foreground">Upload your face/picture</p>
-                            <p className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 1MB</p>
+                            <div className="text-sm font-medium text-muted-foreground">Upload your face/picture</div>
+                            <div className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 2MB</div>
                           </>
                         )}
                       </div>
@@ -320,9 +319,9 @@ export default function SupportWorkspacePage() {
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                           <Play size={18} className="text-primary" />
                         </div>
-                        <p className="text-sm leading-relaxed italic text-muted-foreground">
-                          "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Profit app, sliding through interfaces for stock taking and profit calculations."
-                        </p>
+                        <div className="text-sm leading-relaxed italic text-muted-foreground">
+                          "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Profit Professional app dashboard."
+                        </div>
                       </div>
                       <Button onClick={handleGenerateVideo} disabled={isGeneratingVideo || !selectedPhoto} className="w-full h-12 bg-primary rounded-xl text-lg font-bold shadow-lg">
                         {isGeneratingVideo ? (
@@ -343,13 +342,13 @@ export default function SupportWorkspacePage() {
                     ) : (
                       <div className="text-center p-8 space-y-4">
                         <Video size={64} className="mx-auto text-white/10" />
-                        <p className="text-sm text-white/40 font-medium">Video output will appear here</p>
+                        <div className="text-sm text-white/40 font-medium">Video output will appear here</div>
                         {isGeneratingVideo && (
                           <div className="space-y-2">
                             <div className="w-48 h-1 bg-white/10 rounded-full mx-auto overflow-hidden">
                               <div className="h-full bg-primary animate-progress" style={{ width: '40%' }}></div>
                             </div>
-                            <p className="text-[10px] text-primary font-bold uppercase animate-pulse">Processing cinematic frames...</p>
+                            <div className="text-[10px] text-primary font-bold uppercase animate-pulse">Processing cinematic frames...</div>
                           </div>
                         )}
                       </div>
@@ -367,9 +366,9 @@ export default function SupportWorkspacePage() {
                   )}
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 flex gap-3">
                     <Sparkles className="text-amber-500 shrink-0" size={16} />
-                    <p className="text-[10px] text-amber-800 leading-tight">
-                      <strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. Ensure your reference photo has good lighting on your face for the best person-consistency in the video.
-                    </p>
+                    <div className="text-[10px] text-amber-800 leading-tight">
+                      <strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. Larger videos may take longer to process.
+                    </div>
                   </div>
                 </div>
               </div>
