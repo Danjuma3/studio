@@ -12,6 +12,9 @@ export interface Ingredient {
   minStock: number;
   createdAt: string;
   updatedAt: string;
+  bulkPrice?: number; // Legacy support
+  retailPrice?: number; // Legacy support
+  unit?: string; // Legacy support
 }
 
 export interface RecipeItem {
@@ -76,4 +79,11 @@ export interface SystemAlert {
   type: 'info' | 'warning' | 'market' | 'urgent';
   active: boolean;
   updatedAt: string;
+}
+
+export interface UserLocation {
+  country: string;
+  city: string;
+  currency: string;
+  currencySymbol: string;
 }

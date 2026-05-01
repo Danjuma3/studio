@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFirestore, useUser, useCollection, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import {
@@ -9,19 +9,19 @@ import {
   deleteDocumentNonBlocking,
   setDocumentNonBlocking
 } from '@/firebase/non-blocking-updates';
-import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert, UserLocation } from './types';
 
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
-  bankName: "GTBank",
-  accountNumber: "0123456789",
-  accountName: "Kitchen Profit Enterprise",
+  bankName: "Global Bank",
+  accountNumber: "0000000000",
+  accountName: "Kitchen Profit International",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  proPrice: 11000,
+  proPrice: 15,
   appLogoUrl: ""
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {
-  message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROFIT! Start mastering your margins today.",
+  message: "🌎 KITCHEN PROFIT IS NOW GLOBAL! Detect your location to synchronize regional market data.",
   type: "market",
   active: true,
   updatedAt: new Date().toISOString()
@@ -31,6 +31,29 @@ export function useInventory() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const [currentPlan, setCurrentPlan] = useState<UserPlan>('free');
+  const [location, setLocation] = useState<UserLocation>({
+    country: 'United States',
+    city: 'New York',
+    currency: 'USD',
+    currencySymbol: '$'
+  });
+
+  // Simple geolocation detection logic
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      // In a real app, you might use a reverse geocoding API here
+      // For now, we set a default based on locale
+      const locale = navigator.language;
+      if (locale.includes('NG')) {
+        setLocation({
+          country: 'Nigeria',
+          city: 'Lagos',
+          currency: 'NGN',
+          currencySymbol: '₦'
+        });
+      }
+    }
+  }, []);
 
   const systemPaymentRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -163,6 +186,10 @@ export function useInventory() {
     setCurrentPlan(plan);
   };
 
+  const updateLocation = (newLocation: Partial<UserLocation>) => {
+    setLocation(prev => ({ ...prev, ...newLocation }));
+  };
+
   return {
     ingredients: ingredients || [],
     recipes: recipes || [],
@@ -172,6 +199,7 @@ export function useInventory() {
     systemPayment: systemPayment || DEFAULT_SYSTEM_PAYMENT,
     systemAlert: systemAlert || DEFAULT_SYSTEM_ALERT,
     subscription: { plan: currentPlan, status: 'active', nextBillingDate: "2024-01-01T00:00:00.000Z" } as SubscriptionInfo,
+    location,
     loading: isUserLoading || isIngredientsLoading || isRecipesLoading || isSystemLoading,
     addIngredient,
     updateIngredient,
@@ -183,6 +211,7 @@ export function useInventory() {
     reportIssue,
     upgradePlan,
     updateSystemPaymentConfig,
-    updateSystemAlert
+    updateSystemAlert,
+    updateLocation
   };
 }

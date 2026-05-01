@@ -11,7 +11,8 @@ import {
   ArrowRight,
   TrendingDown,
   Megaphone,
-  Bell
+  Globe,
+  Activity
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -19,16 +20,15 @@ import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
-  const { ingredients, recipes, systemAlert } = useInventory();
+  const { ingredients, recipes, systemAlert, location } = useInventory();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
+  const lowStockCount = ingredients.filter(ing => ing.currentStock <= (ing.minStock || 0)).length;
   
-  // Dynamic calculation for potential profit across all recipes
   const totalPotentialProfit = recipes.reduce((acc, recipe) => {
     const cost = recipe.items.reduce((sum, item) => {
       const ing = ingredients.find(i => i.id === item.ingredientId);
@@ -50,19 +50,18 @@ export default function Dashboard() {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-3xl lg:text-4xl font-headline font-bold text-foreground">Welcome back, Kitchen Prof!</h1>
-          <p className="text-muted-foreground text-lg">Monitor your margins and pantry health in real-time.</p>
+          <h1 className="text-3xl lg:text-4xl font-headline font-bold text-foreground">Kitchen Profit Global</h1>
+          <p className="text-muted-foreground text-lg">Managing margins in {location.city}, {location.country}.</p>
         </div>
         <div className="text-right">
-          <p className="text-xs font-bold text-primary uppercase tracking-widest">System Status</p>
+          <p className="text-xs font-bold text-primary uppercase tracking-widest">Regional Hub Status</p>
           <div className="flex items-center gap-2 text-green-600 font-bold">
             <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-            LIVE & PROFITABLE
+            SYNCHRONIZED & ACTIVE
           </div>
         </div>
       </div>
 
-      {/* Global Admin Broadcast Banner */}
       {systemAlert?.active && (
         <div className={`p-4 rounded-2xl flex items-center gap-4 animate-in slide-in-from-top duration-1000 border-2 shadow-lg ${
           systemAlert.type === 'urgent' ? 'bg-destructive/10 border-destructive/20' : 
@@ -79,7 +78,7 @@ export default function Dashboard() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-0.5">
               <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">
-                {systemAlert.type === 'market' ? 'Market Update' : 'System Notice'}
+                {systemAlert.type === 'market' ? 'Global Market Intelligence' : 'System Notice'}
               </p>
               <Badge variant="outline" className="text-[8px] h-4 py-0 font-bold">LATEST</Badge>
             </div>
@@ -100,12 +99,12 @@ export default function Dashboard() {
         <Link href="/stock" className="group">
           <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-white group-hover:translate-y-[-4px] overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/5">
-              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">1. Stock Taking</CardTitle>
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">Stock Efficiency</CardTitle>
               <PackageSearch className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent className="pt-4">
               <div className="text-4xl font-black">{ingredients.length - lowStockCount} / {ingredients.length}</div>
-              <p className="text-xs text-muted-foreground mt-1 font-medium">Items in healthy stock levels</p>
+              <p className="text-xs text-muted-foreground mt-1 font-medium">Optimal regional inventory levels</p>
               {lowStockCount > 0 && (
                 <div className="mt-4 flex items-center gap-1 text-xs text-destructive font-bold bg-destructive/5 p-2 rounded-lg">
                   <AlertCircle size={14} /> {lowStockCount} items need restocking
@@ -118,12 +117,12 @@ export default function Dashboard() {
         <Link href="/costing" className="group">
           <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-white group-hover:translate-y-[-4px] overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/5">
-              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">2. Cost Percentage</CardTitle>
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">Food Cost %</CardTitle>
               <Calculator className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent className="pt-4">
               <div className="text-4xl font-black">{recipes.length - highCostRecipes} / {recipes.length}</div>
-              <p className="text-xs text-muted-foreground mt-1 font-medium">Recipes within target margins</p>
+              <p className="text-xs text-muted-foreground mt-1 font-medium">Global target margin compliance</p>
               {highCostRecipes > 0 && (
                 <div className="mt-4 flex items-center gap-1 text-xs text-amber-500 font-bold bg-amber-50 p-2 rounded-lg">
                   <TrendingUp size={14} /> {highCostRecipes} recipes need price review
@@ -136,12 +135,12 @@ export default function Dashboard() {
         <Link href="/profit" className="group">
           <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-primary text-primary-foreground group-hover:translate-y-[-4px] overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 bg-white/5">
-              <CardTitle className="text-sm font-bold opacity-80 uppercase tracking-tight">3. Profit Calculator</CardTitle>
+              <CardTitle className="text-sm font-bold opacity-80 uppercase tracking-tight">Projected Profit</CardTitle>
               <TrendingUp className="h-5 w-5 opacity-80" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">₦{totalPotentialProfit.toLocaleString()}</div>
-              <p className="text-xs opacity-70 mt-1 font-medium">Est. Total Potential Profit</p>
+              <div className="text-4xl font-black">{location.currencySymbol}{totalPotentialProfit.toLocaleString()}</div>
+              <p className="text-xs opacity-70 mt-1 font-medium">Estimated total potential ({location.currency})</p>
               <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground bg-black/10 p-2 rounded-lg">
                 <TrendingDown size={14} /> AI optimization suggestions ready
               </div>
@@ -152,16 +151,16 @@ export default function Dashboard() {
 
       <div className="p-10 rounded-[2rem] bg-white border-2 border-dashed border-muted flex flex-col items-center justify-center text-center space-y-6 shadow-sm hover:border-primary/20 transition-colors">
         <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center text-primary rotate-3">
-          <Calculator size={40} />
+          <Globe size={40} />
         </div>
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-headline font-bold">The Golden Rule of Restaurant Profit</h2>
+          <h2 className="text-3xl font-headline font-bold">The Golden Rule of Kitchen Profit</h2>
           <p className="text-muted-foreground text-lg mt-3 leading-relaxed">
-            Keep your <b>Cost Percentage</b> below 35% and your <b>Stock</b> lean. Kitchen Prof's <b>Auto Profit Calculator</b> uses AI to find hidden savings in Mile 12 market fluctuations.
+            Protect your <b>Cost Percentage</b> across any market. Kitchen Profit's AI now scales to any regional pricing hub, identifying hidden savings in global commodity fluctuations.
           </p>
         </div>
         <Button asChild size="lg" className="rounded-2xl h-14 px-10 shadow-xl hover:shadow-2xl hover:scale-105 transition-all bg-primary">
-          <Link href="/profit" className="flex items-center text-lg">Run AI Performance Audit <ArrowRight size={20} className="ml-2" /></Link>
+          <Link href="/market" className="flex items-center text-lg">Detect Regional Market Hub <ArrowRight size={20} className="ml-2" /></Link>
         </Button>
       </div>
     </div>

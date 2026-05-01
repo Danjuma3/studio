@@ -5,10 +5,11 @@ import { useInventory } from '../lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
-import { RefreshCw, Calendar, MapPin, ShoppingCart, Lock, Sparkles, LineChart as ChartIcon } from 'lucide-react';
+import { RefreshCw, Calendar, MapPin, ShoppingCart, Lock, Sparkles, LineChart as ChartIcon, Globe, Navigation, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useState } from 'react';
 import { 
   ChartConfig, 
   ChartContainer, 
@@ -31,34 +32,63 @@ const chartConfig = {
     color: "hsl(var(--primary))",
   },
   meat: {
-    label: "Meat/Beef",
+    label: "Proteins",
     color: "hsl(var(--destructive))",
   },
   veg: {
-    label: "Vegetables",
+    label: "Produce",
     color: "hsl(var(--accent))",
   },
 } satisfies ChartConfig;
 
 export default function MarketUpdatePage() {
-  const { ingredients, updateIngredient, subscription } = useInventory();
+  const { ingredients, updateIngredient, subscription, location, updateLocation } = useInventory();
+  const [detecting, setDetecting] = useState(false);
 
   const handlePriceUpdate = (id: string, type: 'bulk' | 'retail', value: string) => {
     const numValue = parseFloat(value);
     if (!isNaN(numValue)) {
-      updateIngredient(id, { [type === 'bulk' ? 'bulkPrice' : 'retailPrice']: numValue });
+      updateIngredient(id, { [type === 'bulk' ? 'bulkUnitPrice' : 'retailUnitPrice']: numValue });
+    }
+  };
+
+  const handleDetectLocation = () => {
+    setDetecting(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        // Mocking geo-intelligence response
+        setTimeout(() => {
+          updateLocation({
+            country: 'Global Region',
+            city: 'Detected Hub',
+            currencySymbol: location.currencySymbol
+          });
+          setDetecting(false);
+          toast({
+            title: "Regional Hub Detected",
+            description: `Switched to ${location.currency} data stream for your current coordinates.`,
+          });
+        }, 1500);
+      }, () => {
+        setDetecting(false);
+        toast({
+          variant: "destructive",
+          title: "Detection Failed",
+          description: "Please enable location services in your browser settings.",
+        });
+      });
     }
   };
 
   const syncPrices = () => {
     toast({
-      title: "Syncing Market Data",
-      description: "Connecting to Mile 12, Oyingbo, Makoko, Oko-Oba, and Dei-Dei databases...",
+      title: "Syncing Global Market Data",
+      description: `Connecting to international pricing nodes for ${location.city}...`,
     });
     setTimeout(() => {
       toast({
-        title: "Market Sync Complete",
-        description: "Prices updated based on today's averages from Lagos and Abuja hubs.",
+        title: "Global Sync Complete",
+        description: `Prices updated based on today's averages in ${location.country}.`,
       });
     }, 1500);
   };
@@ -69,16 +99,27 @@ export default function MarketUpdatePage() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-headline font-bold">Market Intelligence</h1>
-          <p className="text-muted-foreground">Real-time regional market data to protect your profit margins.</p>
+          <h1 className="text-3xl font-headline font-bold">Global Market Intelligence</h1>
+          <p className="text-muted-foreground">Real-time data from pricing hubs in {location.city}, {location.country}.</p>
         </div>
-        <Button 
-          onClick={syncPrices}
-          className="bg-primary hover:bg-primary/90 text-white rounded-xl h-12 px-8 shadow-md"
-        >
-          <RefreshCw className="mr-2 h-5 w-5" />
-          Sync All Markets
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            variant="outline"
+            onClick={handleDetectLocation}
+            disabled={detecting}
+            className="rounded-xl border-primary/20 text-primary h-12"
+          >
+            {detecting ? <Loader2 className="animate-spin mr-2 h-5 w-5" /> : <Navigation className="mr-2 h-5 w-5" />}
+            Detect Hub
+          </Button>
+          <Button 
+            onClick={syncPrices}
+            className="bg-primary hover:bg-primary/90 text-white rounded-xl h-12 px-8 shadow-md"
+          >
+            <RefreshCw className="mr-2 h-5 w-5" />
+            Sync Global Market
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -88,10 +129,10 @@ export default function MarketUpdatePage() {
               <div>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <ChartIcon size={20} className="text-primary" />
-                  Price Trend Analysis
+                  Regional Price Trends
                 </CardTitle>
                 <CardDescription>
-                  {isPro ? "Full historical tracking for Lagos Hubs" : "Limited market trend updates"}
+                  {isPro ? `Historical tracking for ${location.country} nodes` : "Limited regional updates"}
                 </CardDescription>
               </div>
               {!isPro && <Badge variant="secondary" className="gap-1"><Lock size={12} /> Pro Only</Badge>}
@@ -114,7 +155,7 @@ export default function MarketUpdatePage() {
                         fontSize={12} 
                         tickLine={false} 
                         axisLine={false} 
-                        tickFormatter={(value) => `₦${value/1000}k`}
+                        tickFormatter={(value) => `${location.currencySymbol}${value/1000}k`}
                       />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <Line 
@@ -145,12 +186,12 @@ export default function MarketUpdatePage() {
                 <div className="relative h-[300px] flex flex-col items-center justify-center text-center space-y-4">
                   <div className="absolute inset-0 bg-white/60 backdrop-blur-[4px] z-10 flex flex-col items-center justify-center p-6">
                     <Sparkles className="text-primary mb-2" size={32} />
-                    <h3 className="text-lg font-bold">Unlock Market Analytics</h3>
+                    <h3 className="text-lg font-bold">Unlock Market Trends</h3>
                     <p className="text-sm text-muted-foreground max-w-xs mb-4">
-                      Pro members get full historical trend charts for Grains, Meat, and Vegetables across major Nigerian markets.
+                      Pro members get full historical analysis for Grains, Proteins, and Produce across all international hubs.
                     </p>
                     <Button asChild className="rounded-xl shadow-lg">
-                      <Link href="/settings">Upgrade for ₦11,000/mo</Link>
+                      <Link href="/settings">Upgrade Subscription</Link>
                     </Button>
                   </div>
                   <div className="w-full opacity-20 grayscale">
@@ -164,10 +205,10 @@ export default function MarketUpdatePage() {
           <Card className="border-none shadow-md bg-white">
             <CardHeader className="border-b bg-muted/20">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Price Update Hub</CardTitle>
+                <CardTitle className="text-lg">Update Regional Prices</CardTitle>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                  <Calendar size={14} />
-                  Week of {new Date().toLocaleDateString('en-NG', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  <Globe size={14} className="text-primary" />
+                  Region: {location.country}
                 </div>
               </div>
             </CardHeader>
@@ -187,20 +228,20 @@ export default function MarketUpdatePage() {
 
                     <div className="grid grid-cols-2 gap-4 flex-1 max-w-sm">
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold uppercase text-muted-foreground">Bulk (₦)</label>
+                        <label className="text-[10px] font-bold uppercase text-muted-foreground">Bulk ({location.currencySymbol})</label>
                         <Input 
                           type="number" 
                           className="h-9 text-sm"
-                          value={ing.bulkPrice}
+                          value={ing.bulkUnitPrice || ing.bulkPrice || 0}
                           onChange={(e) => handlePriceUpdate(ing.id, 'bulk', e.target.value)}
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold uppercase text-muted-foreground">Retail (₦)</label>
+                        <label className="text-[10px] font-bold uppercase text-muted-foreground">Retail ({location.currencySymbol})</label>
                         <Input 
                           type="number" 
                           className="h-9 text-sm"
-                          value={ing.retailPrice}
+                          value={ing.retailUnitPrice || ing.retailPrice || 0}
                           onChange={(e) => handlePriceUpdate(ing.id, 'retail', e.target.value)}
                         />
                       </div>
@@ -210,7 +251,7 @@ export default function MarketUpdatePage() {
               </div>
             </CardContent>
             <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
-              <Button className="bg-primary px-8 rounded-xl shadow-md">Commit Market Updates</Button>
+              <Button className="bg-primary px-8 rounded-xl shadow-md">Apply Regional Updates</Button>
             </CardFooter>
           </Card>
         </div>
@@ -220,34 +261,34 @@ export default function MarketUpdatePage() {
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
                 <MapPin className="text-primary" size={18} />
-                Market Hub Status
+                Local Hub Intelligence
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold">Mile 12 (Grains/Veg)</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-red-50 text-red-700 border-red-200">Volatile</Badge>
+                    <span className="text-xs font-bold">{location.city} Central Hub</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
                   </div>
                   <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>Avg Increase</span>
-                    <span className="text-red-500">+8.5%</span>
+                    <span>Market Health</span>
+                    <span className="text-green-600">High</span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold">Oyingbo Market</span>
-                  <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
+                  <span className="text-xs font-bold">Regional Logistics</span>
+                  <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Processing</Badge>
                 </div>
               </div>
 
               <div className="pt-4 border-t space-y-3">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase">Critical Alerts</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase">Global Supply Alerts</p>
                 <div className="flex gap-2">
                   <ShoppingCart className="text-primary shrink-0" size={14} />
                   <p className="text-[11px] text-muted-foreground">
-                    Beef prices at <strong>Oko-Oba</strong> are up 15%. Consider alternatives.
+                    Commodity volatility detected in international shipping lanes. Prices may vary.
                   </p>
                 </div>
               </div>

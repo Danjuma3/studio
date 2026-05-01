@@ -27,7 +27,8 @@ import {
   Filter, 
   Trash2, 
   Edit2, 
-  MoreVertical
+  MoreVertical,
+  Globe
 } from 'lucide-react';
 import { 
   DropdownMenu, 
@@ -39,7 +40,7 @@ import { Badge } from '@/components/ui/badge';
 import { UnitOfMeasure } from '../lib/types';
 
 export default function InventoryPage() {
-  const { ingredients, addIngredient, updateIngredient, deleteIngredient } = useInventory();
+  const { ingredients, addIngredient, updateIngredient, deleteIngredient, location } = useInventory();
   const [search, setSearch] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
   
@@ -74,7 +75,7 @@ export default function InventoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-headline font-bold">Ingredient Inventory</h1>
-          <p className="text-muted-foreground">Manage your pantry and track market pricing across Lagos and Abuja.</p>
+          <p className="text-muted-foreground">Manage your pantry and track pricing in {location.city}.</p>
         </div>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
@@ -91,7 +92,7 @@ export default function InventoryPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Name</label>
                 <Input 
-                  placeholder="e.g. Basmati Rice" 
+                  placeholder="e.g. Flour" 
                   value={newIngredient.name}
                   onChange={(e) => setNewIngredient({...newIngredient, name: e.target.value})}
                 />
@@ -100,7 +101,7 @@ export default function InventoryPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Unit</label>
                   <select 
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                    className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
                     value={newIngredient.unitOfMeasure}
                     onChange={(e) => setNewIngredient({...newIngredient, unitOfMeasure: e.target.value as any})}
                   >
@@ -126,7 +127,7 @@ export default function InventoryPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Bulk Price (₦)</label>
+                  <label className="text-sm font-medium">Bulk Price ({location.currencySymbol})</label>
                   <Input 
                     type="number"
                     value={newIngredient.bulkPrice}
@@ -134,7 +135,7 @@ export default function InventoryPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Retail Price (₦)</label>
+                  <label className="text-sm font-medium">Retail Price ({location.currencySymbol})</label>
                   <Input 
                     type="number"
                     value={newIngredient.retailPrice}
@@ -162,10 +163,10 @@ export default function InventoryPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="h-11 rounded-xl border-dashed">
-            <Filter size={18} className="mr-2" />
-            Filter
-          </Button>
+          <div className="flex items-center gap-2 px-4 h-11 rounded-xl bg-muted/30 text-xs font-bold text-muted-foreground border">
+            <Globe size={14} className="text-primary" />
+            {location.currency} Hub
+          </div>
         </div>
 
         <div className="rounded-xl border overflow-hidden">
@@ -174,9 +175,9 @@ export default function InventoryPage() {
               <TableRow>
                 <TableHead className="font-semibold">Ingredient</TableHead>
                 <TableHead className="font-semibold text-center">Unit</TableHead>
-                <TableHead className="font-semibold text-right">Bulk (₦)</TableHead>
-                <TableHead className="font-semibold text-right">Retail (₦)</TableHead>
-                <TableHead className="font-semibold text-right">Saving (₦)</TableHead>
+                <TableHead className="font-semibold text-right">Bulk ({location.currencySymbol})</TableHead>
+                <TableHead className="font-semibold text-right">Retail ({location.currencySymbol})</TableHead>
+                <TableHead className="font-semibold text-right">Diff ({location.currencySymbol})</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -184,7 +185,7 @@ export default function InventoryPage() {
               {filteredIngredients.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                    No ingredients found.
+                    No ingredients found in this regional hub.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -200,11 +201,11 @@ export default function InventoryPage() {
                           {ing.unitOfMeasure?.replace('_', ' ') || 'kg'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">₦{bulkPrice.toLocaleString()}</TableCell>
-                      <TableCell className="text-right tabular-nums">₦{retailPrice.toLocaleString()}</TableCell>
+                      <TableCell className="text-right tabular-nums">{location.currencySymbol}{bulkPrice.toLocaleString()}</TableCell>
+                      <TableCell className="text-right tabular-nums">{location.currencySymbol}{retailPrice.toLocaleString()}</TableCell>
                       <TableCell className="text-right tabular-nums">
                         <span className={saving > 0 ? "text-primary font-medium" : "text-muted-foreground"}>
-                          {saving > 0 ? `+₦${saving.toLocaleString()}` : '-'}
+                          {saving > 0 ? `+${location.currencySymbol}${saving.toLocaleString()}` : '-'}
                         </span>
                       </TableCell>
                       <TableCell>
