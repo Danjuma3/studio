@@ -74,17 +74,17 @@ export function AppNavigation() {
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-3 mb-4 group">
-          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform bg-primary/10 flex items-center justify-center">
+          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center p-2">
             {currentLogoUrl ? (
               <Image
                 src={currentLogoUrl}
                 alt="Kitchen Profit Logo"
                 fill
-                className="object-cover"
+                className="object-contain p-1.5 opacity-70"
                 unoptimized
               />
             ) : (
-              <ChefHat size={24} className="text-primary" />
+              <ChefHat size={24} className="text-primary opacity-60" />
             )}
           </div>
           <div className="flex-1 overflow-hidden">

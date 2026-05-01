@@ -23,18 +23,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <header className="h-16 flex items-center gap-4 border-b px-6 sticky top-0 bg-background/80 backdrop-blur-md z-30 pt-[safe-area-inset-top]">
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1 flex items-center md:hidden">
-              <div className="relative w-8 h-8 rounded-lg overflow-hidden mr-2 flex items-center justify-center bg-primary/10">
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden mr-2 flex items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 shadow-sm p-1.5">
                 {currentLogoUrl ? (
                   <Image 
                     src={currentLogoUrl} 
                     alt="Kitchen Profit" 
                     fill 
-                    className="object-cover"
+                    className="object-contain p-1 opacity-80"
                     priority
                     unoptimized 
                   />
                 ) : (
-                  <ChefHat className="text-primary w-5 h-5" />
+                  <ChefHat className="text-primary w-5 h-5 opacity-60" />
                 )}
               </div>
               <span className="font-brand font-bold text-primary text-sm tracking-tight truncate uppercase">Kitchen Profit Professional</span>

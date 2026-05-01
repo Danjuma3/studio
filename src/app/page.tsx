@@ -12,7 +12,8 @@ import {
   TrendingDown,
   Megaphone,
   Globe,
-  Activity
+  Activity,
+  Layers
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -149,19 +150,39 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <div className="p-10 rounded-[2rem] bg-white border-2 border-dashed border-muted flex flex-col items-center justify-center text-center space-y-6 shadow-sm hover:border-primary/20 transition-colors">
-        <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center text-primary rotate-3">
-          <Globe size={40} />
+      {/* High-Tech Scrabble-Style Ad Card */}
+      <div className="relative p-1 lg:p-4 group">
+        <div className="grid grid-cols-2 grid-rows-2 gap-4 h-full min-h-[400px]">
+          {/* Quadrant 1: Top Left */}
+          <div className="bg-white/40 backdrop-blur-md rounded-3xl p-8 border border-white/60 shadow-xl flex flex-col justify-end transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 duration-500">
+            <Globe className="text-primary mb-4" size={40} />
+            <h3 className="text-xl font-headline font-bold">Global Intelligence</h3>
+            <p className="text-sm text-muted-foreground mt-2">Sync with international pricing nodes.</p>
+          </div>
+          {/* Quadrant 2: Top Right */}
+          <div className="bg-primary/5 rounded-3xl p-8 border border-primary/10 shadow-lg flex flex-col justify-start transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 duration-500">
+            <div className="flex-1" />
+            <Activity className="text-primary mb-4" size={40} />
+            <h3 className="text-xl font-headline font-bold">Live Pulse</h3>
+            <p className="text-sm text-muted-foreground mt-2">Real-time market volatility tracking.</p>
+          </div>
+          {/* Quadrant 3: Bottom Left */}
+          <div className="bg-accent/5 rounded-3xl p-8 border border-accent/10 shadow-lg flex flex-col justify-end transition-transform group-hover:translate-y-1 group-hover:-translate-x-1 duration-500">
+            <Layers className="text-primary mb-4" size={40} />
+            <h3 className="text-xl font-headline font-bold">Margin Protection</h3>
+            <p className="text-sm text-muted-foreground mt-2">AI-driven food cost containment.</p>
+          </div>
+          {/* Quadrant 4: Bottom Right (Main Action) */}
+          <div className="bg-primary text-primary-foreground rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center transition-transform group-hover:translate-y-1 group-hover:translate-x-1 duration-500">
+            <h2 className="text-2xl font-headline font-black uppercase tracking-tighter leading-none mb-4">The Golden Rule</h2>
+            <p className="text-xs opacity-90 mb-6 font-medium">Protect your cost percentage across any market.</p>
+            <Button asChild size="lg" variant="secondary" className="w-full rounded-2xl h-12 shadow-xl hover:scale-105 transition-all">
+              <Link href="/market" className="flex items-center">
+                Detect Hub <ArrowRight size={18} className="ml-2" />
+              </Link>
+            </Button>
+          </div>
         </div>
-        <div className="max-w-2xl">
-          <h2 className="text-3xl font-headline font-bold">The Golden Rule of Kitchen Profit</h2>
-          <p className="text-muted-foreground text-lg mt-3 leading-relaxed">
-            Protect your <b>Cost Percentage</b> across any market. Kitchen Profit's AI now scales to any regional pricing hub, identifying hidden savings in global commodity fluctuations.
-          </p>
-        </div>
-        <Button asChild size="lg" className="rounded-2xl h-14 px-10 shadow-xl hover:shadow-2xl hover:scale-105 transition-all bg-primary">
-          <Link href="/market" className="flex items-center text-lg">Detect Regional Market Hub <ArrowRight size={20} className="ml-2" /></Link>
-        </Button>
       </div>
     </div>
   );
