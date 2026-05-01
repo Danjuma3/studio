@@ -1,0 +1,287 @@
+{
+  "entities": {
+    "Ingredient": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Ingredient",
+      "type": "object",
+      "description": "Represents a single raw food item or component used in recipes, storing its core pricing and measurement information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Ingredient entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The common name of the ingredient (e.g., 'Tomato', 'Flour')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description or additional notes about the ingredient."
+        },
+        "unitOfMeasure": {
+          "type": "string",
+          "description": "The standard unit of measure for this ingredient (e.g., 'kg', 'liter', 'piece', 'g')."
+        },
+        "bulkUnitPrice": {
+          "type": "number",
+          "description": "The price per unit of measure when the ingredient is purchased in bulk."
+        },
+        "retailUnitPrice": {
+          "type": "number",
+          "description": "The price per unit of measure when the ingredient is purchased at retail."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the ingredient record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the ingredient record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "unitOfMeasure",
+        "bulkUnitPrice",
+        "retailUnitPrice",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Recipe": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Recipe",
+      "type": "object",
+      "description": "Defines a complete recipe, including its name and a collection of ingredients with specified quantities.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Recipe entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the recipe (e.g., 'Jollof Rice', 'Efo Riro')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description or instructions for the recipe."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the recipe record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the recipe record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RecipeIngredient": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "RecipeIngredient",
+      "type": "object",
+      "description": "Links a specific ingredient to a specific recipe, including the quantity of that ingredient used in the recipe. This entity manages the N:N relationship between Recipe and Ingredient.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the RecipeIngredient entity (the specific ingredient usage within a recipe)."
+        },
+        "recipeId": {
+          "type": "string",
+          "description": "Reference to the Recipe this ingredient belongs to. (Relationship: Recipe 1:N RecipeIngredient)"
+        },
+        "ingredientId": {
+          "type": "string",
+          "description": "Reference to the Ingredient used in this recipe. (Relationship: Ingredient 1:N RecipeIngredient)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The amount of the ingredient used in the recipe, in the ingredient's standard unit of measure."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Any specific preparation notes for this ingredient within the recipe (e.g., 'chopped', 'diced')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when this recipe ingredient entry was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when this recipe ingredient entry was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "recipeId",
+        "ingredientId",
+        "quantity",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "MarketPriceHistory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MarketPriceHistory",
+      "type": "object",
+      "description": "Stores historical or current weekly market prices for ingredients, allowing for tracking and analysis of price fluctuations.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MarketPriceHistory entry."
+        },
+        "ingredientId": {
+          "type": "string",
+          "description": "Reference to the Ingredient whose market price is being recorded. (Relationship: Ingredient 1:N MarketPriceHistory)"
+        },
+        "recordDate": {
+          "type": "string",
+          "description": "The date when this market price was observed or became effective.",
+          "format": "date-time"
+        },
+        "marketPrice": {
+          "type": "number",
+          "description": "The observed market price for the ingredient's standard unit of measure on the record date."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency in which the market price is recorded (e.g., 'NGN', 'USD')."
+        },
+        "source": {
+          "type": "string",
+          "description": "The source from which this market price data was obtained (e.g., 'Manual Entry', 'API Update - Lagos Market')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when this market price history record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when this market price history record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ingredientId",
+        "recordDate",
+        "marketPrice",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/ingredients/{ingredientId}",
+        "definition": {
+          "entityName": "Ingredient",
+          "schema": {
+            "$ref": "#/backend/entities/Ingredient"
+          },
+          "description": "Stores individual ingredient details for a specific user/restaurant. Ownership is implicit via the parent '/users/{userId}' path, ensuring Authorization Independence without 'get()' calls.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user (restaurant owner/manager) who owns this ingredient data."
+            },
+            {
+              "name": "ingredientId",
+              "description": "The unique identifier for a specific ingredient."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/recipes/{recipeId}",
+        "definition": {
+          "entityName": "Recipe",
+          "schema": {
+            "$ref": "#/backend/entities/Recipe"
+          },
+          "description": "Contains details for a recipe created by a specific user/restaurant. Ownership is implicit via the parent '/users/{userId}' path, ensuring Authorization Independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user (restaurant owner/manager) who owns this recipe data."
+            },
+            {
+              "name": "recipeId",
+              "description": "The unique identifier for a specific recipe."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/recipes/{recipeId}/recipeIngredients/{recipeIngredientId}",
+        "definition": {
+          "entityName": "RecipeIngredient",
+          "schema": {
+            "$ref": "#/backend/entities/RecipeIngredient"
+          },
+          "description": "Links a specific ingredient to a specific recipe within a user's collection, including quantity. Ownership is inherited from the parent Recipe and User paths, providing Authorization Independence. The 'recipeId' and 'ingredientId' fields within the document link to the respective entities, with 'ingredientId' referencing an ingredient also under the same 'userId'.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user (restaurant owner/manager) who owns this recipe and its ingredients."
+            },
+            {
+              "name": "recipeId",
+              "description": "The unique identifier of the parent recipe."
+            },
+            {
+              "name": "recipeIngredientId",
+              "description": "The unique identifier for the specific ingredient entry within the recipe."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/ingredients/{ingredientId}/marketPriceHistory/{historyEntryId}",
+        "definition": {
+          "entityName": "MarketPriceHistory",
+          "schema": {
+            "$ref": "#/backend/entities/MarketPriceHistory"
+          },
+          "description": "Records historical market price data for a specific ingredient owned by a user. Ownership is inherited from the parent Ingredient and User paths, ensuring Authorization Independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user (restaurant owner/manager) who owns this ingredient and its market price history."
+            },
+            {
+              "name": "ingredientId",
+              "description": "The unique identifier of the parent ingredient."
+            },
+            {
+              "name": "historyEntryId",
+              "description": "The unique identifier for a specific market price history entry."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure for EkoPlateCost adheres to the core design principles by organizing all user-specific data under a \"/users/{userId}\" root collection. This hierarchical, path-based ownership model is crucial for Authorization Independence, enabling robust and easily debuggable security rules without relying on \"get()\" operations. Authorization Independence: All documents (Ingredients, Recipes, RecipeIngredients, MarketPriceHistory) are nested directly under their respective user's path (e.g., \"/users/{userId}/ingredients/{ingredientId}\"). This structure makes the \"userId\" directly available in the security rules context (\"request.auth.uid == userId\"), eliminating the need to fetch parent documents to determine ownership or permissions. For instance, when accessing a \"RecipeIngredient\", its \"userId\" is obtained from the URL path, not from a lookup of the parent \"Recipe\" document. This ensures that atomic operations (like creating a recipe and its ingredients in a single batch) do not face authorization issues due to incomplete parent data. QAPs (Rules are not Filters): The structural segregation by \"userId\" inherently supports secure \"list\" operations. Users can only list documents within their own \"/users/{userId}\" subtree (e.g., their own ingredients or recipes). This prevents unauthorized data exposure during collection queries, as the rules can simply enforce \"allow list: if request.auth.uid == userId;\" without needing complex filtering logic within the rules themselves. The data is pre-filtered by its storage location. All documents within a given collection path (e.g., \"/users/{userId}/ingredients\") share the same security posture: they are owned by \"userId\". Access Modeling: The design consistently uses Path-Based ownership for all private data. Ingredients, Recipes, and their associated sub-entities like \"RecipeIngredient\" and \"MarketPriceHistory\" are nested logically to reflect their relationships and ownership, simplifying rule writing. For example, a \"RecipeIngredient\" is nested under a \"Recipe\", which is itself nested under a \"User\". DBAC: Since global roles are not specified, authorization is purely based on \"request.auth.uid\" matching the \"userId\" in the document path. If global roles (e.g., app-wide administrators) were introduced, they would be managed via existence checks in a dedicated collection like \"/roles_admin/{uid}\". Data Clarity and Predictability: Semantic naming (\"{userId}\", \"{ingredientId}\", \"{recipeId}\") and explicit schema references ensure clarity and consistency across the data model."
+  }
+}
