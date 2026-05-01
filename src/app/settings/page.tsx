@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -134,12 +135,12 @@ export default function SettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Increased to 2MB for branding logos
-      if (file.size > 2 * 1024 * 1024) {
+      // Increased to 10MB to match server limits
+      if (file.size > 10 * 1024 * 1024) {
         toast({
           variant: "destructive",
           title: "File too large",
-          description: "Please choose an image smaller than 2MB for optimal branding.",
+          description: "Please choose an image smaller than 10MB for optimal branding.",
         });
         return;
       }
@@ -165,7 +166,6 @@ export default function SettingsPage() {
   };
 
   const handleGlobalCreditCard = () => {
-    // Simulated global payment success
     toast({
       title: "Processing Global Credit Card",
       description: "Connecting to global payment hub...",
@@ -240,7 +240,7 @@ export default function SettingsPage() {
                           <TooltipContent className="max-w-xs p-4 space-y-2">
                             <div className="text-xs font-bold">Branding Guide:</div>
                             <div className="text-[10px] leading-relaxed space-y-2">
-                              <div><strong>1. Easy Upload:</strong> Use the "Choose Photo" button to convert a local file automatically.</div>
+                              <div><strong>1. Easy Upload:</strong> Use the "Choose Photo" button to convert a local file automatically (up to 10MB).</div>
                               <div><strong>2. Public Folder:</strong> Reference by filename (e.g., <code>/logo.png</code>) if hosting locally.</div>
                               <div><strong>3. Base64:</strong> Paste a raw string and the app will auto-prefix it for you.</div>
                             </div>
@@ -406,9 +406,9 @@ export default function SettingsPage() {
               <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
                 <div className="space-y-4 flex-1">
                   <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground">
                     Plan status: <span className="font-medium text-foreground">Active ({location.country} Hub)</span>
-                  </p>
+                  </div>
                 </div>
 
                 {subscription.plan === 'free' && (
@@ -475,9 +475,9 @@ export default function SettingsPage() {
                                   <Globe size={18} />
                                   International Wire
                                 </Button>
-                                <p className="text-[10px] text-center text-muted-foreground italic">
+                                <div className="text-[10px] text-center text-muted-foreground italic">
                                   Global payments processed via international gateway nodes.
-                                </p>
+                                </div>
                               </div>
                             )}
                           </div>

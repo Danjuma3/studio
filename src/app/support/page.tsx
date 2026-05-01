@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -45,7 +46,7 @@ export default function SupportWorkspacePage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
         <ShieldAlert size={64} className="text-destructive opacity-20" />
         <h1 className="text-2xl font-headline font-bold">Admin Access Restricted</h1>
-        <p className="text-muted-foreground">Only platform administrators can access the support workspace.</p>
+        <div className="text-muted-foreground">Only platform administrators can access the support workspace.</div>
       </div>
     );
   }
@@ -77,12 +78,12 @@ export default function SupportWorkspacePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Increased to 5MB to accommodate higher quality marketing photos
-      if (file.size > 5 * 1024 * 1024) {
+      // Increased to 10MB to accommodate high resolution marketing photos
+      if (file.size > 10 * 1024 * 1024) {
         toast({ 
           variant: "destructive", 
           title: "File too large", 
-          description: "Please upload an image smaller than 5MB for the AI Lab." 
+          description: "Please upload an image smaller than 10MB for the AI Lab." 
         });
         return;
       }
@@ -125,7 +126,7 @@ export default function SupportWorkspacePage() {
             <h1 className="text-3xl font-headline font-bold text-black/60">Admin Command Center</h1>
             <div className="flex items-center gap-2 mt-1">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-bold">ROOT ACCESS</Badge>
-              <span className="text-sm text-muted-foreground">Admin: chefdtanju@gmail.com</span>
+              <div className="text-sm text-muted-foreground">Admin: chefdtanju@gmail.com</div>
             </div>
           </div>
         </div>
@@ -235,7 +236,7 @@ export default function SupportWorkspacePage() {
                         <div key={issue.id} className="p-6 flex items-center justify-between hover:bg-muted/5 transition-colors">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold">{issue.title}</span>
+                              <div className="font-bold">{issue.title}</div>
                               <Badge variant={issue.severity === 'critical' ? 'destructive' : 'secondary'} className="text-[9px]">
                                 {issue.severity.toUpperCase()}
                               </Badge>
@@ -300,7 +301,7 @@ export default function SupportWorkspacePage() {
                           <>
                             <UploadCloud size={48} className="text-primary/20 mb-4" />
                             <div className="text-sm font-medium text-muted-foreground">Upload your face/picture</div>
-                            <div className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 5MB</div>
+                            <div className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 10MB</div>
                           </>
                         )}
                       </div>
