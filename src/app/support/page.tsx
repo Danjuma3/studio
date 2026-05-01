@@ -205,14 +205,13 @@ export default function SupportWorkspacePage() {
                 </CardHeader>
                 <CardContent className="pt-6">
                   <div className="rounded-2xl bg-black p-6 text-green-400 font-mono text-[11px] h-64 overflow-y-auto shadow-2xl leading-relaxed">
-                    <div className="text-green-500/50"># Kitchen Profit OS v2.0.4 - Diagnostic Mode</div>
+                    <div className="text-green-500/50"># Kitchen Profit Professional OS - Diagnostic Mode</div>
                     <div className="text-white/30">--------------------------------------------------</div>
                     <div>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</div>
                     <div>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</div>
                     <div>&gt; Scanning Firestore Collections (Global Scope)...</div>
                     <div>&gt; Found {ingredients.length} ingredient nodes.</div>
                     <div>&gt; Found {recipes.length} recipe configurations.</div>
-                    <div>&gt; Checking Margin Thresholds... [WARN] Found {recipes.filter(r => r.sellingPrice === 0).length} recipes with NULL_PRICE.</div>
                     <div>&gt; AI Model Link: STABLE</div>
                     <div>&gt; Memory Usage: OPTIMAL</div>
                     <div className="animate-pulse">&gt; Awaiting Command...</div>
@@ -241,7 +240,6 @@ export default function SupportWorkspacePage() {
                                 {issue.severity.toUpperCase()}
                               </Badge>
                             </div>
-                            {/* Fixed potential hydration error: div instead of p */}
                             <div className="text-sm text-muted-foreground">{issue.description}</div>
                           </div>
                           <Badge className={issue.status === 'fixed' ? 'bg-green-500' : 'bg-amber-500'}>
@@ -284,7 +282,7 @@ export default function SupportWorkspacePage() {
                     <Video className="text-primary" size={28} />
                     Veo AI Video Lab
                   </CardTitle>
-                  <CardDescription>Generate high-tech marketing videos using your photo as a reference.</CardDescription>
+                  <div className="text-sm text-muted-foreground">Generate high-tech marketing videos using your photo as a reference.</div>
                 </div>
                 <Badge className="bg-primary px-3">POWERED BY GEMINI VEO</Badge>
               </div>
@@ -322,7 +320,6 @@ export default function SupportWorkspacePage() {
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                           <Play size={18} className="text-primary" />
                         </div>
-                        {/* Fixed hydration: div instead of p */}
                         <div className="text-sm leading-relaxed italic text-muted-foreground">
                           "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Profit Professional app dashboard."
                         </div>
@@ -368,11 +365,10 @@ export default function SupportWorkspacePage() {
                       Download Campaign Video
                     </Button>
                   )}
-                  {/* Fixed hydration: div instead of p */}
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 flex gap-3">
                     <Sparkles className="text-amber-500 shrink-0" size={16} />
                     <div className="text-[10px] text-amber-800 leading-tight">
-                      <strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. Larger videos may take longer to process.
+                      <strong>AI Tip:</strong> Veo generation takes ~45-60 seconds. High-res photos are handled up to 10MB.
                     </div>
                   </div>
                 </div>

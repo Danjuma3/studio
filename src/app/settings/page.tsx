@@ -19,8 +19,6 @@ import {
   Megaphone,
   HelpCircle,
   UploadCloud,
-  FileCode,
-  FileImage,
   ChefHat,
   CreditCard,
   Globe
@@ -135,12 +133,12 @@ export default function SettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Synchronized with next.config.ts 10MB limit
+      // Allow up to 10MB to match server limits
       if (file.size > 10 * 1024 * 1024) {
         toast({
           variant: "destructive",
           title: "File too large",
-          description: "Please choose an image smaller than 10MB for optimal branding.",
+          description: "Please choose an image smaller than 10MB.",
         });
         return;
       }
@@ -148,8 +146,8 @@ export default function SettingsPage() {
       reader.onloadend = () => {
         setAdminConfig({ ...adminConfig, appLogoUrl: reader.result as string });
         toast({
-          title: "Photo Converted",
-          description: "Your photo has been converted. Click 'Save Global Settings' to apply.",
+          title: "Photo Ready",
+          description: "Your photo has been prepared. Click 'Save Global Settings' to apply.",
         });
       };
       reader.readAsDataURL(file);
@@ -161,7 +159,7 @@ export default function SettingsPage() {
     setIsUpgradeOpen(false);
     toast({
       title: "Payment Successful!",
-      description: "Your Pro features have been unlocked. Reference: " + reference.reference,
+      description: "Your Pro features have been unlocked.",
     });
   };
 
@@ -184,7 +182,7 @@ export default function SettingsPage() {
     toast({
       variant: "destructive",
       title: "Payment Cancelled",
-      description: "You closed the payment window. Your plan was not upgraded.",
+      description: "You closed the payment window.",
     });
   };
 
@@ -209,7 +207,7 @@ export default function SettingsPage() {
     <div className="space-y-8 pb-20">
       <div>
         <h1 className="text-3xl font-headline font-bold">Settings & Billing</h1>
-        <p className="text-muted-foreground">Manage your business profile, global subscription, and branding.</p>
+        <p className="text-muted-foreground text-sm">Manage your business profile, global subscription, and branding.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -240,9 +238,9 @@ export default function SettingsPage() {
                           <TooltipContent className="max-w-xs p-4 space-y-2">
                             <div className="text-xs font-bold">Branding Guide:</div>
                             <div className="text-[10px] leading-relaxed space-y-2">
-                              <div><strong>1. Easy Upload:</strong> Use the "Choose Photo" button to convert a local file automatically (up to 10MB).</div>
-                              <div><strong>2. Public Folder:</strong> Reference by filename (e.g., <code>/logo.png</code>) if hosting locally.</div>
-                              <div><strong>3. Base64:</strong> Paste a raw string and the app will auto-prefix it for you.</div>
+                              <div><strong>1. Easy Upload:</strong> Use the "Choose Photo" button (up to 10MB).</div>
+                              <div><strong>2. Public Folder:</strong> Reference by path (e.g., <code>/logo.png</code>).</div>
+                              <div><strong>3. Base64:</strong> Directly paste string data.</div>
                             </div>
                           </TooltipContent>
                         </Tooltip>
@@ -261,8 +259,7 @@ export default function SettingsPage() {
                           onChange={handleFileChange}
                           className="w-full text-xs h-10 bg-white cursor-pointer border rounded-md p-1"
                         />
-                        {/* Fixed hydration: div instead of p */}
-                        <div className="text-[10px] text-muted-foreground">Automatically turns any photo into a branding string.</div>
+                        <div className="text-[10px] text-muted-foreground">Supports high-res photos up to 10MB.</div>
                       </div>
 
                       <div className="space-y-3">
@@ -359,7 +356,7 @@ export default function SettingsPage() {
                 <ImageIcon className="text-primary" size={24} />
                 App Branding
               </CardTitle>
-              <CardDescription>Visual identity of Kitchen Profit.</CardDescription>
+              <div className="text-sm text-muted-foreground">Visual identity of Kitchen Profit.</div>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
@@ -379,9 +376,8 @@ export default function SettingsPage() {
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
                     <div className="font-bold text-lg">Identity Control</div>
-                    {/* Fixed hydration: div instead of p */}
                     <div className="text-sm text-muted-foreground leading-relaxed">
-                      Branding is managed centrally by the platform administrator to ensure a consistent global experience.
+                      Branding is managed centrally by the platform administrator to ensure a consistent global experience across all regions.
                     </div>
                   </div>
                 </div>
@@ -397,7 +393,7 @@ export default function SettingsPage() {
                     <Crown className="text-primary" size={24} />
                     Global Subscription
                   </CardTitle>
-                  <CardDescription>Manage your access to professional margin tools.</CardDescription>
+                  <div className="text-sm text-muted-foreground">Manage your access to professional margin tools.</div>
                 </div>
                 <Badge className={subscription.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
                   {subscription.plan.toUpperCase()} PLAN
@@ -418,11 +414,11 @@ export default function SettingsPage() {
                     <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
                       <DialogTrigger asChild>
                         <Button className="bg-primary hover:bg-primary/90 rounded-xl h-14 px-8 shadow-lg group flex flex-col items-center gap-0 leading-tight">
-                          <span className="flex items-center gap-2 text-lg">
+                          <div className="flex items-center gap-2 text-lg">
                             <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
                             Upgrade to Pro
-                          </span>
-                          <span className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">{proDisplayPrice} / month</span>
+                          </div>
+                          <div className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">{proDisplayPrice} / month</div>
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[450px]">
@@ -503,7 +499,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-sm opacity-90 leading-relaxed">
-                Payments are processed through regional secure nodes (Paystack/Stripe). Kitchen Profit International does not store sensitive card data.
+                Payments are processed through regional secure nodes (Paystack/Stripe). Kitchen Profit Professional does not store sensitive card data.
               </div>
             </CardContent>
           </Card>
