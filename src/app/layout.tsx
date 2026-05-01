@@ -1,9 +1,11 @@
 
 import type {Metadata} from 'next';
+import Image from 'next/image';
 import './globals.css';
 import { AppNavigation } from '@/components/Navigation';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/toaster';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export const metadata: Metadata = {
   title: 'Kitchen Prof - Food Cost Control & Analysis',
@@ -15,6 +17,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+
   return (
     <html lang="en">
       <head>
@@ -29,7 +33,21 @@ export default function RootLayout({
             <SidebarInset className="flex flex-col flex-1">
               <header className="h-16 flex items-center gap-4 border-b px-6 sticky top-0 bg-background/80 backdrop-blur-md z-30">
                 <SidebarTrigger className="md:hidden" />
-                <div className="flex-1">
+                <div className="flex-1 flex items-center md:hidden">
+                  <div className="relative w-8 h-8 rounded-lg overflow-hidden mr-2">
+                    {logo && (
+                      <Image 
+                        src={logo.imageUrl} 
+                        alt="Kitchen Prof" 
+                        fill 
+                        className="object-cover"
+                        data-ai-hint={logo.imageHint}
+                      />
+                    )}
+                  </div>
+                  <span className="font-headline font-bold text-primary">Kitchen Prof</span>
+                </div>
+                <div className="flex-1 hidden md:block">
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">

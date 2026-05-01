@@ -1,10 +1,11 @@
+
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { 
   LayoutDashboard, 
-  ChefHat, 
   PackageSearch, 
   Calculator, 
   TrendingUp,
@@ -26,6 +27,7 @@ import {
   SidebarRail,
   SidebarFooter
 } from '@/components/ui/sidebar';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -45,19 +47,32 @@ const secondaryNav = [
 
 export function AppNavigation() {
   const pathname = usePathname();
+  const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
 
   return (
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
-            <ChefHat size={24} />
+        <Link href="/" className="flex items-center gap-3 mb-4 group">
+          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform">
+            {logo ? (
+              <Image 
+                src={logo.imageUrl} 
+                alt="Kitchen Prof Logo" 
+                fill 
+                className="object-cover"
+                data-ai-hint={logo.imageHint}
+              />
+            ) : (
+              <div className="w-full h-full bg-primary flex items-center justify-center text-white">
+                KP
+              </div>
+            )}
           </div>
           <div>
             <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Prof</h1>
-            <p className="text-xs text-muted-foreground mt-1">food cost control/Analysis</p>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-tighter">food cost control/Analysis</p>
           </div>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu className="px-2">
