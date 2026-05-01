@@ -149,9 +149,9 @@ export function useInventory() {
       message: "Welcome to Kitchen Prof! Update your prices for accuracy.",
       type: "info",
       active: true,
-      updatedAt: new Date().toISOString()
+      updatedAt: "2024-01-01T00:00:00.000Z"
     },
-    subscription: { plan: currentPlan, status: 'active', nextBillingDate: new Date().toISOString() } as SubscriptionInfo,
+    subscription: { plan: currentPlan, status: 'active', nextBillingDate: "2024-01-01T00:00:00.000Z" } as SubscriptionInfo,
     loading: isUserLoading || isIngredientsLoading || isRecipesLoading || isSystemLoading,
     addIngredient,
     updateIngredient,

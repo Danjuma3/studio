@@ -6,26 +6,37 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 /**
  * A loading screen that breaks the app logo into a puzzle grid.
- * Note: This component must NOT use hooks that depend on Firebase (like useInventory)
- * because it is used as the loading state BEFORE Firebase is initialized.
+ * Fixes hydration error by generating random offsets only after mounting.
  */
 export function PuzzleLoader() {
-  // Use the static placeholder logo for the loading animation.
-  // We don't use useInventory here to avoid initialization errors.
   const logo = PlaceHolderImages.find((img) => img.id === 'app-logo');
   const imageUrl = logo?.imageUrl || 'https://picsum.photos/seed/kitchen-prof-logo/512/512';
   
   const gridSize = 4; // 4x4 grid
   const pieces = Array.from({ length: gridSize * gridSize }, (_, i) => i);
   const [mounted, setMounted] = useState(false);
+  const [offsets, setOffsets] = useState<{x: number, y: number, r: number}[]>([]);
 
   useEffect(() => {
-    // We use a small timeout to trigger the re-assembly animation after mount
+    // Generate random offsets once on the client to avoid hydration mismatch
+    const initialOffsets = pieces.map(() => ({
+      x: (Math.random() - 0.5) * 400,
+      y: (Math.random() - 0.5) * 400,
+      r: (Math.random() - 0.5) * 180,
+    }));
+    
+    setOffsets(initialOffsets);
+    
     const timer = setTimeout(() => {
       setMounted(true);
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // Return a stable shell before offsets are generated on the client
+  if (offsets.length === 0) {
+    return <div className="fixed inset-0 z-[100] bg-background" />;
+  }
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background animate-in fade-in duration-500">
@@ -34,12 +45,7 @@ export function PuzzleLoader() {
           {pieces.map((i) => {
             const row = Math.floor(i / gridSize);
             const col = i % gridSize;
-            
-            // Random initial offsets for the "scattered" look
-            // These are only used during the "not mounted" state
-            const randomX = (Math.random() - 0.5) * 400;
-            const randomY = (Math.random() - 0.5) * 400;
-            const randomRotate = (Math.random() - 0.5) * 180;
+            const offset = offsets[i];
 
             return (
               <div
@@ -48,7 +54,7 @@ export function PuzzleLoader() {
                 style={{
                   transform: mounted 
                     ? 'translate(0, 0) rotate(0)' 
-                    : `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`,
+                    : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg)`,
                   opacity: mounted ? 1 : 0,
                   transitionDelay: `${i * 40}ms`,
                 }}

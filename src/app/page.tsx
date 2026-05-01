@@ -16,9 +16,15 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
   const { ingredients, recipes, systemAlert } = useInventory();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
   
@@ -81,10 +87,12 @@ export default function Dashboard() {
               {systemAlert.message}
             </p>
           </div>
-          <div className="hidden md:block text-right pr-4">
-             <p className="text-[10px] text-muted-foreground font-medium">Updated</p>
-             <p className="text-[10px] font-bold">{new Date(systemAlert.updatedAt).toLocaleTimeString()}</p>
-          </div>
+          {mounted && (
+            <div className="hidden md:block text-right pr-4">
+              <p className="text-[10px] text-muted-foreground font-medium">Updated</p>
+              <p className="text-[10px] font-bold">{new Date(systemAlert.updatedAt).toLocaleTimeString()}</p>
+            </div>
+          )}
         </div>
       )}
 
