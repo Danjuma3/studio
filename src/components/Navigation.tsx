@@ -9,7 +9,9 @@ import {
   Calculator, 
   TrendingUp,
   Settings,
-  ShieldCheck
+  ShieldCheck,
+  CookingPot,
+  Store
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -26,8 +28,10 @@ import {
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Stock Taking', href: '/stock', icon: PackageSearch },
+  { name: 'Recipe Composer', href: '/recipes', icon: CookingPot },
   { name: 'Cost Percentage', href: '/costing', icon: Calculator },
   { name: 'Profit Calculator', href: '/profit', icon: TrendingUp },
+  { name: 'Market Updates', href: '/market', icon: Store },
   { name: 'Manager Tools', href: '/manager', icon: ShieldCheck },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
