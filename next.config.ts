@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
     ],
   },
   // Standard Next.js 15 configuration for Server Action body size limits
+  // Increased to 10MB to support high-quality marketing video generation and large photos.
   serverActions: {
     bodySizeLimit: '10mb',
   },
