@@ -14,8 +14,8 @@ interface BrandedLogoProps {
 
 /**
  * Premium Branded Logo component that handles the "Puzzle" aesthetic
- * with permanent obvious white lines and high-end frosted glass effect.
- * Sit under a semi-transparent white background as requested.
+ * with subtle white lines and high-end frosted glass effect.
+ * Sits under a semi-transparent white background for a faded look.
  */
 export function BrandedLogo({ 
   url, 
@@ -40,9 +40,9 @@ export function BrandedLogo({
       style={{ width: size, height: size }}
     >
       {showPuzzleLines ? (
-        <div className="grid grid-cols-2 grid-rows-2 w-full h-full p-[2px] bg-white">
+        <div className="grid grid-cols-2 grid-rows-2 w-full h-full p-[1px] bg-white/30">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="relative overflow-hidden border-[1px] border-white">
+            <div key={i} className="relative overflow-hidden border-[0.5px] border-white/20">
               <div
                 className="absolute w-[200%] h-[200%]"
                 style={{
@@ -52,7 +52,6 @@ export function BrandedLogo({
                   top: `-${Math.floor(i / 2) * 100}%`,
                 }}
               />
-              {/* Added a white fade overlay to give it that "under white background" look */}
               <div className="absolute inset-0 bg-white/10" />
             </div>
           ))}
