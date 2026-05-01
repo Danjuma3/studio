@@ -55,7 +55,7 @@ export function AppNavigation() {
           </div>
           <div>
             <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Prof</h1>
-            <p className="text-xs text-muted-foreground mt-1">Restaurant cost control</p>
+            <p className="text-xs text-muted-foreground mt-1">food cost control/Analysis</p>
           </div>
         </div>
       </SidebarHeader>
