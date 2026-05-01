@@ -2,27 +2,37 @@
 
 Kitchen Prof is an intelligent food cost control and margin analysis platform designed specifically for the volatile restaurant market in Lagos, Nigeria.
 
+## 📥 How to Download This Project
+To take your code with you:
+1. Click the **Download** icon in the top-right corner of the Firebase Studio interface.
+2. Save the ZIP file to your computer.
+3. Unzip the folder to access all source code, configurations, and AI flows.
+
 ## 🚀 Future-Proofing & Portability
-This app is built on a standard modern stack. If you ever need to move away from Firebase Studio, your code is fully portable.
+This app is built on a standard modern stack (Next.js 15, Firebase, Tailwind). If you ever move away from Firebase Studio, your code remains fully functional and portable.
 
 ### Running Locally
-1. **Download** the source code.
-2. **Install Dependencies**: Run `npm install`.
-3. **Environment Variables**: Create a `.env.local` file with your Firebase config (found in `src/firebase/config.ts`).
-4. **Start Development**: Run `npm run dev`.
-5. **Genkit UI**: Run `npm run genkit:dev` for AI testing.
+1. **Prerequisites**: Ensure you have [Node.js](https://nodejs.org/) installed.
+2. **Install Dependencies**: Open your terminal in the project folder and run:
+   ```bash
+   npm install
+   ```
+3. **Environment Variables**: Create a `.env.local` file. Copy the keys from `src/firebase/config.ts` into this file following standard Next.js environment variable naming (e.g., `NEXT_PUBLIC_FIREBASE_API_KEY=...`).
+4. **Start Development**: Run:
+   ```bash
+   npm run dev
+   ```
+5. **Genkit UI**: To test AI prompts locally, run:
+   ```bash
+   npm run genkit:dev
+   ```
 
 ## 🖼️ Branding (How to Swap the Logo)
 To change the app's logo and icon across all screens:
-1. Upload your new image to the `public/` folder.
+1. Upload your new image to the `public/` folder (e.g., name it `my-logo.png`).
 2. Open `src/app/lib/placeholder-images.json`.
-3. Update the `imageUrl` for the `app-logo` entry to point to your new file (e.g., `"/my-new-logo.png"`).
+3. Update the `imageUrl` for the `app-logo` entry to point to your new file (e.g., `"/my-logo.png"`).
 4. The Sidebar, Header, and PWA manifest will update automatically.
-
-## 🛠️ Core Interfaces
-1. **Stock Taking**: Real-time pantry monitoring with low-stock alerts.
-2. **Cost Percentage (Pro)**: Instant food cost % analysis to protect margins.
-3. **Auto Profit Calculator (Pro)**: AI-driven performance audits and procurement strategies.
 
 ## 🔐 Security & Administration
 - **Admin**: `chefdtanju@gmail.com` has global administrative access.
