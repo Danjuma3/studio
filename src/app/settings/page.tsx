@@ -17,7 +17,8 @@ import {
   Image as ImageIcon,
   Save,
   Megaphone,
-  HelpCircle
+  HelpCircle,
+  UploadCloud
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -188,20 +189,29 @@ export default function SettingsPage() {
                               <HelpCircle size={14} />
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent className="max-w-xs">
-                            <p className="text-xs">Enter a URL to an image hosted online, or place an image in the "public" folder and enter its name (e.g., /mylogo.png).</p>
+                          <TooltipContent className="max-w-xs p-4 space-y-2">
+                            <p className="text-xs font-bold">How to use an image from your computer:</p>
+                            <p className="text-[10px] leading-relaxed">
+                              1. Place your image file inside the project's <strong>public/</strong> folder.<br/>
+                              2. Enter the filename here starting with a slash (e.g., <strong>/mylogo.png</strong>).<br/>
+                              3. Alternatively, paste a <strong>Data URI</strong> (base64 string) directly.
+                            </p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
                     <div className="space-y-2">
-                      <Label>App Logo URL</Label>
-                      <div className="flex gap-2">
+                      <Label>App Logo URL / Path</Label>
+                      <div className="flex flex-col gap-2">
                         <Input 
-                          placeholder="e.g. https://domain.com/logo.png or /mylogo.png"
+                          placeholder="e.g. /my-logo.png or https://domain.com/logo.png"
                           value={adminConfig.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
+                        <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                          <UploadCloud size={10} /> 
+                          To use a photo from your PC, upload it to your public folder and enter the path here.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -299,7 +309,7 @@ export default function SettingsPage() {
                     <h4 className="font-bold text-lg">Identity Control</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {isAdmin 
-                        ? "You are managing the branding dynamically via the Admin Panel above." 
+                        ? "You are managing the branding dynamically via the Admin Panel above. You can use local files from your public folder or online URLs." 
                         : "Branding is managed centrally by the platform administrator."}
                     </p>
                   </div>
