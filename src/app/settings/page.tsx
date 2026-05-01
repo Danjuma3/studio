@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -19,8 +18,7 @@ import {
   Megaphone,
   HelpCircle,
   UploadCloud,
-  FileCode,
-  Info
+  FileCode
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -367,7 +365,7 @@ export default function SettingsPage() {
                   <CardDescription>Control your restaurant's access level.</CardDescription>
                 </div>
                 <Badge className={subscription.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
-                  {subscription.plan.toUpperCase() PLAN}
+                  {subscription.plan.toUpperCase()} PLAN
                 </Badge>
               </div>
             </CardHeader>
