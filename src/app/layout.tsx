@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { AppNavigation } from '@/components/Navigation';
@@ -5,8 +6,8 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/s
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Kitchen Prof - Smart Restaurant Costing',
-  description: 'Efficient food cost management for Lagos restaurants.',
+  title: 'Kitchen Prof - Food Cost Control & Analysis',
+  description: 'The ultimate intelligent companion for Lagos restaurant owners to master their margins and dominate the market.',
 };
 
 export default function RootLayout({
@@ -29,7 +30,6 @@ export default function RootLayout({
               <header className="h-16 flex items-center gap-4 border-b px-6 sticky top-0 bg-background/80 backdrop-blur-md z-30">
                 <SidebarTrigger className="md:hidden" />
                 <div className="flex-1">
-                  {/* Page-specific breadcrumbs or title could go here */}
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">
