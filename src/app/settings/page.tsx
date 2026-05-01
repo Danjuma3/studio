@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -21,7 +22,8 @@ import {
   Crown,
   ChevronRight,
   Sparkles,
-  Info
+  Info,
+  Calculator
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -114,9 +116,6 @@ export default function SettingsPage() {
                           <CheckCircle2 size={12} className="text-primary" /> Basic Stock Taking
                         </li>
                         <li className="text-[11px] flex items-center gap-2">
-                          <CheckCircle2 size={12} className="text-primary" /> Plate Costing Tool
-                        </li>
-                        <li className="text-[11px] flex items-center gap-2">
                           <CheckCircle2 size={12} className="text-primary" /> 3 AI Audits / Month
                         </li>
                         <li className="text-[11px] flex items-center gap-2">
@@ -130,6 +129,9 @@ export default function SettingsPage() {
                         <Zap size={10} /> Pro Benefits
                       </p>
                       <ul className="space-y-1.5">
+                        <li className="text-[11px] flex items-center gap-2 font-bold text-primary">
+                          <Calculator size={12} /> Full Plate Costing Tool
+                        </li>
                         <li className="text-[11px] flex items-center gap-2">
                           <CheckCircle2 size={12} className="text-primary" /> Unlimited AI Audits
                         </li>
