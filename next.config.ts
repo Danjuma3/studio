@@ -31,15 +31,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // High-priority body size limit configuration for Next.js 15 Server Actions
+  // Standard Next.js 15 configuration for Server Action body size limits
   serverActions: {
     bodySizeLimit: '10mb',
-  },
-  experimental: {
-    // Redundant configuration for maximum compatibility with different Next.js versions
-    serverActions: {
-      bodySizeLimit: '10mb',
-    } as any,
   },
 };
 

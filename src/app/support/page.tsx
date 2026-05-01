@@ -12,7 +12,6 @@ import {
   Terminal,
   Sparkles,
   ShieldAlert,
-  Copy,
   CheckCircle2,
   History,
   Users,
@@ -25,8 +24,7 @@ import {
   UploadCloud,
   Loader2,
   Play,
-  Smartphone,
-  ChevronRight
+  Smartphone
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { generateMarketingVideo } from '@/ai/flows/marketing-video-flow';
@@ -53,21 +51,6 @@ export default function SupportWorkspacePage() {
       </div>
     );
   }
-
-  const handleCopyDiagnostics = () => {
-    const diagnosticPayload = {
-      timestamp: new Date().toISOString(),
-      admin: user?.email,
-      environment: process.env.NODE_ENV,
-      stats: {
-        totalIngredients: ingredients.length,
-        totalRecipes: recipes.length,
-        activeSupportTickets: issues.filter(i => i.status !== 'fixed').length,
-      },
-    };
-    navigator.clipboard.writeText(JSON.stringify(diagnosticPayload, null, 2));
-    toast({ title: "Diagnostic Payload Ready", description: "Data copied to clipboard." });
-  };
 
   const handleGrandOpeningBroadcast = () => {
     updateSystemAlert({
@@ -112,7 +95,7 @@ export default function SupportWorkspacePage() {
       toast({ title: "Video Generated!", description: "Your marketing video is ready for review." });
     } catch (error: any) {
       console.error(error);
-      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Model at capacity. Please try again later." });
+      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Model at capacity or API key missing. Please check credentials." });
     } finally {
       setIsGeneratingVideo(false);
     }

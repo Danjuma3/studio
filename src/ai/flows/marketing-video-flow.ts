@@ -10,7 +10,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
 
 const MarketingVideoInputSchema = z.object({
   photoDataUri: z.string().describe("A photo of the user as a data URI (base64)."),
@@ -34,14 +33,15 @@ const marketingVideoFlow = ai.defineFlow(
     outputSchema: MarketingVideoOutputSchema,
   },
   async (input) => {
-    const model = googleAI.model('veo-2.0-generate-001');
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
+    // Standardizing on string-based model access for cross-module robustness
+    const modelId = 'googleai/veo-2.0-generate-001';
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
     // Remove data uri prefix to get raw base64 for the prompt
     const mimeType = input.photoDataUri.split(';')[0].split(':')[1] || 'image/jpeg';
 
     let { operation } = await ai.generate({
-      model: model,
+      model: modelId,
       prompt: [
         { text: input.prompt },
         { media: { url: input.photoDataUri, contentType: mimeType } }
@@ -58,7 +58,8 @@ const marketingVideoFlow = ai.defineFlow(
     }
 
     // Wait until the operation completes (polling)
-    let maxRetries = 24; // 2 minutes max
+    // We poll every 5 seconds for up to 3 minutes (36 retries)
+    let maxRetries = 36; 
     while (!operation.done && maxRetries > 0) {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       operation = await ai.checkOperation(operation);
@@ -74,11 +75,11 @@ const marketingVideoFlow = ai.defineFlow(
       throw new Error('Failed to find the generated video in the output');
     }
 
-    // Fetch the video from the Google URL and convert to base64 data URI using native fetch
+    // Fetch the video from the Google URL and convert to base64 data URI
     const response = await fetch(`${videoPart.media.url}&key=${apiKey}`);
     
     if (!response.ok) {
-      throw new Error(`Failed to fetch video: ${response.statusText}`);
+      throw new Error(`Failed to fetch video from Google: ${response.statusText}`);
     }
 
     const buffer = await response.arrayBuffer();
