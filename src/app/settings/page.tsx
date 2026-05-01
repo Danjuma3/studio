@@ -19,7 +19,8 @@ import {
   Megaphone,
   HelpCircle,
   UploadCloud,
-  FileCode
+  FileCode,
+  Info
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -193,29 +194,33 @@ export default function SettingsPage() {
                           <TooltipContent className="max-w-xs p-4 space-y-2">
                             <p className="text-xs font-bold">How to use your own photo:</p>
                             <div className="text-[10px] leading-relaxed space-y-2">
-                              <p><strong>1. Public Folder Method:</strong> Place your image in the <code>public/</code> folder and enter the filename here starting with a slash (e.g., <code>/my-logo.png</code>).</p>
-                              <p><strong>2. Data URI Method:</strong> Use an online tool to convert your photo to a "Base64 string" and paste that entire string here.</p>
+                              <p><strong>1. Public Folder:</strong> Reference by filename (e.g., <code>/my-logo.png</code>).</p>
+                              <p><strong>2. Base64:</strong> Use an "Image to Base64" converter. Ensure the string starts with <code>data:image/...;base64,</code> or paste the raw string and the app will try to fix it.</p>
                             </div>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
                     <div className="space-y-2">
-                      <Label>App Logo URL / Path</Label>
+                      <Label>App Logo URL / Path / Base64</Label>
                       <div className="flex flex-col gap-2">
                         <Input 
-                          placeholder="e.g. /my-logo.png or data:image/png;base64,..."
+                          placeholder="e.g. data:image/png;base64,..."
                           value={adminConfig.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-wrap items-center gap-4">
                           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <UploadCloud size={10} /> 
                             Path: /filename.png
                           </p>
                           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <FileCode size={10} /> 
-                            Supports Base64 Data URIs
+                            Supports Base64 Strings
+                          </p>
+                          <p className="text-[10px] text-primary flex items-center gap-1 font-bold">
+                            <Info size={10} />
+                            Format: data:image/png;base64,...
                           </p>
                         </div>
                       </div>
@@ -300,29 +305,27 @@ export default function SettingsPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
                 <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-muted shadow-inner bg-muted/20">
-                  {currentLogoUrl && (
-                    <Image 
-                      src={currentLogoUrl} 
-                      alt="Current Logo" 
-                      fill 
-                      className="object-cover"
-                      unoptimized
-                    />
-                  )}
+                  <Image 
+                    src={getSafeLogoUrl(systemPayment?.appLogoUrl)} 
+                    alt="Current Logo" 
+                    fill 
+                    className="object-cover"
+                    unoptimized
+                  />
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
                     <h4 className="font-bold text-lg">Identity Control</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {isAdmin 
-                        ? "You are managing the branding dynamically via the Admin Panel above. You can use local files from your public folder or online URLs." 
+                        ? "You are managing the branding dynamically. Your updates will affect all user dashboards instantly." 
                         : "Branding is managed centrally by the platform administrator."}
                     </p>
                   </div>
                   <div className="p-4 bg-muted/30 rounded-xl border border-dashed flex items-center gap-3">
                     <HelpCircle className="text-primary" size={20} />
                     <p className="text-xs text-muted-foreground">
-                      To use a file from your computer, check the <strong>README</strong> for instructions on the <code>public/</code> folder.
+                      Base64 strings should be long text blocks. The app will auto-detect them if you paste the direct output from an encoder.
                     </p>
                   </div>
                 </div>
