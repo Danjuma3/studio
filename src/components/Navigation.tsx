@@ -43,7 +43,7 @@ export function AppNavigation() {
             <ChefHat size={24} />
           </div>
           <div>
-            <h1 className="font-headline font-bold text-lg text-primary leading-none">EkoPlateCost</h1>
+            <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Prof</h1>
             <p className="text-xs text-muted-foreground mt-1">Restaurant cost control</p>
           </div>
         </div>
@@ -72,7 +72,7 @@ export function AppNavigation() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 text-[10px] text-muted-foreground text-center">
-        &copy; {new Date().getFullYear()} EkoPlateCost Lagos
+        &copy; {new Date().getFullYear()} Kitchen Prof Lagos
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

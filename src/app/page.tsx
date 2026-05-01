@@ -102,7 +102,7 @@ export default function Dashboard() {
         <div>
           <h2 className="text-2xl font-headline font-bold">The Golden Rule of Restaurant Profit</h2>
           <p className="text-muted-foreground max-w-xl mx-auto mt-2">
-            Keep your <b>Cost Percentage</b> below 35% and your <b>Stock</b> lean. EkoPlateCost's <b>Auto Profit Calculator</b> will handle the rest by finding hidden savings in Mile 12 market prices.
+            Keep your <b>Cost Percentage</b> below 35% and your <b>Stock</b> lean. Kitchen Prof's <b>Auto Profit Calculator</b> will handle the rest by finding hidden savings in Mile 12 market prices.
           </p>
         </div>
         <Button asChild className="rounded-xl h-12 px-8">

@@ -254,7 +254,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm opacity-90 leading-relaxed">
-                Your payment information is stored locally and securely within EkoPlateCost. We never share your banking details with 3rd party vendors.
+                Your payment information is stored locally and securely within Kitchen Prof. We never share your banking details with 3rd party vendors.
               </p>
             </CardContent>
           </Card>

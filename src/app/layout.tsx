@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/s
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'EkoPlateCost - Smart Restaurant Costing',
+  title: 'Kitchen Prof - Smart Restaurant Costing',
   description: 'Efficient food cost management for Lagos restaurants.',
 };
 
