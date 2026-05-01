@@ -36,6 +36,7 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { UnitOfMeasure } from '../lib/types';
 
 export default function InventoryPage() {
   const { ingredients, addIngredient, updateIngredient, deleteIngredient } = useInventory();
@@ -44,7 +45,7 @@ export default function InventoryPage() {
   
   const [newIngredient, setNewIngredient] = useState({
     name: '',
-    unitOfMeasure: 'kg' as any,
+    unitOfMeasure: 'kg' as UnitOfMeasure,
     bulkPrice: 0,
     retailPrice: 0,
     weeklyUsage: 0
@@ -119,7 +120,7 @@ export default function InventoryPage() {
                   <Input 
                     type="number"
                     value={newIngredient.weeklyUsage}
-                    onChange={(e) => setNewIngredient({...newIngredient, weeklyUsage: parseFloat(e.target.value)})}
+                    onChange={(e) => setNewIngredient({...newIngredient, weeklyUsage: parseFloat(e.target.value) || 0})}
                   />
                 </div>
               </div>
@@ -129,7 +130,7 @@ export default function InventoryPage() {
                   <Input 
                     type="number"
                     value={newIngredient.bulkPrice}
-                    onChange={(e) => setNewIngredient({...newIngredient, bulkPrice: parseFloat(e.target.value)})}
+                    onChange={(e) => setNewIngredient({...newIngredient, bulkPrice: parseFloat(e.target.value) || 0})}
                   />
                 </div>
                 <div className="space-y-2">
@@ -137,7 +138,7 @@ export default function InventoryPage() {
                   <Input 
                     type="number"
                     value={newIngredient.retailPrice}
-                    onChange={(e) => setNewIngredient({...newIngredient, retailPrice: parseFloat(e.target.value)})}
+                    onChange={(e) => setNewIngredient({...newIngredient, retailPrice: parseFloat(e.target.value) || 0})}
                   />
                 </div>
               </div>

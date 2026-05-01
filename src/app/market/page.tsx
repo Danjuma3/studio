@@ -5,12 +5,13 @@ import { useInventory } from '../lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, RefreshCw, Calendar, MapPin, CheckCircle2, ShoppingCart } from 'lucide-react';
+import { TrendingUp, TrendingDown, RefreshCw, Calendar, MapPin, CheckCircle2, ShoppingCart, Lock, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function MarketUpdatePage() {
-  const { ingredients, updateIngredient } = useInventory();
+  const { ingredients, updateIngredient, subscription } = useInventory();
 
   const handlePriceUpdate = (id: string, type: 'bulk' | 'retail', value: string) => {
     const numValue = parseFloat(value);
@@ -24,7 +25,6 @@ export default function MarketUpdatePage() {
       title: "Syncing Market Data",
       description: "Connecting to Mile 12, Oyingbo, Makoko, Oko-Oba, and Dei-Dei databases...",
     });
-    // Mock sync
     setTimeout(() => {
       toast({
         title: "Market Sync Complete",
@@ -32,6 +32,8 @@ export default function MarketUpdatePage() {
       });
     }, 1500);
   };
+
+  const isPro = subscription.plan === 'pro';
 
   return (
     <div className="space-y-8">
@@ -131,19 +133,47 @@ export default function MarketUpdatePage() {
                   <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold">Makoko (Seafood)</span>
-                  <Badge variant="outline" className="text-[10px] h-5 bg-blue-50 text-blue-700 border-blue-200">High Supply</Badge>
+                {/* Pro Feature: Specialized Market Trends */}
+                <div className="relative group">
+                  <div className={`flex items-center justify-between ${!isPro ? 'blur-[2px] opacity-40 select-none' : ''}`}>
+                    <span className="text-xs font-bold">Makoko (Seafood)</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-blue-50 text-blue-700 border-blue-200">High Supply</Badge>
+                  </div>
+                  {!isPro && (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] bg-primary/10 text-primary border-primary/20 border">
+                        <Link href="/settings"><Lock size={10} className="mr-1" /> Unlock Pro</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold">Oko-Oba (Beef/Meat)</span>
-                  <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Rising</Badge>
+                <div className="relative group">
+                  <div className={`flex items-center justify-between ${!isPro ? 'blur-[2px] opacity-40 select-none' : ''}`}>
+                    <span className="text-xs font-bold">Oko-Oba (Beef/Meat)</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Rising</Badge>
+                  </div>
+                  {!isPro && (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] bg-primary/10 text-primary border-primary/20 border">
+                        <Link href="/settings"><Lock size={10} className="mr-1" /> Unlock Pro</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold">Dei-Dei (Abuja Hub)</span>
-                  <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Steady</Badge>
+                <div className="relative group">
+                  <div className={`flex items-center justify-between ${!isPro ? 'blur-[2px] opacity-40 select-none' : ''}`}>
+                    <span className="text-xs font-bold">Dei-Dei (Abuja Hub)</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Steady</Badge>
+                  </div>
+                  {!isPro && (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] bg-primary/10 text-primary border-primary/20 border">
+                        <Link href="/settings"><Lock size={10} className="mr-1" /> Unlock Pro</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -158,6 +188,18 @@ export default function MarketUpdatePage() {
               </div>
             </CardContent>
           </Card>
+
+          {!isPro && (
+            <Card className="bg-primary/5 border-primary/20 border-dashed border-2">
+              <CardContent className="p-4 text-center space-y-3">
+                <Sparkles className="mx-auto text-primary" size={24} />
+                <p className="text-xs font-medium">Get real-time trends for Oko-Oba and Dei-Dei abattoirs.</p>
+                <Button asChild className="w-full bg-primary h-8 text-[11px]">
+                  <Link href="/settings">Upgrade for Full Trends</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
