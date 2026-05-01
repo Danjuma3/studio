@@ -8,7 +8,15 @@ To take your code with you:
 2. Save the ZIP file to your computer.
 3. Unzip the folder to access all source code, configurations, and AI flows.
 
-## 🚀 Future-Proofing & Portability
+## 🚀 First Time Admin Setup
+To access the global administrative features:
+1. Navigate to the **Login** page.
+2. Click the link that says **"Don't have an account? Sign Up"**.
+3. Register using the administrative email: `chefdtanju@gmail.com`.
+4. Choose any secure password. 
+5. The system will automatically detect this email and grant you **Platform Admin** status across the dashboard and settings.
+
+## 🛠️ Portability & Running Locally
 This app is built on a standard modern stack (Next.js 15, Firebase, Tailwind). If you ever move away from Firebase Studio, your code remains fully functional and portable.
 
 ### Running Locally
@@ -32,7 +40,7 @@ To change the app's logo and icon across all screens:
 1. Upload your new image to the `public/` folder (e.g., name it `my-logo.png`).
 2. Open `src/app/lib/placeholder-images.json`.
 3. Update the `imageUrl` for the `app-logo` entry to point to your new file (e.g., `"/my-logo.png"`).
-4. The Sidebar, Header, and PWA manifest will update automatically.
+4. Alternatively, if logged in as Admin, use the **Settings** page to update the logo dynamically via the Admin Panel.
 
 ## 🔐 Security & Administration
 - **Admin**: `chefdtanju@gmail.com` has global administrative access.
