@@ -1,3 +1,4 @@
+
 # Kitchen Prof 🍳
 
 Kitchen Prof is an intelligent food cost control and margin analysis platform designed specifically for the volatile restaurant market in Lagos, Nigeria.

@@ -23,7 +23,8 @@ import {
   FileCode,
   Save,
   Megaphone,
-  SwitchCamera
+  SwitchCamera,
+  HelpCircle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -33,6 +34,12 @@ import {
   DialogTitle, 
   DialogTrigger
 } from '@/components/ui/dialog';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
@@ -186,18 +193,33 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="pt-6 space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                      <ImageIcon size={16} /> App Branding
-                    </h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                        <ImageIcon size={16} /> App Branding
+                      </h3>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground">
+                              <HelpCircle size={14} />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p className="text-xs">Enter a URL to an image hosted online, or place an image in the "public" folder and enter its name (e.g., /mylogo.png).</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <div className="space-y-2">
                       <Label>App Logo URL</Label>
                       <div className="flex gap-2">
                         <Input 
-                          placeholder="https://example.com/logo.png"
+                          placeholder="e.g. https://domain.com/logo.png or /mylogo.png"
                           value={adminConfig.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
                       </div>
+                      <p className="text-[10px] text-muted-foreground italic">Tip: This URL updates the logo in the sidebar, mobile view, and puzzle loader.</p>
                     </div>
                   </div>
 
@@ -296,7 +318,7 @@ export default function SettingsPage() {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {isAdmin 
                         ? "You are managing the branding dynamically via the Admin Panel above." 
-                        : "Branding is managed centrally by the platform administrator."}
+                        : "Branding is managed centrally by the platform administrator. Your logo is consistent across all interfaces."}
                     </p>
                   </div>
                 </div>
