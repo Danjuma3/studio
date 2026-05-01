@@ -78,7 +78,7 @@ export default function SupportWorkspacePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Standardized to 10MB to match server limits
+      // Synchronized with next.config.ts 10MB limit
       if (file.size > 10 * 1024 * 1024) {
         toast({ 
           variant: "destructive", 
@@ -241,6 +241,7 @@ export default function SupportWorkspacePage() {
                                 {issue.severity.toUpperCase()}
                               </Badge>
                             </div>
+                            {/* Fixed potential hydration error: div instead of p */}
                             <div className="text-sm text-muted-foreground">{issue.description}</div>
                           </div>
                           <Badge className={issue.status === 'fixed' ? 'bg-green-500' : 'bg-amber-500'}>
@@ -321,6 +322,7 @@ export default function SupportWorkspacePage() {
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                           <Play size={18} className="text-primary" />
                         </div>
+                        {/* Fixed hydration: div instead of p */}
                         <div className="text-sm leading-relaxed italic text-muted-foreground">
                           "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Profit Professional app dashboard."
                         </div>
@@ -366,6 +368,7 @@ export default function SupportWorkspacePage() {
                       Download Campaign Video
                     </Button>
                   )}
+                  {/* Fixed hydration: div instead of p */}
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 flex gap-3">
                     <Sparkles className="text-amber-500 shrink-0" size={16} />
                     <div className="text-[10px] text-amber-800 leading-tight">

@@ -31,8 +31,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Ensure Server Actions can handle large payloads (photos and videos)
   serverActions: {
     bodySizeLimit: '10mb',
+  },
+  experimental: {
+    // Fallback for certain Next.js environments that still look here
+    serverActions: {
+      bodySizeLimit: '10mb',
+    } as any,
   },
 };
 

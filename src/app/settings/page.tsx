@@ -135,7 +135,7 @@ export default function SettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Increased to 10MB to match server limits
+      // Synchronized with next.config.ts 10MB limit
       if (file.size > 10 * 1024 * 1024) {
         toast({
           variant: "destructive",
@@ -261,7 +261,8 @@ export default function SettingsPage() {
                           onChange={handleFileChange}
                           className="w-full text-xs h-10 bg-white cursor-pointer border rounded-md p-1"
                         />
-                        <p className="text-[10px] text-muted-foreground">Automatically turns any photo into a branding string.</p>
+                        {/* Fixed hydration: div instead of p */}
+                        <div className="text-[10px] text-muted-foreground">Automatically turns any photo into a branding string.</div>
                       </div>
 
                       <div className="space-y-3">
@@ -378,6 +379,7 @@ export default function SettingsPage() {
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
                     <div className="font-bold text-lg">Identity Control</div>
+                    {/* Fixed hydration: div instead of p */}
                     <div className="text-sm text-muted-foreground leading-relaxed">
                       Branding is managed centrally by the platform administrator to ensure a consistent global experience.
                     </div>
