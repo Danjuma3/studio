@@ -14,10 +14,10 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
 
   useEffect(() => {
     // Initialize Firebase only on the client side after mount
-    // Simulate a slight delay to allow the puzzle animation to be appreciated
+    // Increased delay to 7 seconds to allow the puzzle animation to be fully appreciated
     const timer = setTimeout(() => {
       setFirebaseServices(initializeFirebase());
-    }, 2000);
+    }, 7000);
 
     return () => clearTimeout(timer);
   }, []);
