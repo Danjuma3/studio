@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -8,6 +9,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { useInventory } from './lib/store';
 import { getSafeLogoUrl } from './lib/branding';
+import { ChefHat } from 'lucide-react';
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { systemPayment } = useInventory();
@@ -21,15 +23,19 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <header className="h-16 flex items-center gap-4 border-b px-6 sticky top-0 bg-background/80 backdrop-blur-md z-30 pt-[safe-area-inset-top]">
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1 flex items-center md:hidden">
-              <div className="relative w-8 h-8 rounded-lg overflow-hidden mr-2">
-                <Image 
-                  src={currentLogoUrl} 
-                  alt="Kitchen Prof" 
-                  fill 
-                  className="object-cover"
-                  priority
-                  unoptimized 
-                />
+              <div className="relative w-8 h-8 rounded-lg overflow-hidden mr-2 flex items-center justify-center bg-primary/10">
+                {currentLogoUrl ? (
+                  <Image 
+                    src={currentLogoUrl} 
+                    alt="Kitchen Prof" 
+                    fill 
+                    className="object-cover"
+                    priority
+                    unoptimized 
+                  />
+                ) : (
+                  <ChefHat className="text-primary w-5 h-5" />
+                )}
               </div>
               <span className="font-headline font-bold text-primary">Kitchen Prof</span>
             </div>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -16,7 +17,8 @@ import {
   FileText,
   LogOut,
   User,
-  ShieldAlert
+  ShieldAlert,
+  ChefHat
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -71,14 +73,18 @@ export function AppNavigation() {
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-3 mb-4 group">
-          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform">
-            <Image 
-              src={currentLogoUrl} 
-              alt="Kitchen Prof Logo" 
-              fill 
-              className="object-cover"
-              unoptimized
-            />
+          <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform bg-primary/10 flex items-center justify-center">
+            {currentLogoUrl ? (
+              <Image 
+                src={currentLogoUrl} 
+                alt="Kitchen Prof Logo" 
+                fill 
+                className="object-cover"
+                unoptimized
+              />
+            ) : (
+              <ChefHat size={24} className="text-primary" />
+            )}
           </div>
           <div>
             <h1 className="font-headline font-bold text-lg text-primary leading-none">Kitchen Prof</h1>

@@ -20,7 +20,8 @@ import {
   HelpCircle,
   UploadCloud,
   FileCode,
-  FileImage
+  FileImage,
+  ChefHat
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -176,6 +177,8 @@ export default function SettingsPage() {
       description: `${label} copied to clipboard.`,
     });
   };
+
+  const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
 
   if (!mounted) return null;
 
@@ -336,14 +339,18 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-                <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-muted shadow-inner bg-muted/20">
-                  <Image 
-                    src={getSafeLogoUrl(systemPayment?.appLogoUrl)} 
-                    alt="Current Logo" 
-                    fill 
-                    className="object-cover"
-                    unoptimized
-                  />
+                <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-muted shadow-inner bg-muted/20 flex items-center justify-center">
+                  {currentLogoUrl ? (
+                    <Image 
+                      src={currentLogoUrl} 
+                      alt="Current Logo" 
+                      fill 
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <ChefHat size={48} className="text-primary/20" />
+                  )}
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
