@@ -25,7 +25,9 @@ import {
   Info,
   Calculator,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Image as ImageIcon,
+  FileCode
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -46,6 +48,8 @@ import {
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function SettingsPage() {
   const { user } = useUser();
@@ -54,6 +58,8 @@ export default function SettingsPage() {
   const [isAddingOpen, setIsAddingOpen] = useState(false);
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   
+  const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+
   const [newMethod, setNewMethod] = useState({
     type: 'bank_transfer' as const,
     provider: '',
@@ -62,17 +68,15 @@ export default function SettingsPage() {
     isDefault: false
   });
 
-  // Official Collection Details for the App Owner (Admin)
   const OFFICIAL_PAYMENT_INFO = {
     bankName: "GTBank",
-    accountNumber: "0123456789", // Replace with your actual account
+    accountNumber: "0123456789",
     accountName: "Kitchen Prof Enterprise",
     reference: `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}`,
-    amount: 11000 * 100, // Paystack works in Kobo
-    publicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // PLACEHOLDER: User must replace with their Paystack Public Key
+    amount: 11000 * 100,
+    publicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   };
 
-  // Paystack Configuration
   const config = {
     reference: OFFICIAL_PAYMENT_INFO.reference + '-' + new Date().getTime(),
     email: user?.email || "customer@kitchenprof.ng",
@@ -130,11 +134,67 @@ export default function SettingsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-headline font-bold">Settings & Billing</h1>
-        <p className="text-muted-foreground">Manage your business profile, subscription, and payment preferences.</p>
+        <p className="text-muted-foreground">Manage your business profile, subscription, and branding.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
+          
+          {/* Branding Section */}
+          <Card className="border-none shadow-md overflow-hidden bg-white">
+            <CardHeader className="bg-muted/30 border-b">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <ImageIcon className="text-primary" size={24} />
+                App Branding
+              </CardTitle>
+              <CardDescription>Customize the visual identity of Kitchen Prof.</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-muted shadow-inner bg-muted/20">
+                  {logo && (
+                    <Image 
+                      src={logo.imageUrl} 
+                      alt="Current Logo" 
+                      fill 
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-lg">App Logo</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      To update your logo across the entire app (Sidebar, Favicon, and Mobile Home Screen), please edit the following configuration file:
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 rounded-xl bg-muted/50 border flex items-center justify-between group">
+                    <div className="flex items-center gap-3">
+                      <FileCode className="text-primary" size={20} />
+                      <code className="text-xs font-mono font-bold text-primary">src/app/lib/placeholder-images.json</code>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleCopy('src/app/lib/placeholder-images.json', 'File path')}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Copy size={14} className="mr-2" /> Copy Path
+                    </Button>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-100">
+                    <p className="text-xs text-amber-800 flex items-center gap-2">
+                      <Info size={14} className="shrink-0" />
+                      Tip: Upload your image to the <strong>public/</strong> folder and then update the <strong>imageUrl</strong> in the JSON file to point to your new file (e.g. "/my-logo.png").
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Subscription Section */}
           <Card className="border-none shadow-md overflow-hidden bg-white">
             <CardHeader className="bg-primary/5 border-b">
@@ -289,7 +349,6 @@ export default function SettingsPage() {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                    <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Automated activation via Paystack</p>
                   </div>
                 )}
               </div>
