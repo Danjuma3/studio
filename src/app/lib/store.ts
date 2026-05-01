@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod } from './types';
 
 const STORAGE_KEYS = {
-  INGREDIENTS: 'ekoplate_ingredients',
-  RECIPES: 'ekoplate_recipes',
-  STAFF: 'ekoplate_staff',
-  TASKS: 'ekoplate_tasks',
-  PAYMENTS: 'ekoplate_payments',
+  INGREDIENTS: 'kitchenprof_ingredients',
+  RECIPES: 'kitchenprof_recipes',
+  STAFF: 'kitchenprof_staff',
+  TASKS: 'kitchenprof_tasks',
+  PAYMENTS: 'kitchenprof_payments',
 };
 
 const SEED_INGREDIENTS: Ingredient[] = [
@@ -32,6 +32,23 @@ const SEED_RECIPES: Recipe[] = [
       { ingredientId: '4', quantity: 0.03 },
     ] 
   }
+];
+
+const SEED_STAFF: StaffMember[] = [
+  { id: 's1', name: 'Chef Buchi', role: 'Chef', status: 'active' },
+  { id: 's2', name: 'Amaka Obi', role: 'Sous Chef', status: 'active' },
+  { id: 's3', name: 'Tunde Ade', role: 'Server', status: 'on-break' },
+];
+
+const SEED_TASKS: ManagerTask[] = [
+  { id: 't1', task: 'Check gas levels', completed: false, priority: 'high' },
+  { id: 't2', task: 'Review morning delivery', completed: true, priority: 'medium' },
+  { id: 't3', task: 'Inspect cold storage', completed: false, priority: 'high' },
+];
+
+const SEED_PAYMENTS: PaymentMethod[] = [
+  { id: 'p1', type: 'paystack', provider: 'Paystack', isDefault: true },
+  { id: 'p2', type: 'bank_transfer', provider: 'GTBank', accountName: "Buchi's Kitchen Ent.", isDefault: false },
 ];
 
 export function useInventory() {
@@ -62,8 +79,22 @@ export function useInventory() {
     }
 
     if (storedStaff) setStaff(JSON.parse(storedStaff));
+    else {
+      setStaff(SEED_STAFF);
+      localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(SEED_STAFF));
+    }
+
     if (storedTasks) setTasks(JSON.parse(storedTasks));
+    else {
+      setTasks(SEED_TASKS);
+      localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(SEED_TASKS));
+    }
+
     if (storedPayments) setPaymentMethods(JSON.parse(storedPayments));
+    else {
+      setPaymentMethods(SEED_PAYMENTS);
+      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(SEED_PAYMENTS));
+    }
 
     setLoading(false);
   }, []);
@@ -76,6 +107,21 @@ export function useInventory() {
   const saveRecipes = (newRecipes: Recipe[]) => {
     setRecipes(newRecipes);
     localStorage.setItem(STORAGE_KEYS.RECIPES, JSON.stringify(newRecipes));
+  };
+
+  const saveStaff = (newStaff: StaffMember[]) => {
+    setStaff(newStaff);
+    localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(newStaff));
+  };
+
+  const saveTasks = (newTasks: ManagerTask[]) => {
+    setTasks(newTasks);
+    localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(newTasks));
+  };
+
+  const savePayments = (newPayments: PaymentMethod[]) => {
+    setPaymentMethods(newPayments);
+    localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(newPayments));
   };
 
   const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'lastUpdated'>) => {
@@ -111,6 +157,26 @@ export function useInventory() {
     saveRecipes(recipes.filter(r => r.id !== id));
   };
 
+  const toggleTask = (id: string) => {
+    saveTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  };
+
+  const addPaymentMethod = (method: Omit<PaymentMethod, 'id'>) => {
+    const newMethod = {
+      ...method,
+      id: Math.random().toString(36).substr(2, 9),
+    };
+    savePayments([...paymentMethods, newMethod]);
+  };
+
+  const deletePaymentMethod = (id: string) => {
+    savePayments(paymentMethods.filter(p => p.id !== id));
+  };
+
+  const setDefaultPaymentMethod = (id: string) => {
+    savePayments(paymentMethods.map(p => ({ ...p, isDefault: p.id === id })));
+  };
+
   return {
     ingredients,
     recipes,
@@ -124,5 +190,9 @@ export function useInventory() {
     addRecipe,
     updateRecipe,
     deleteRecipe,
+    toggleTask,
+    addPaymentMethod,
+    deletePaymentMethod,
+    setDefaultPaymentMethod,
   };
 }
