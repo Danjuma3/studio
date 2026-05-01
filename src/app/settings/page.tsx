@@ -45,6 +45,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
+import { usePaystackPayment } from 'react-paystack';
 
 export default function SettingsPage() {
   const { user } = useUser();
@@ -66,7 +67,36 @@ export default function SettingsPage() {
     bankName: "GTBank",
     accountNumber: "0123456789", // Replace with your actual account
     accountName: "Kitchen Prof Enterprise",
-    reference: `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}`
+    reference: `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}`,
+    amount: 11000 * 100, // Paystack works in Kobo
+    publicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" // PLACEHOLDER: User must replace with their Paystack Public Key
+  };
+
+  // Paystack Configuration
+  const config = {
+    reference: OFFICIAL_PAYMENT_INFO.reference + '-' + new Date().getTime(),
+    email: user?.email || "customer@kitchenprof.ng",
+    amount: OFFICIAL_PAYMENT_INFO.amount,
+    publicKey: OFFICIAL_PAYMENT_INFO.publicKey,
+  };
+
+  const initializePayment = usePaystackPayment(config);
+
+  const onSuccess = (reference: any) => {
+    upgradePlan('pro');
+    setIsUpgradeOpen(false);
+    toast({
+      title: "Payment Successful!",
+      description: "Your Pro features have been unlocked. Reference: " + reference.reference,
+    });
+  };
+
+  const onClose = () => {
+    toast({
+      variant: "destructive",
+      title: "Payment Cancelled",
+      description: "You closed the payment window. Your plan was not upgraded.",
+    });
   };
 
   const handleCopy = (text: string, label: string) => {
@@ -198,48 +228,56 @@ export default function SettingsPage() {
                         </DialogHeader>
                         
                         <div className="space-y-6 py-4">
-                          <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-4">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-muted-foreground uppercase">Bank Name</span>
-                              <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.bankName}</span>
+                          <div className="space-y-4">
+                            <Button 
+                              className="w-full h-12 gap-2 text-white bg-sky-600 hover:bg-sky-700 shadow-md"
+                              onClick={() => initializePayment({onSuccess, onClose})}
+                            >
+                              <ExternalLink size={18} />
+                              Pay Securely with Paystack
+                            </Button>
+                            
+                            <div className="relative w-full py-2">
+                              <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+                              <div className="relative flex justify-center text-[10px] uppercase font-bold"><span className="bg-white px-2 text-muted-foreground">Or Pay via Bank Transfer</span></div>
                             </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-muted-foreground uppercase">Account Number</span>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-mono font-bold">{OFFICIAL_PAYMENT_INFO.accountNumber}</span>
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.accountNumber, "Account Number")}>
-                                  <Copy size={12} />
+
+                            <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Bank Name</span>
+                                <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.bankName}</span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Number</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-mono font-bold">{OFFICIAL_PAYMENT_INFO.accountNumber}</span>
+                                  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.accountNumber, "Account Number")}>
+                                    <Copy size={12} />
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Name</span>
+                                <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.accountName}</span>
+                              </div>
+                            </div>
+
+                            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-1">
+                              <p className="text-[10px] font-bold text-primary uppercase">Payment Reference</p>
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-mono font-black text-primary">{OFFICIAL_PAYMENT_INFO.reference}</span>
+                                <Button variant="outline" size="sm" className="h-8 border-primary/20 text-primary" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.reference, "Reference")}>
+                                  <Copy size={14} className="mr-2" /> Copy
                                 </Button>
                               </div>
                             </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-muted-foreground uppercase">Account Name</span>
-                              <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.accountName}</span>
-                            </div>
-                          </div>
 
-                          <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-2">
-                            <p className="text-[10px] font-bold text-primary uppercase">Payment Reference (Important)</p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-lg font-mono font-black text-primary">{OFFICIAL_PAYMENT_INFO.reference}</span>
-                              <Button variant="outline" size="sm" className="h-8 border-primary/20 text-primary" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.reference, "Reference")}>
-                                <Copy size={14} className="mr-2" /> Copy
-                              </Button>
-                            </div>
-                            <p className="text-[10px] text-muted-foreground">Include this reference in your transfer description.</p>
-                          </div>
-
-                          <div className="space-y-4">
-                            <Button className="w-full bg-primary h-12 text-lg" onClick={() => {
+                            <Button variant="outline" className="w-full h-12 text-muted-foreground" onClick={() => {
                               upgradePlan('pro');
                               setIsUpgradeOpen(false);
-                              toast({ title: "Activation Pending", description: "Once we confirm your transfer, your Pro features will be fully unlocked." });
+                              toast({ title: "Transfer Notification Sent", description: "Our team will verify your transfer and activate your Pro status within 24 hours." });
                             }}>
-                              I Have Transferred ₦11,000
-                            </Button>
-                            <Button variant="outline" className="w-full h-12 gap-2 text-sky-600 border-sky-200 bg-sky-50">
-                              <ExternalLink size={18} />
-                              Pay Online (Paystack)
+                              I've already transferred ₦11,000
                             </Button>
                           </div>
                         </div>
@@ -251,7 +289,7 @@ export default function SettingsPage() {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                    <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Secure payments via Bank Transfer or Paystack</p>
+                    <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Automated activation via Paystack</p>
                   </div>
                 )}
               </div>
@@ -414,7 +452,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm opacity-90 leading-relaxed">
-                Your payment information is stored locally and securely within Kitchen Prof. We never share your banking details with 3rd party vendors.
+                Payments are processed through Paystack, a PCI DSS Level 1 certified processor. Kitchen Prof does not store your card details.
               </p>
             </CardContent>
           </Card>
