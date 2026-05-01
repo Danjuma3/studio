@@ -131,6 +131,16 @@
         "proPrice": { "type": "number" },
         "appLogoUrl": { "type": "string", "description": "Dynamic URL for the application logo." }
       }
+    },
+    "SystemAlert": {
+      "title": "SystemAlert",
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["info", "warning", "market", "urgent"] },
+        "active": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "auth": {
@@ -195,6 +205,16 @@
             "$ref": "#/backend/entities/SystemPaymentConfig"
           },
           "description": "Global platform payment settings."
+        }
+      },
+      {
+        "path": "/system/alert",
+        "definition": {
+          "entityName": "SystemAlert",
+          "schema": {
+            "$ref": "#/backend/entities/SystemAlert"
+          },
+          "description": "Global platform market alerts broadcast to all users."
         }
       }
     ]

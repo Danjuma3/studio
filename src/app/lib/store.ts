@@ -9,7 +9,7 @@ import {
   deleteDocumentNonBlocking, 
   setDocumentNonBlocking 
 } from '@/firebase/non-blocking-updates';
-import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan, SystemPaymentConfig } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert } from './types';
 
 export function useInventory() {
   const { user, isUserLoading } = useUser();
@@ -22,6 +22,13 @@ export function useInventory() {
     return doc(firestore, 'system', 'payment');
   }, [firestore]);
   const { data: systemPayment, isLoading: isSystemLoading } = useDoc<SystemPaymentConfig>(systemPaymentRef);
+
+  // System Alert
+  const systemAlertRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'system', 'alert');
+  }, [firestore]);
+  const { data: systemAlert } = useDoc<SystemAlert>(systemAlertRef);
 
   // Ingredients Collection
   const ingredientsQuery = useMemoFirebase(() => {
@@ -51,17 +58,16 @@ export function useInventory() {
   }, [firestore, user]);
   const { data: tasks } = useCollection<ManagerTask>(tasksQuery);
 
-  // Payments Collection
-  const paymentsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return collection(firestore, 'users', user.uid, 'payments');
-  }, [firestore, user]);
-  const { data: paymentMethods } = useCollection<PaymentMethod>(paymentsQuery);
-
   const updateSystemPaymentConfig = (updates: Partial<SystemPaymentConfig>) => {
     if (!firestore) return;
     const docRef = doc(firestore, 'system', 'payment');
     setDocumentNonBlocking(docRef, updates, { merge: true });
+  };
+
+  const updateSystemAlert = (updates: Partial<SystemAlert>) => {
+    if (!firestore) return;
+    const docRef = doc(firestore, 'system', 'alert');
+    setDocumentNonBlocking(docRef, { ...updates, updatedAt: new Date().toISOString() }, { merge: true });
   };
 
   const addIngredient = (ingredient: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt' | 'currentStock' | 'minStock'>) => {
@@ -123,27 +129,6 @@ export function useInventory() {
     updateDocumentNonBlocking(docRef, { completed: !task.completed });
   };
 
-  const addPaymentMethod = (method: Omit<PaymentMethod, 'id'>) => {
-    if (!firestore || !user) return;
-    const colRef = collection(firestore, 'users', user.uid, 'payments');
-    const newDocId = Math.random().toString(36).substr(2, 9);
-    setDocumentNonBlocking(doc(colRef, newDocId), { ...method, id: newDocId }, { merge: true });
-  };
-
-  const deletePaymentMethod = (id: string) => {
-    if (!firestore || !user) return;
-    const docRef = doc(firestore, 'users', user.uid, 'payments', id);
-    deleteDocumentNonBlocking(docRef);
-  };
-
-  const setDefaultPaymentMethod = (id: string) => {
-    if (!firestore || !user || !paymentMethods) return;
-    paymentMethods.forEach(p => {
-      const docRef = doc(firestore, 'users', user.uid, 'payments', p.id);
-      updateDocumentNonBlocking(docRef, { isDefault: p.id === id });
-    });
-  };
-
   const upgradePlan = (plan: UserPlan) => {
     setCurrentPlan(plan);
   };
@@ -153,13 +138,18 @@ export function useInventory() {
     recipes: recipes || [],
     staff: staff || [],
     tasks: tasks || [],
-    paymentMethods: paymentMethods || [],
     systemPayment: systemPayment || {
       bankName: "GTBank",
       accountNumber: "0123456789",
       accountName: "Kitchen Prof Enterprise",
       paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       proPrice: 11000
+    },
+    systemAlert: systemAlert || {
+      message: "Welcome to Kitchen Prof! Update your prices for accuracy.",
+      type: "info",
+      active: true,
+      updatedAt: new Date().toISOString()
     },
     subscription: { plan: currentPlan, status: 'active', nextBillingDate: new Date().toISOString() } as SubscriptionInfo,
     loading: isUserLoading || isIngredientsLoading || isRecipesLoading || isSystemLoading,
@@ -170,10 +160,8 @@ export function useInventory() {
     updateRecipe,
     deleteRecipe,
     toggleTask,
-    addPaymentMethod,
-    deletePaymentMethod,
-    setDefaultPaymentMethod,
     upgradePlan,
-    updateSystemPaymentConfig
+    updateSystemPaymentConfig,
+    updateSystemAlert
   };
 }

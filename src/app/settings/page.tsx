@@ -22,7 +22,8 @@ import {
   Image as ImageIcon,
   FileCode,
   Save,
-  Link as LinkIcon
+  Megaphone,
+  SwitchCamera
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -37,6 +38,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Switch } from '@/components/ui/switch';
 
 /**
  * Isolated Paystack button component to prevent SSR "window is not defined" errors.
@@ -62,7 +64,9 @@ export default function SettingsPage() {
     subscription, 
     upgradePlan,
     systemPayment,
-    updateSystemPaymentConfig
+    updateSystemPaymentConfig,
+    systemAlert,
+    updateSystemAlert
   } = useInventory();
   
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
@@ -70,6 +74,7 @@ export default function SettingsPage() {
   
   // Admin Edit State
   const [adminConfig, setAdminConfig] = useState(systemPayment);
+  const [adminAlert, setAdminAlert] = useState(systemAlert);
   
   const placeholderLogo = PlaceHolderImages.find(img => img.id === 'app-logo');
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
@@ -79,10 +84,12 @@ export default function SettingsPage() {
   }, []);
 
   useEffect(() => {
-    if (systemPayment) {
-      setAdminConfig(systemPayment);
-    }
+    if (systemPayment) setAdminConfig(systemPayment);
   }, [systemPayment]);
+
+  useEffect(() => {
+    if (systemAlert) setAdminAlert(systemAlert);
+  }, [systemAlert]);
 
   const paymentReference = useMemo(() => {
     return `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}-${Date.now()}`;
@@ -104,6 +111,14 @@ export default function SettingsPage() {
     toast({
       title: "Settings Updated",
       description: "Global system configuration has been updated successfully.",
+    });
+  };
+
+  const handleAlertSave = () => {
+    updateSystemAlert(adminAlert);
+    toast({
+      title: "Alert Broadcasted",
+      description: "The global market alert has been updated for all users.",
     });
   };
 
@@ -138,7 +153,7 @@ export default function SettingsPage() {
   if (!mounted) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-20">
       <div>
         <h1 className="text-3xl font-headline font-bold">Settings & Billing</h1>
         <p className="text-muted-foreground">Manage your business profile, subscription, and branding.</p>
@@ -149,20 +164,19 @@ export default function SettingsPage() {
           
           {/* Admin System Settings (Only for Admin) */}
           {isAdmin && (
-            <Card className="border-2 border-primary/20 shadow-xl overflow-hidden bg-white animate-in slide-in-from-top duration-500">
-              <CardHeader className="bg-primary/10 border-b">
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <ShieldCheck className="text-primary" size={24} />
-                  Platform Admin: System Config
-                </CardTitle>
-                <CardDescription>Update global settings including payments and branding.</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                    <ImageIcon size={16} /> App Branding
-                  </h3>
-                  <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-6">
+              <Card className="border-2 border-primary/20 shadow-xl overflow-hidden bg-white">
+                <CardHeader className="bg-primary/10 border-b">
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <ShieldCheck className="text-primary" size={24} />
+                    Platform Admin: System Config
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-6">
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                      <ImageIcon size={16} /> App Branding
+                    </h3>
                     <div className="space-y-2">
                       <Label>App Logo URL</Label>
                       <div className="flex gap-2">
@@ -171,74 +185,76 @@ export default function SettingsPage() {
                           value={adminConfig.appLogoUrl || ''} 
                           onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
                         />
-                        <div className="w-10 h-10 shrink-0 border rounded-lg overflow-hidden bg-muted flex items-center justify-center">
-                          {(adminConfig.appLogoUrl || currentLogoUrl) && (
-                            <Image 
-                              src={adminConfig.appLogoUrl || currentLogoUrl} 
-                              alt="Logo Preview" 
-                              width={40} 
-                              height={40} 
-                              className="object-cover"
-                            />
-                          )}
-                        </div>
                       </div>
-                      <p className="text-[10px] text-muted-foreground italic">Tip: Use a transparent PNG or SVG for best results on the sidebar.</p>
                     </div>
                   </div>
-                </div>
 
-                <div className="space-y-4 border-t pt-6">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                    <Building2 size={16} /> Payment Details
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Bank Name</Label>
-                      <Input 
-                        value={adminConfig.bankName} 
-                        onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}
-                      />
+                  <div className="space-y-4 border-t pt-6">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                      <Building2 size={16} /> Payment Details
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2"><Label>Bank Name</Label><Input value={adminConfig.bankName} onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Account Number</Label><Input value={adminConfig.accountNumber} onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Account Name</Label><Input value={adminConfig.accountName} onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>Pro Price (₦)</Label><Input type="number" value={adminConfig.proPrice} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value)})}/></div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Account Number</Label>
-                      <Input 
-                        value={adminConfig.accountNumber} 
-                        onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Account Name</Label>
-                      <Input 
-                        value={adminConfig.accountName} 
-                        onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Monthly Pro Price (₦)</Label>
-                      <Input 
-                        type="number"
-                        value={adminConfig.proPrice} 
-                        onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value)})}
-                      />
-                    </div>
+                    <div className="space-y-2"><Label>Paystack Public Key</Label><Input value={adminConfig.paystackPublicKey} onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}/></div>
                   </div>
+                </CardContent>
+                <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
+                  <Button onClick={handleAdminSave} className="bg-primary gap-2"><Save size={18} />Save Global Settings</Button>
+                </CardFooter>
+              </Card>
+
+              {/* Admin Broadcast Control */}
+              <Card className="border-2 border-accent/20 shadow-xl overflow-hidden bg-white">
+                <CardHeader className="bg-accent/10 border-b">
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <Megaphone className="text-primary" size={24} />
+                    Platform Admin: Market Alert Broadcast
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-4">
                   <div className="space-y-2">
-                    <Label>Paystack Public Key</Label>
+                    <Label>Global Alert Message</Label>
                     <Input 
-                      value={adminConfig.paystackPublicKey} 
-                      onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}
+                      placeholder="e.g. URGENT: Beef prices up at Oko-Oba abattoir!"
+                      value={adminAlert.message}
+                      onChange={(e) => setAdminAlert({...adminAlert, message: e.target.value})}
                     />
                   </div>
-                </div>
-              </CardContent>
-              <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
-                <Button onClick={handleAdminSave} className="bg-primary gap-2">
-                  <Save size={18} />
-                  Save Global Settings
-                </Button>
-              </CardFooter>
-            </Card>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Alert Type</Label>
+                      <select 
+                        className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                        value={adminAlert.type}
+                        onChange={(e) => setAdminAlert({...adminAlert, type: e.target.value as any})}
+                      >
+                        <option value="info">Information</option>
+                        <option value="warning">General Warning</option>
+                        <option value="market">Market News</option>
+                        <option value="urgent">Urgent Alert</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-3 pt-8">
+                      <Switch 
+                        checked={adminAlert.active}
+                        onCheckedChange={(checked) => setAdminAlert({...adminAlert, active: checked})}
+                      />
+                      <Label>Broadcast Active</Label>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
+                  <Button onClick={handleAlertSave} variant="secondary" className="gap-2">
+                    <Megaphone size={18} />
+                    Broadcast to All Users
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
           )}
 
           {/* Branding Section */}
@@ -271,22 +287,6 @@ export default function SettingsPage() {
                         : "Branding is managed centrally by the platform administrator."}
                     </p>
                   </div>
-                  {!isAdmin && (
-                    <div className="p-4 rounded-xl bg-muted/50 border flex items-center justify-between group">
-                      <div className="flex items-center gap-3">
-                        <FileCode className="text-primary" size={20} />
-                        <code className="text-xs font-mono font-bold text-primary">src/app/lib/placeholder-images.json</code>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => handleCopy('src/app/lib/placeholder-images.json', 'File path')}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Copy size={14} className="mr-2" /> Copy Path
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </div>
             </CardContent>

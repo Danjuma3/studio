@@ -9,13 +9,16 @@ import {
   PackageSearch,
   Calculator,
   ArrowRight,
-  TrendingDown
+  TrendingDown,
+  Megaphone,
+  Bell
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 export default function Dashboard() {
-  const { ingredients, recipes } = useInventory();
+  const { ingredients, recipes, systemAlert } = useInventory();
 
   const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
   
@@ -52,6 +55,38 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Global Admin Broadcast Banner */}
+      {systemAlert?.active && (
+        <div className={`p-4 rounded-2xl flex items-center gap-4 animate-in slide-in-from-top duration-1000 border-2 shadow-lg ${
+          systemAlert.type === 'urgent' ? 'bg-destructive/10 border-destructive/20' : 
+          systemAlert.type === 'market' ? 'bg-primary/10 border-primary/20' : 
+          'bg-accent/10 border-accent/20'
+        }`}>
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+            systemAlert.type === 'urgent' ? 'bg-destructive text-white' : 
+            systemAlert.type === 'market' ? 'bg-primary text-white' : 
+            'bg-accent text-accent-foreground'
+          }`}>
+            <Megaphone size={24} />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">
+                {systemAlert.type === 'market' ? 'Market Update' : 'System Notice'}
+              </p>
+              <Badge variant="outline" className="text-[8px] h-4 py-0 font-bold">LATEST</Badge>
+            </div>
+            <p className="text-sm font-bold leading-tight">
+              {systemAlert.message}
+            </p>
+          </div>
+          <div className="hidden md:block text-right pr-4">
+             <p className="text-[10px] text-muted-foreground font-medium">Updated</p>
+             <p className="text-[10px] font-bold">{new Date(systemAlert.updatedAt).toLocaleTimeString()}</p>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link href="/stock" className="group">

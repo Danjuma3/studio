@@ -70,3 +70,10 @@ export interface SystemPaymentConfig {
   proPrice: number;
   appLogoUrl?: string;
 }
+
+export interface SystemAlert {
+  message: string;
+  type: 'info' | 'warning' | 'market' | 'urgent';
+  active: boolean;
+  updatedAt: string;
+}
