@@ -50,8 +50,8 @@ export default function Dashboard() {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-3xl lg:text-4xl font-headline font-bold text-foreground">Kitchen Profit Professional</h1>
-          <p className="text-muted-foreground text-lg">Managing margins for your food business in {location.city}, {location.country}.</p>
+          <h1 className="text-3xl lg:text-4xl font-brand font-black text-foreground tracking-tighter uppercase">Kitchen Profit Professional</h1>
+          <p className="text-muted-foreground text-lg">Managing margins for food business in {location.city}, {location.country}.</p>
         </div>
         <div className="text-right">
           <p className="text-xs font-bold text-primary uppercase tracking-widest">Regional Hub Status</p>

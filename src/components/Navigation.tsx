@@ -88,8 +88,8 @@ export function AppNavigation() {
             )}
           </div>
           <div className="flex-1 overflow-hidden">
-            <h1 className="font-headline font-bold text-sm text-primary leading-tight truncate">Kitchen Profit Professional</h1>
-            <p className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-tighter font-semibold">Managing margins for your food business</p>
+            <h1 className="font-brand font-black text-sm text-primary leading-[1.1] tracking-tighter truncate uppercase">Kitchen Profit Professional</h1>
+            <p className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-tighter font-semibold">Managing margins for food business</p>
           </div>
         </Link>
         {isAdmin && (

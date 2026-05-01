@@ -37,7 +37,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <ChefHat className="text-primary w-5 h-5" />
                 )}
               </div>
-              <span className="font-headline font-bold text-primary text-sm truncate">Kitchen Profit Professional</span>
+              <span className="font-brand font-bold text-primary text-sm tracking-tight truncate uppercase">Kitchen Profit Professional</span>
             </div>
             <div className="flex-1 hidden md:block">
             </div>
@@ -70,7 +70,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased selection:bg-accent/30 selection:text-primary overflow-x-hidden safe-area-inset">
         <FirebaseClientProvider>
