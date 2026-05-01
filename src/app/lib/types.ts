@@ -40,8 +40,8 @@ export interface ManagerTask {
 
 export interface PaymentMethod {
   id: string;
-  type: 'card' | 'bank_transfer' | 'pos' | 'cash';
-  provider: string; // e.g. "GTBank", "Visa", "Moniepoint"
+  type: 'card' | 'bank_transfer' | 'pos' | 'cash' | 'paystack';
+  provider: string; // e.g. "GTBank", "Visa", "Moniepoint", "Paystack"
   lastFour?: string;
   accountName?: string;
   isDefault: boolean;

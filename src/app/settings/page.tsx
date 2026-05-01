@@ -16,7 +16,8 @@ import {
   Wallet,
   MoreVertical,
   ShieldCheck,
-  Bell
+  Bell,
+  Zap
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -46,8 +47,9 @@ export default function SettingsPage() {
   });
 
   const handleAdd = () => {
-    if (newMethod.provider) {
-      addPaymentMethod(newMethod);
+    if (newMethod.provider || newMethod.type === 'paystack') {
+      const finalProvider = newMethod.type === 'paystack' ? 'Paystack' : newMethod.provider;
+      addPaymentMethod({ ...newMethod, provider: finalProvider });
       setNewMethod({ type: 'bank_transfer', provider: '', accountName: '', lastFour: '', isDefault: false });
       setIsAddingOpen(false);
     }
@@ -58,6 +60,7 @@ export default function SettingsPage() {
       case 'card': return <CreditCard className="text-primary" />;
       case 'bank_transfer': return <Building2 className="text-primary" />;
       case 'pos': return <Smartphone className="text-primary" />;
+      case 'paystack': return <Zap className="text-sky-500" />;
       default: return <Wallet className="text-primary" />;
     }
   };
@@ -97,18 +100,21 @@ export default function SettingsPage() {
                       >
                         <option value="bank_transfer">Bank Transfer</option>
                         <option value="card">Card</option>
+                        <option value="paystack">Paystack</option>
                         <option value="pos">POS Terminal</option>
                         <option value="cash">Cash / Wallet</option>
                       </select>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Provider / Bank Name</Label>
-                      <Input 
-                        placeholder="e.g. GTBank, Visa, Moniepoint" 
-                        value={newMethod.provider}
-                        onChange={(e) => setNewMethod({...newMethod, provider: e.target.value})}
-                      />
-                    </div>
+                    {newMethod.type !== 'paystack' && (
+                      <div className="space-y-2">
+                        <Label>Provider / Bank Name</Label>
+                        <Input 
+                          placeholder="e.g. GTBank, Visa, Moniepoint" 
+                          value={newMethod.provider}
+                          onChange={(e) => setNewMethod({...newMethod, provider: e.target.value})}
+                        />
+                      </div>
+                    )}
                     {newMethod.type === 'bank_transfer' ? (
                       <div className="space-y-2">
                         <Label>Account Name</Label>
@@ -118,7 +124,7 @@ export default function SettingsPage() {
                           onChange={(e) => setNewMethod({...newMethod, accountName: e.target.value})}
                         />
                       </div>
-                    ) : (
+                    ) : newMethod.type === 'card' ? (
                       <div className="space-y-2">
                         <Label>Last 4 Digits (Optional)</Label>
                         <Input 
@@ -127,7 +133,7 @@ export default function SettingsPage() {
                           onChange={(e) => setNewMethod({...newMethod, lastFour: e.target.value})}
                         />
                       </div>
-                    )}
+                    ) : null}
                     <div className="flex items-center space-x-2">
                       <input 
                         type="checkbox" 

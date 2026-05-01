@@ -37,6 +37,7 @@ const SEED_TASKS: ManagerTask[] = [
 const SEED_PAYMENTS: PaymentMethod[] = [
   { id: 'p1', type: 'bank_transfer', provider: 'GTBank', accountName: "Buchi's Kitchen Ent.", isDefault: true },
   { id: 'p2', type: 'card', provider: 'Visa', lastFour: '4242', isDefault: false },
+  { id: 'p3', type: 'paystack', provider: 'Paystack', isDefault: false },
 ];
 
 export function useInventory() {
