@@ -23,7 +23,9 @@ import {
   ChevronRight,
   Sparkles,
   Info,
-  Calculator
+  Calculator,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -32,7 +34,8 @@ import {
   DialogHeader, 
   DialogTitle, 
   DialogTrigger,
-  DialogFooter 
+  DialogFooter,
+  DialogDescription
 } from '@/components/ui/dialog';
 import { 
   DropdownMenu, 
@@ -40,10 +43,16 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
+import { useUser } from '@/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SettingsPage() {
+  const { user } = useUser();
+  const { toast } = useToast();
   const { paymentMethods, addPaymentMethod, deletePaymentMethod, setDefaultPaymentMethod, subscription, upgradePlan } = useInventory();
   const [isAddingOpen, setIsAddingOpen] = useState(false);
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  
   const [newMethod, setNewMethod] = useState({
     type: 'bank_transfer' as const,
     provider: '',
@@ -51,6 +60,22 @@ export default function SettingsPage() {
     lastFour: '',
     isDefault: false
   });
+
+  // Official Collection Details for the App Owner (Admin)
+  const OFFICIAL_PAYMENT_INFO = {
+    bankName: "GTBank",
+    accountNumber: "0123456789", // Replace with your actual account
+    accountName: "Kitchen Prof Enterprise",
+    reference: `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}`
+  };
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${label} copied to clipboard.`,
+    });
+  };
 
   const handleAdd = () => {
     if (newMethod.provider || newMethod.type === 'paystack') {
@@ -151,14 +176,82 @@ export default function SettingsPage() {
 
                 {subscription.plan === 'free' && (
                   <div className="shrink-0 pt-2">
-                    <Button onClick={() => upgradePlan('pro')} className="bg-primary hover:bg-primary/90 rounded-xl h-14 px-8 shadow-lg group flex flex-col items-center gap-0 leading-tight">
-                      <span className="flex items-center gap-2 text-lg">
-                        <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
-                        Upgrade to Pro
-                      </span>
-                      <span className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">₦11,000 / month</span>
-                    </Button>
-                    <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Secure payments via Paystack</p>
+                    <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
+                      <DialogTrigger asChild>
+                        <Button className="bg-primary hover:bg-primary/90 rounded-xl h-14 px-8 shadow-lg group flex flex-col items-center gap-0 leading-tight">
+                          <span className="flex items-center gap-2 text-lg">
+                            <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                            Upgrade to Pro
+                          </span>
+                          <span className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">₦11,000 / month</span>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[450px]">
+                        <DialogHeader>
+                          <DialogTitle className="text-2xl font-headline flex items-center gap-2">
+                            <Sparkles className="text-primary" />
+                            Activate Pro Account
+                          </DialogTitle>
+                          <DialogDescription>
+                            Complete your payment to unlock professional margin analysis.
+                          </DialogDescription>
+                        </DialogHeader>
+                        
+                        <div className="space-y-6 py-4">
+                          <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-4">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-muted-foreground uppercase">Bank Name</span>
+                              <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.bankName}</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-muted-foreground uppercase">Account Number</span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-mono font-bold">{OFFICIAL_PAYMENT_INFO.accountNumber}</span>
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.accountNumber, "Account Number")}>
+                                  <Copy size={12} />
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-muted-foreground uppercase">Account Name</span>
+                              <span className="text-sm font-bold">{OFFICIAL_PAYMENT_INFO.accountName}</span>
+                            </div>
+                          </div>
+
+                          <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-2">
+                            <p className="text-[10px] font-bold text-primary uppercase">Payment Reference (Important)</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-lg font-mono font-black text-primary">{OFFICIAL_PAYMENT_INFO.reference}</span>
+                              <Button variant="outline" size="sm" className="h-8 border-primary/20 text-primary" onClick={() => handleCopy(OFFICIAL_PAYMENT_INFO.reference, "Reference")}>
+                                <Copy size={14} className="mr-2" /> Copy
+                              </Button>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground">Include this reference in your transfer description.</p>
+                          </div>
+
+                          <div className="space-y-4">
+                            <Button className="w-full bg-primary h-12 text-lg" onClick={() => {
+                              upgradePlan('pro');
+                              setIsUpgradeOpen(false);
+                              toast({ title: "Activation Pending", description: "Once we confirm your transfer, your Pro features will be fully unlocked." });
+                            }}>
+                              I Have Transferred ₦11,000
+                            </Button>
+                            <Button variant="outline" className="w-full h-12 gap-2 text-sky-600 border-sky-200 bg-sky-50">
+                              <ExternalLink size={18} />
+                              Pay Online (Paystack)
+                            </Button>
+                          </div>
+                        </div>
+                        <DialogFooter className="text-[10px] text-center text-muted-foreground flex flex-col items-center">
+                          <div className="flex items-center gap-1 mb-1">
+                            <ShieldCheck size={10} /> Secure Platform Billing
+                          </div>
+                          Questions? Email legal@kitchenprof.ng
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Secure payments via Bank Transfer or Paystack</p>
                   </div>
                 )}
               </div>
@@ -168,8 +261,8 @@ export default function SettingsPage() {
           <Card className="border-none shadow-md">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-xl">Payment Methods</CardTitle>
-                <CardDescription>How you pay for supplies and market deliveries.</CardDescription>
+                <CardTitle className="text-xl">Saved Payment Methods</CardTitle>
+                <CardDescription>Your personal methods for market procurement.</CardDescription>
               </div>
               <Dialog open={isAddingOpen} onOpenChange={setIsAddingOpen}>
                 <DialogTrigger asChild>
