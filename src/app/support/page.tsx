@@ -24,11 +24,14 @@ import {
   Video,
   UploadCloud,
   Loader2,
-  Play
+  Play,
+  Smartphone,
+  ChevronRight
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { generateMarketingVideo } from '@/ai/flows/marketing-video-flow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
 
 export default function SupportWorkspacePage() {
   const { user } = useUser();
@@ -131,13 +134,15 @@ export default function SupportWorkspacePage() {
           </div>
         </div>
         <div className="flex gap-3">
+          <Button asChild className="rounded-xl h-12 px-6 bg-blue-600 hover:bg-blue-700">
+            <Link href="/store-preview">
+              <Smartphone className="mr-2 h-4 w-4" />
+              App Store Preview
+            </Link>
+          </Button>
           <Button variant="outline" onClick={handleGrandOpeningBroadcast} className="rounded-xl h-12 px-6 border-primary text-primary hover:bg-primary/5">
             <PartyPopper className="mr-2 h-4 w-4" />
             Launch Grand Opening
-          </Button>
-          <Button variant="outline" onClick={handleCopyDiagnostics} className="rounded-xl h-12 px-6 border-dashed">
-            <Copy className="mr-2 h-4 w-4" />
-            Copy Health Data
           </Button>
         </div>
       </div>

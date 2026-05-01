@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Explicitly set body size limit for Server Actions to handle high-quality photos/videos
+  // High-priority body size limit configuration for Next.js 15 Server Actions
   serverActions: {
     bodySizeLimit: '10mb',
   },
