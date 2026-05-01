@@ -20,7 +20,8 @@ import {
   Zap,
   Crown,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Info
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -94,27 +95,69 @@ export default function SettingsPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
-                <div className="space-y-2">
-                  <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Next billing date: <span className="font-medium text-foreground">{new Date(subscription.nextBillingDate).toLocaleDateString()}</span>
-                  </p>
-                  <ul className="space-y-1 mt-4">
-                    <li className="text-xs flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-primary" /> Unlimited Recipes & Ingredients
-                    </li>
-                    <li className="text-xs flex items-center gap-2">
-                      <CheckCircle2 size={14} className={subscription.plan === 'pro' ? 'text-primary' : 'text-muted-foreground'} /> 
-                      AI Performance Audits ({subscription.plan === 'pro' ? 'Unlimited' : '3 left'})
-                    </li>
-                  </ul>
+              <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
+                <div className="space-y-4 flex-1">
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-lg capitalize">{subscription.plan} Member</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Next billing date: <span className="font-medium text-foreground">{new Date(subscription.nextBillingDate).toLocaleDateString()}</span>
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                    <div className="p-3 rounded-lg border bg-muted/5">
+                      <p className="text-[10px] font-bold uppercase text-primary mb-2 flex items-center gap-1">
+                        <Info size={10} /> Free Tier Includes
+                      </p>
+                      <ul className="space-y-1.5">
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Basic Stock Taking
+                        </li>
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Plate Costing Tool
+                        </li>
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> 3 AI Audits / Month
+                        </li>
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Market Trend Updates
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="p-3 rounded-lg border bg-primary/5 border-primary/10">
+                      <p className="text-[10px] font-bold uppercase text-primary mb-2 flex items-center gap-1">
+                        <Zap size={10} /> Pro Benefits
+                      </p>
+                      <ul className="space-y-1.5">
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Unlimited AI Audits
+                        </li>
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Advanced Procurement
+                        </li>
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Multi-Staff Access
+                        </li>
+                        <li className="text-[11px] flex items-center gap-2">
+                          <CheckCircle2 size={12} className="text-primary" /> Priority Market Sync
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
+
                 {subscription.plan === 'free' && (
-                  <Button onClick={() => upgradePlan('pro')} className="bg-primary hover:bg-primary/90 rounded-xl h-12 px-8 shadow-lg group">
-                    <Sparkles className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
-                    Upgrade to Pro (₦5,000/mo)
-                  </Button>
+                  <div className="shrink-0 pt-2">
+                    <Button onClick={() => upgradePlan('pro')} className="bg-primary hover:bg-primary/90 rounded-xl h-14 px-8 shadow-lg group flex flex-col items-center gap-0 leading-tight">
+                      <span className="flex items-center gap-2 text-lg">
+                        <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                        Upgrade to Pro
+                      </span>
+                      <span className="text-[10px] opacity-90 font-bold uppercase tracking-widest mt-1">₦11,000 / month</span>
+                    </Button>
+                    <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Secure payments via Paystack</p>
+                  </div>
                 )}
               </div>
             </CardContent>
