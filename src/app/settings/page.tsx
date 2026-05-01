@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from 'react';
@@ -135,11 +134,12 @@ export default function SettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
+      // Increased to 2MB for branding logos
+      if (file.size > 2 * 1024 * 1024) {
         toast({
           variant: "destructive",
           title: "File too large",
-          description: "Please choose an image smaller than 1MB for optimal performance.",
+          description: "Please choose an image smaller than 2MB for optimal branding.",
         });
         return;
       }
@@ -238,11 +238,11 @@ export default function SettingsPage() {
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent className="max-w-xs p-4 space-y-2">
-                            <p className="text-xs font-bold">Branding Guide:</p>
+                            <div className="text-xs font-bold">Branding Guide:</div>
                             <div className="text-[10px] leading-relaxed space-y-2">
-                              <p><strong>1. Easy Upload:</strong> Use the "Choose Photo" button to convert a local file automatically.</p>
-                              <p><strong>2. Public Folder:</strong> Reference by filename (e.g., <code>/logo.png</code>) if hosting locally.</p>
-                              <p><strong>3. Base64:</strong> Paste a raw string and the app will auto-prefix it for you.</p>
+                              <div><strong>1. Easy Upload:</strong> Use the "Choose Photo" button to convert a local file automatically.</div>
+                              <div><strong>2. Public Folder:</strong> Reference by filename (e.g., <code>/logo.png</code>) if hosting locally.</div>
+                              <div><strong>3. Base64:</strong> Paste a raw string and the app will auto-prefix it for you.</div>
                             </div>
                           </TooltipContent>
                         </Tooltip>

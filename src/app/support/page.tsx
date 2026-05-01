@@ -77,11 +77,12 @@ export default function SupportWorkspacePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      // Increased to 5MB to accommodate higher quality marketing photos
+      if (file.size > 5 * 1024 * 1024) {
         toast({ 
           variant: "destructive", 
           title: "File too large", 
-          description: "Please upload an image smaller than 2MB for the AI Lab." 
+          description: "Please upload an image smaller than 5MB for the AI Lab." 
         });
         return;
       }
@@ -299,7 +300,7 @@ export default function SupportWorkspacePage() {
                           <>
                             <UploadCloud size={48} className="text-primary/20 mb-4" />
                             <div className="text-sm font-medium text-muted-foreground">Upload your face/picture</div>
-                            <div className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 2MB</div>
+                            <div className="text-[10px] text-muted-foreground mt-1">PNG, JPG up to 5MB</div>
                           </>
                         )}
                       </div>
