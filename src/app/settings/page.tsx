@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useInventory } from '../lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
@@ -76,6 +76,10 @@ export default function SettingsPage() {
   const [adminConfig, setAdminConfig] = useState(systemPayment);
   const [adminAlert, setAdminAlert] = useState(systemAlert);
   
+  // Track if initial data has been synced to avoid infinite loops
+  const hasSyncedConfig = useRef(false);
+  const hasSyncedAlert = useRef(false);
+
   const placeholderLogo = PlaceHolderImages.find(img => img.id === 'app-logo');
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
 
@@ -83,12 +87,20 @@ export default function SettingsPage() {
     setMounted(true);
   }, []);
 
+  // Sync admin config when system data loads, but only once or if it significantly changes
   useEffect(() => {
-    if (systemPayment) setAdminConfig(systemPayment);
+    if (systemPayment && !hasSyncedConfig.current) {
+      setAdminConfig(systemPayment);
+      hasSyncedConfig.current = true;
+    }
   }, [systemPayment]);
 
+  // Sync admin alert when system data loads, but only once or if it significantly changes
   useEffect(() => {
-    if (systemAlert) setAdminAlert(systemAlert);
+    if (systemAlert && !hasSyncedAlert.current) {
+      setAdminAlert(systemAlert);
+      hasSyncedAlert.current = true;
+    }
   }, [systemAlert]);
 
   const paymentReference = useMemo(() => {
@@ -197,7 +209,7 @@ export default function SettingsPage() {
                       <div className="space-y-2"><Label>Bank Name</Label><Input value={adminConfig.bankName} onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}/></div>
                       <div className="space-y-2"><Label>Account Number</Label><Input value={adminConfig.accountNumber} onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}/></div>
                       <div className="space-y-2"><Label>Account Name</Label><Input value={adminConfig.accountName} onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}/></div>
-                      <div className="space-y-2"><Label>Pro Price (₦)</Label><Input type="number" value={adminConfig.proPrice} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value)})}/></div>
+                      <div className="space-y-2"><Label>Pro Price (₦)</Label><Input type="number" value={adminConfig.proPrice} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value) || 0})}/></div>
                     </div>
                     <div className="space-y-2"><Label>Paystack Public Key</Label><Input value={adminConfig.paystackPublicKey} onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}/></div>
                   </div>

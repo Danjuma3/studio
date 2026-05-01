@@ -11,6 +11,23 @@ import {
 } from '@/firebase/non-blocking-updates';
 import { Ingredient, Recipe, StaffMember, ManagerTask, PaymentMethod, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert } from './types';
 
+// Stable default objects to prevent infinite re-render loops
+const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
+  bankName: "GTBank",
+  accountNumber: "0123456789",
+  accountName: "Kitchen Prof Enterprise",
+  paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  proPrice: 11000,
+  appLogoUrl: ""
+};
+
+const DEFAULT_SYSTEM_ALERT: SystemAlert = {
+  message: "Welcome to Kitchen Prof! Update your prices for accuracy.",
+  type: "info",
+  active: true,
+  updatedAt: "2024-01-01T00:00:00.000Z"
+};
+
 export function useInventory() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
@@ -138,19 +155,8 @@ export function useInventory() {
     recipes: recipes || [],
     staff: staff || [],
     tasks: tasks || [],
-    systemPayment: systemPayment || {
-      bankName: "GTBank",
-      accountNumber: "0123456789",
-      accountName: "Kitchen Prof Enterprise",
-      paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      proPrice: 11000
-    },
-    systemAlert: systemAlert || {
-      message: "Welcome to Kitchen Prof! Update your prices for accuracy.",
-      type: "info",
-      active: true,
-      updatedAt: "2024-01-01T00:00:00.000Z"
-    },
+    systemPayment: systemPayment || DEFAULT_SYSTEM_PAYMENT,
+    systemAlert: systemAlert || DEFAULT_SYSTEM_ALERT,
     subscription: { plan: currentPlan, status: 'active', nextBillingDate: "2024-01-01T00:00:00.000Z" } as SubscriptionInfo,
     loading: isUserLoading || isIngredientsLoading || isRecipesLoading || isSystemLoading,
     addIngredient,
