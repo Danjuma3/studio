@@ -44,7 +44,7 @@ export default function AboutPage() {
           <Card className="border-none shadow-md">
             <CardHeader>
               <PackageSearch className="text-primary mb-2" size={32} />
-              <CardTitle className="text-lg">Stock Control</CardTitle>
+              <CardTitle className="text-lg font-bold">Stock Control</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
               Real-time tracking of pantry levels with intelligent "Low Stock" alerts based on your weekly usage patterns.
@@ -54,7 +54,7 @@ export default function AboutPage() {
           <Card className="border-none shadow-md">
             <CardHeader>
               <Calculator className="text-primary mb-2" size={32} />
-              <CardTitle className="text-lg">Plate Costing</CardTitle>
+              <CardTitle className="text-lg font-bold">Plate Costing</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
               Instant analysis of food cost percentages. Know exactly which recipes are healthy and which need price adjustments.
@@ -64,13 +64,20 @@ export default function AboutPage() {
           <Card className="border-none shadow-md">
             <CardHeader>
               <TrendingUp className="text-primary mb-2" size={32} />
-              <CardTitle className="text-lg">AI Profit Audit</CardTitle>
+              <CardTitle className="text-lg font-bold">AI Profit Audit</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
               Automated procurement strategies that compare bulk vs. retail prices to find hidden savings in your supply chain.
             </CardContent>
           </Card>
         </div>
+      </div>
+      
+      <div className="p-8 rounded-[2rem] bg-muted/30 border text-center space-y-4">
+        <h3 className="text-xl font-headline font-bold">Official Communication</h3>
+        <p className="text-muted-foreground max-w-xl mx-auto">
+          For legal inquiries, partnership opportunities, or technical support, please reach out to our official desk at <a href="mailto:legal@kitchenprof.ng" className="text-primary font-bold hover:underline">legal@kitchenprof.ng</a>.
+        </p>
       </div>
     </div>
   );

@@ -19,7 +19,10 @@ import {
   Users,
   Database,
   Activity,
-  MessageSquare
+  MessageSquare,
+  Globe,
+  Mail,
+  Server
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -86,8 +89,8 @@ export default function SupportWorkspacePage() {
           <div>
             <h1 className="text-3xl font-headline font-bold text-black/60">Team Command Center</h1>
             <p className="text-muted-foreground flex items-center gap-2">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Secure Backend</Badge>
-              Admin Access: chefdtanju@gmail.com
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-bold">ROOT ACCESS</Badge>
+              Admin: chefdtanju@gmail.com
             </p>
           </div>
         </div>
@@ -120,7 +123,7 @@ export default function SupportWorkspacePage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-black">{issues.filter(i => i.status !== 'fixed').length}</div>
-            <p className="text-[10px] text-muted-foreground mt-1">Awaiting resolution</p>
+            <p className="text-[10px] text-muted-foreground mt-1 font-bold">AWAITING RESOLUTION</p>
           </CardContent>
         </Card>
         <Card className="border-none shadow-md bg-white">
@@ -132,7 +135,7 @@ export default function SupportWorkspacePage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-black">{ingredients.length}</div>
-            <p className="text-[10px] text-muted-foreground mt-1">Unique items tracked</p>
+            <p className="text-[10px] text-muted-foreground mt-1 font-bold">TOTAL NODES TRACKED</p>
           </CardContent>
         </Card>
         <Card className="border-none shadow-md bg-white">
@@ -144,7 +147,7 @@ export default function SupportWorkspacePage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-black text-green-600">99.9%</div>
-            <p className="text-[10px] text-muted-foreground mt-1">Live & Profitable</p>
+            <p className="text-[10px] text-muted-foreground mt-1 font-bold">LIVE & PROFITABLE</p>
           </CardContent>
         </Card>
         <Card className="border-none shadow-md bg-primary text-primary-foreground">
@@ -155,8 +158,8 @@ export default function SupportWorkspacePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black">ACTIVE</div>
-            <p className="text-[10px] opacity-70 mt-1">Gemini 2.5 Flash Online</p>
+            <div className="text-3xl font-black">STABLE</div>
+            <p className="text-[10px] opacity-70 mt-1 font-bold">GEMINI 2.5 FLASH ONLINE</p>
           </CardContent>
         </Card>
       </div>
@@ -186,28 +189,22 @@ export default function SupportWorkspacePage() {
                 <p className="animate-pulse">&gt; Awaiting Command...</p>
               </div>
             </CardContent>
-            <CardFooter className="bg-muted/20 border-t py-4">
-              <div className="flex gap-4 w-full">
-                <Button variant="ghost" size="sm" className="text-xs font-bold text-primary">CLEAR LOGS</Button>
-                <Button variant="ghost" size="sm" className="text-xs font-bold text-primary">EXPORT JSON</Button>
-              </div>
-            </CardFooter>
           </Card>
 
           <Card className="border-none shadow-md bg-white">
             <CardHeader className="border-b">
               <CardTitle className="text-lg flex items-center gap-2">
                 <History size={20} className="text-primary" />
-                Customer Support Log
+                Team Support Log
               </CardTitle>
-              <CardDescription>Recent issues reported by the team or users.</CardDescription>
+              <CardDescription>Internal bug tracking and customer service tickets.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y">
                 {issues.length === 0 ? (
                   <div className="p-12 text-center space-y-4">
                     <CheckCircle2 size={48} className="mx-auto text-muted/30" />
-                    <p className="text-muted-foreground italic font-medium">All systems green. No active issues.</p>
+                    <p className="text-muted-foreground italic font-medium">All systems green. No active tickets.</p>
                   </div>
                 ) : (
                   issues.map((issue) => (
@@ -215,21 +212,21 @@ export default function SupportWorkspacePage() {
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-base">{issue.title}</span>
-                          <Badge variant={issue.severity === 'critical' ? 'destructive' : 'secondary'} className="text-[9px] px-2">
+                          <Badge variant={issue.severity === 'critical' ? 'destructive' : 'secondary'} className="text-[9px] px-2 font-bold">
                             {issue.severity.toUpperCase()}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground leading-relaxed">{issue.description}</p>
-                        <div className="flex items-center gap-4 text-[10px] text-muted-foreground font-medium">
+                        <div className="flex items-center gap-4 text-[10px] text-muted-foreground font-bold">
                           <span className="flex items-center gap-1"><History size={10} /> {new Date(issue.createdAt).toLocaleDateString()}</span>
-                          <span className="flex items-center gap-1"><Users size={10} /> Admin Reported</span>
+                          <span className="flex items-center gap-1"><Users size={10} /> ADMIN REPORTED</span>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <Badge className={issue.status === 'fixed' ? 'bg-green-500' : 'bg-amber-500'}>
                           {issue.status.toUpperCase()}
                         </Badge>
-                        <Button variant="ghost" size="sm" className="text-[10px] h-7 font-bold">MANAGE</Button>
+                        <Button variant="ghost" size="sm" className="text-[10px] h-7 font-black">MANAGE</Button>
                       </div>
                     </div>
                   ))
@@ -243,30 +240,51 @@ export default function SupportWorkspacePage() {
           <Card className="border-none shadow-xl bg-black text-white overflow-hidden">
             <div className="p-6 bg-white/5 border-b border-white/10">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Sparkles size={20} className="text-primary" />
-                AI Customer Partner
+                <Globe size={20} className="text-primary" />
+                Domain Infrastructure
               </CardTitle>
             </div>
             <CardContent className="pt-6 space-y-4">
-              <p className="text-sm leading-relaxed text-white/80">
-                Need help? Reach out to our legal team at <a href="mailto:legal@kitchenprof.ng" className="text-primary font-bold hover:underline">legal@kitchenprof.ng</a> or use the diagnostic tools.
-              </p>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Protocol:</p>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2 text-xs">
-                    <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">1</span>
-                    <span>Identify the anomaly in logs.</span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-3">
+                    <Globe size={18} className="text-primary" />
+                    <div>
+                      <p className="text-xs font-bold">kitchenprof.ng</p>
+                      <p className="text-[10px] text-white/40">Status: Pending Registration</p>
+                    </div>
                   </div>
-                  <div className="flex items-start gap-2 text-xs">
-                    <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">2</span>
-                    <span>Copy Diagnostic Payload.</span>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs">
-                    <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">3</span>
-                    <span>Submit to AI for remediation.</span>
-                  </div>
+                  <Badge variant="outline" className="text-[8px] border-white/20 text-white/60">CHECKING</Badge>
                 </div>
+
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-3">
+                    <Mail size={18} className="text-primary" />
+                    <div>
+                      <p className="text-xs font-bold">legal@kitchenprof.ng</p>
+                      <p className="text-[10px] text-white/40">Status: Awaiting Domain</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-[8px] border-white/20 text-white/60">QUEUED</Badge>
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-3">
+                    <Server size={18} className="text-green-500" />
+                    <div>
+                      <p className="text-xs font-bold">Firebase App Hosting</p>
+                      <p className="text-[10px] text-white/40">Status: Active & Live</p>
+                    </div>
+                  </div>
+                  <Badge className="bg-green-500 text-[8px] h-4">ACTIVE</Badge>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 space-y-3 mt-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Domain Note:</p>
+                <p className="text-[11px] leading-relaxed text-white/80">
+                  Once you register <strong>kitchenprof.ng</strong> via a NiRA-accredited registrar, you can point your DNS settings to this Firebase instance to activate official branding.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -275,9 +293,9 @@ export default function SupportWorkspacePage() {
             <CardHeader className="pb-4">
               <CardTitle className="text-base flex items-center gap-2 text-black/60">
                 <Bug size={18} className="text-destructive" />
-                Report System Anomaly
+                Log Internal Anomaly
               </CardTitle>
-              <CardDescription className="text-xs">Log internal bugs for the team.</CardDescription>
+              <CardDescription className="text-xs">Report system bugs to the team.</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmitBug} className="space-y-4">
@@ -293,14 +311,14 @@ export default function SupportWorkspacePage() {
                 <div className="space-y-2">
                   <Label className="text-xs font-bold uppercase tracking-tight text-muted-foreground">Technical Details</Label>
                   <Textarea
-                    placeholder="Steps to reproduce or log error..."
+                    placeholder="Steps to reproduce..."
                     className="h-28 text-sm resize-none"
                     value={bugDesc}
                     onChange={(e) => setBugDesc(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="w-full bg-black text-white h-12 shadow-lg hover:bg-black/90 rounded-xl">
-                  Log for Review
+                <Button type="submit" className="w-full bg-black text-white h-12 shadow-lg hover:bg-black/90 rounded-xl font-bold">
+                  Log Internal Ticket
                 </Button>
               </form>
             </CardContent>
