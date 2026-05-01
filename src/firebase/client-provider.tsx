@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, type ReactNode } from 'react';
@@ -11,19 +12,23 @@ interface FirebaseClientProviderProps {
 
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
   const [firebaseServices, setFirebaseServices] = useState<any>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
-    // Initialize Firebase only on the client side after mount
-    // Increased delay to 7 seconds to allow the puzzle animation to be fully appreciated
+    // 1. Start the 7-second display timer immediately
     const timer = setTimeout(() => {
-      setFirebaseServices(initializeFirebase());
+      setIsInitializing(false);
     }, 7000);
+
+    // 2. Initialize Firebase SDKs immediately so they are ready when the timer ends
+    const services = initializeFirebase();
+    setFirebaseServices(services);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Show the PuzzleLoader until Firebase is initialized
-  if (!firebaseServices) {
+  // Show the PuzzleLoader while initializing or waiting for the 7s timer
+  if (isInitializing || !firebaseServices) {
     return <PuzzleLoader />;
   }
 

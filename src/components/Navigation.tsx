@@ -34,6 +34,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { Badge } from '@/components/ui/badge';
+import { useInventory } from '@/app/lib/store';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -53,7 +54,8 @@ const secondaryNav = [
 
 export function AppNavigation() {
   const pathname = usePathname();
-  const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+  const { systemPayment } = useInventory();
+  const placeholderLogo = PlaceHolderImages.find(img => img.id === 'app-logo');
   const { user } = useUser();
   const auth = useAuth();
 
@@ -65,18 +67,20 @@ export function AppNavigation() {
 
   if (!user && pathname === '/login') return null;
 
+  const currentLogoUrl = systemPayment?.appLogoUrl || placeholderLogo?.imageUrl || '';
+
   return (
     <Sidebar variant="sidebar" className="bg-sidebar border-r">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-3 mb-4 group">
           <div className="relative w-12 h-12 overflow-hidden rounded-xl shadow-md group-hover:scale-105 transition-transform">
-            {logo ? (
+            {currentLogoUrl ? (
               <Image 
-                src={logo.imageUrl} 
+                src={currentLogoUrl} 
                 alt="Kitchen Prof Logo" 
                 fill 
                 className="object-cover"
-                data-ai-hint={logo.imageHint}
+                data-ai-hint={placeholderLogo?.imageHint}
               />
             ) : (
               <div className="w-full h-full bg-primary flex items-center justify-center text-white font-bold">

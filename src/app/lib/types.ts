@@ -68,4 +68,5 @@ export interface SystemPaymentConfig {
   accountName: string;
   paystackPublicKey: string;
   proPrice: number;
+  appLogoUrl?: string;
 }

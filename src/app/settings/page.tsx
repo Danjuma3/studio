@@ -9,26 +9,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { 
   CreditCard, 
-  Plus, 
-  Trash2, 
   CheckCircle2, 
   Building2, 
   Smartphone, 
   Wallet,
-  MoreVertical,
   ShieldCheck,
-  Bell,
   Zap,
   Crown,
-  ChevronRight,
   Sparkles,
-  Info,
-  Calculator,
   Copy,
   ExternalLink,
   Image as ImageIcon,
   FileCode,
-  Save
+  Save,
+  Link as LinkIcon
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -36,16 +30,8 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
-  DialogTrigger,
-  DialogFooter,
-  DialogDescription
+  DialogTrigger
 } from '@/components/ui/dialog';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { usePaystackPayment } from 'react-paystack';
@@ -73,24 +59,19 @@ export default function SettingsPage() {
   const { user } = useUser();
   const { toast } = useToast();
   const { 
-    paymentMethods, 
-    addPaymentMethod, 
-    deletePaymentMethod, 
-    setDefaultPaymentMethod, 
     subscription, 
     upgradePlan,
     systemPayment,
     updateSystemPaymentConfig
   } = useInventory();
   
-  const [isAddingOpen, setIsAddingOpen] = useState(false);
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   
   // Admin Edit State
   const [adminConfig, setAdminConfig] = useState(systemPayment);
   
-  const logo = PlaceHolderImages.find(img => img.id === 'app-logo');
+  const placeholderLogo = PlaceHolderImages.find(img => img.id === 'app-logo');
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
 
   useEffect(() => {
@@ -102,14 +83,6 @@ export default function SettingsPage() {
       setAdminConfig(systemPayment);
     }
   }, [systemPayment]);
-
-  const [newMethod, setNewMethod] = useState({
-    type: 'bank_transfer' as const,
-    provider: '',
-    accountName: '',
-    lastFour: '',
-    isDefault: false
-  });
 
   const paymentReference = useMemo(() => {
     return `KP-${user?.uid?.substring(0, 6).toUpperCase() || 'USER'}-${Date.now()}`;
@@ -130,7 +103,7 @@ export default function SettingsPage() {
     updateSystemPaymentConfig(adminConfig);
     toast({
       title: "Settings Updated",
-      description: "Global payment details have been updated successfully.",
+      description: "Global system configuration has been updated successfully.",
     });
   };
 
@@ -160,24 +133,7 @@ export default function SettingsPage() {
     });
   };
 
-  const handleAdd = () => {
-    if (newMethod.provider || newMethod.type === 'paystack') {
-      const finalProvider = newMethod.type === 'paystack' ? 'Paystack' : newMethod.provider;
-      addPaymentMethod({ ...newMethod, provider: finalProvider });
-      setNewMethod({ type: 'bank_transfer', provider: '', accountName: '', lastFour: '', isDefault: false });
-      setIsAddingOpen(false);
-    }
-  };
-
-  const getMethodIcon = (type: string) => {
-    switch (type) {
-      case 'card': return <CreditCard className="text-primary" />;
-      case 'bank_transfer': return <Building2 className="text-primary" />;
-      case 'pos': return <Smartphone className="text-primary" />;
-      case 'paystack': return <Zap className="text-sky-500" />;
-      default: return <Wallet className="text-primary" />;
-    }
-  };
+  const currentLogoUrl = systemPayment?.appLogoUrl || placeholderLogo?.imageUrl || '';
 
   if (!mounted) return null;
 
@@ -191,54 +147,89 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Admin Payment Settings (Only for Admin) */}
+          {/* Admin System Settings (Only for Admin) */}
           {isAdmin && (
             <Card className="border-2 border-primary/20 shadow-xl overflow-hidden bg-white animate-in slide-in-from-top duration-500">
               <CardHeader className="bg-primary/10 border-b">
                 <CardTitle className="text-xl flex items-center gap-2">
                   <ShieldCheck className="text-primary" size={24} />
-                  Platform Admin: Payment Config
+                  Platform Admin: System Config
                 </CardTitle>
-                <CardDescription>Update the global account details end-users see when upgrading.</CardDescription>
+                <CardDescription>Update global settings including payments and branding.</CardDescription>
               </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Bank Name</Label>
-                    <Input 
-                      value={adminConfig.bankName} 
-                      onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Account Number</Label>
-                    <Input 
-                      value={adminConfig.accountNumber} 
-                      onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Account Name</Label>
-                    <Input 
-                      value={adminConfig.accountName} 
-                      onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Monthly Pro Price (₦)</Label>
-                    <Input 
-                      type="number"
-                      value={adminConfig.proPrice} 
-                      onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value)})}
-                    />
+              <CardContent className="pt-6 space-y-6">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <ImageIcon size={16} /> App Branding
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <Label>App Logo URL</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          placeholder="https://example.com/logo.png"
+                          value={adminConfig.appLogoUrl || ''} 
+                          onChange={(e) => setAdminConfig({...adminConfig, appLogoUrl: e.target.value})}
+                        />
+                        <div className="w-10 h-10 shrink-0 border rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                          {(adminConfig.appLogoUrl || currentLogoUrl) && (
+                            <Image 
+                              src={adminConfig.appLogoUrl || currentLogoUrl} 
+                              alt="Logo Preview" 
+                              width={40} 
+                              height={40} 
+                              className="object-cover"
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground italic">Tip: Use a transparent PNG or SVG for best results on the sidebar.</p>
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Paystack Public Key</Label>
-                  <Input 
-                    value={adminConfig.paystackPublicKey} 
-                    onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}
-                  />
+
+                <div className="space-y-4 border-t pt-6">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <Building2 size={16} /> Payment Details
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Bank Name</Label>
+                      <Input 
+                        value={adminConfig.bankName} 
+                        onChange={(e) => setAdminConfig({...adminConfig, bankName: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Account Number</Label>
+                      <Input 
+                        value={adminConfig.accountNumber} 
+                        onChange={(e) => setAdminConfig({...adminConfig, accountNumber: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Account Name</Label>
+                      <Input 
+                        value={adminConfig.accountName} 
+                        onChange={(e) => setAdminConfig({...adminConfig, accountName: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Monthly Pro Price (₦)</Label>
+                      <Input 
+                        type="number"
+                        value={adminConfig.proPrice} 
+                        onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Paystack Public Key</Label>
+                    <Input 
+                      value={adminConfig.paystackPublicKey} 
+                      onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}
+                    />
+                  </div>
                 </div>
               </CardContent>
               <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
@@ -257,42 +248,45 @@ export default function SettingsPage() {
                 <ImageIcon className="text-primary" size={24} />
                 App Branding
               </CardTitle>
-              <CardDescription>Customize the visual identity of Kitchen Prof.</CardDescription>
+              <CardDescription>Visual identity of Kitchen Prof.</CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
                 <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-muted shadow-inner bg-muted/20">
-                  {logo && (
+                  {currentLogoUrl && (
                     <Image 
-                      src={logo.imageUrl} 
+                      src={currentLogoUrl} 
                       alt="Current Logo" 
                       fill 
                       className="object-cover"
-                      data-ai-hint={logo.imageHint}
                     />
                   )}
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1">
-                    <h4 className="font-bold text-lg">App Logo</h4>
+                    <h4 className="font-bold text-lg">Identity Control</h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      To update your logo across the entire app, please edit:
+                      {isAdmin 
+                        ? "You are managing the branding dynamically via the Admin Panel above." 
+                        : "Branding is managed centrally by the platform administrator."}
                     </p>
                   </div>
-                  <div className="p-4 rounded-xl bg-muted/50 border flex items-center justify-between group">
-                    <div className="flex items-center gap-3">
-                      <FileCode className="text-primary" size={20} />
-                      <code className="text-xs font-mono font-bold text-primary">src/app/lib/placeholder-images.json</code>
+                  {!isAdmin && (
+                    <div className="p-4 rounded-xl bg-muted/50 border flex items-center justify-between group">
+                      <div className="flex items-center gap-3">
+                        <FileCode className="text-primary" size={20} />
+                        <code className="text-xs font-mono font-bold text-primary">src/app/lib/placeholder-images.json</code>
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleCopy('src/app/lib/placeholder-images.json', 'File path')}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Copy size={14} className="mr-2" /> Copy Path
+                      </Button>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => handleCopy('src/app/lib/placeholder-images.json', 'File path')}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Copy size={14} className="mr-2" /> Copy Path
-                    </Button>
-                  </div>
+                  )}
                 </div>
               </div>
             </CardContent>

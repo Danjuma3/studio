@@ -128,7 +128,8 @@
         "accountNumber": { "type": "string" },
         "accountName": { "type": "string" },
         "paystackPublicKey": { "type": "string" },
-        "proPrice": { "type": "number" }
+        "proPrice": { "type": "number" },
+        "appLogoUrl": { "type": "string", "description": "Dynamic URL for the application logo." }
       }
     }
   },
