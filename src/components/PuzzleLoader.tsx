@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -16,23 +15,32 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
   const [mounted, setMounted] = useState(false);
   const [offsets, setOffsets] = useState<{x: number, y: number, r: number}[]>([]);
 
+  // Sequential order for the pieces to animate (spiral-ish or linear sequence)
+  const sequentialOrder = [
+    0, 1, 2, 3,
+    7, 11, 15, 14,
+    13, 12, 8, 4,
+    5, 6, 10, 9
+  ];
+
   useEffect(() => {
     // Resolve logo URL
     const logo = getSafeLogoUrl(imageUrl);
     setFinalImageUrl(logo);
 
-    // Generate random offsets
+    // Generate random starting offsets for the "shattered" look
     const initialOffsets = pieces.map(() => ({
-      x: (Math.random() - 0.5) * 400,
-      y: (Math.random() - 0.5) * 400,
-      r: (Math.random() - 0.5) * 180,
+      x: (Math.random() - 0.5) * 500,
+      y: (Math.random() - 0.5) * 500,
+      r: (Math.random() - 0.5) * 360,
     }));
     
     setOffsets(initialOffsets);
     
+    // Trigger the assembly
     const timer = setTimeout(() => {
       setMounted(true);
-    }, 100);
+    }, 200);
     return () => clearTimeout(timer);
   }, [imageUrl]);
 
@@ -41,25 +49,33 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background animate-in fade-in duration-500">
-      <div className="relative w-48 h-48 md:w-64 md:h-64 mb-8">
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background overflow-hidden animate-in fade-in duration-700">
+      {/* Background radial gradient for depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
+      
+      <div className="relative w-56 h-56 md:w-72 md:h-72 mb-12">
         {finalImageUrl ? (
-          <div className="grid grid-cols-4 grid-rows-4 w-full h-full gap-0.5">
+          <div className="grid grid-cols-4 grid-rows-4 w-full h-full gap-0.5 relative">
             {pieces.map((i) => {
               const row = Math.floor(i / gridSize);
               const col = i % gridSize;
               const offset = offsets[i];
+              
+              // Calculate animation delay based on the sequential circular order
+              const delayIndex = sequentialOrder.indexOf(i);
+              const delay = delayIndex * 60; // 60ms stagger
 
               return (
                 <div
                   key={i}
-                  className="relative overflow-hidden border-[0.5px] border-primary/10 transition-all duration-[1500ms] ease-out shadow-sm"
+                  className="relative overflow-hidden border-[0.5px] border-primary/5 bg-muted/10 transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1)"
                   style={{
                     transform: mounted 
                       ? 'translate(0, 0) rotate(0)' 
                       : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg)`,
                     opacity: mounted ? 1 : 0,
-                    transitionDelay: `${i * 40}ms`,
+                    transitionDelay: `${delay}ms`,
+                    boxShadow: mounted ? 'none' : '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
                   }}
                 >
                   <div
@@ -76,16 +92,37 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
             })}
           </div>
         ) : (
-          <div className="w-full h-full rounded-3xl bg-primary/5 flex items-center justify-center animate-pulse border-4 border-dashed border-primary/20">
-             <div className="text-primary font-headline font-black text-4xl opacity-20">KP</div>
+          <div className="w-full h-full rounded-[2.5rem] bg-primary/5 flex items-center justify-center animate-pulse border-4 border-dashed border-primary/20 relative">
+             <div className="absolute inset-0 flex items-center justify-center">
+               <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+             </div>
+             <div className="text-primary font-headline font-black text-5xl opacity-10">KP</div>
           </div>
         )}
       </div>
       
-      <div className="text-center space-y-2 animate-pulse">
-        <h2 className="text-xl font-headline font-black text-primary tracking-tighter">KITCHEN PROF</h2>
-        <p className="text-xs text-muted-foreground font-bold uppercase tracking-[0.3em]">Initializing Kitchen...</p>
+      <div className="text-center space-y-3 z-10">
+        <div className="overflow-hidden">
+          <h2 className={`text-2xl font-headline font-black text-primary tracking-tighter transition-all duration-1000 transform ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+            KITCHEN PROF
+          </h2>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-[0.5em] opacity-60">
+            Initializing System
+          </p>
+          <div className="w-32 h-1 bg-muted rounded-full overflow-hidden">
+             <div className="h-full bg-primary animate-[loading_7s_ease-in-out_infinite]" />
+          </div>
+        </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes loading {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+      `}</style>
     </div>
   );
 }
