@@ -28,7 +28,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
     }));
     setOffsets(initialOffsets);
 
-    // Sequence the assembly over 5 seconds
+    // Sequence the assembly over 5 seconds (Premium launch experience)
     const interval = setInterval(() => {
       setAssembledCount((prev) => {
         if (prev >= 4) {
@@ -48,9 +48,9 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background overflow-hidden select-none">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
       
-      <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mb-16 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden bg-white/60 backdrop-blur-md border border-white/40">
+      <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mb-16 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden bg-white/40 backdrop-blur-md border border-white/30">
         {finalImageUrl ? (
-          <div className="grid grid-cols-2 grid-rows-2 w-full h-full relative p-[1px] bg-white/30">
+          <div className="grid grid-cols-2 grid-rows-2 w-full h-full relative p-[1px] bg-white/20">
             {[0, 1, 2, 3].map((i) => {
               const row = Math.floor(i / gridSize);
               const col = i % gridSize;
@@ -62,13 +62,13 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
               return (
                 <div
                   key={i}
-                  className="relative overflow-hidden transition-all duration-[1200ms] cubic-bezier(0.34, 1.56, 0.64, 1) border-[1px] border-white/20"
+                  className="relative overflow-hidden transition-all duration-[1200ms] border-[0.5px] border-white/10"
                   style={{
                     transform: isAssembled 
                       ? 'translate(0, 0) rotate(0) scale(1)' 
                       : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg) scale(0.6)`,
-                    opacity: isAssembled ? 1 : 0.15,
-                    filter: isAssembled ? 'grayscale(0)' : 'grayscale(1) blur(2px)',
+                    opacity: isAssembled ? 1 : 0.1,
+                    filter: isAssembled ? 'grayscale(0)' : 'grayscale(1) blur(4px)',
                     zIndex: isAssembled ? 10 : 1,
                   }}
                 >
@@ -81,7 +81,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
                       top: `-${row * 100}%`,
                     }}
                   />
-                  <div className="absolute inset-0 bg-white/5 border-[0.5px] border-white/10 shadow-[inset_0_0_4px_rgba(255,255,255,0.4)]" />
+                  <div className="absolute inset-0 bg-white/5 shadow-[inset_0_0_8px_rgba(255,255,255,0.2)]" />
                 </div>
               );
             })}
@@ -95,8 +95,8 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
       
       <div className="text-center space-y-6">
         <div className="space-y-1">
-          <h2 className="text-5xl font-headline font-black text-primary tracking-tighter animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            KITCHEN PROFIT
+          <h2 className="text-5xl font-brand font-black text-primary tracking-tighter animate-in fade-in slide-in-from-bottom-4 duration-1000 uppercase">
+            Kitchen Profit
           </h2>
           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.5em] opacity-40">
             Managing margins for food business

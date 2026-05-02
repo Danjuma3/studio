@@ -386,7 +386,7 @@ export default function SettingsPage() {
                   </CardTitle>
                   <div className="text-sm text-muted-foreground">Manage your access to professional margin tools.</div>
                 </div>
-                <Badge className={subscription.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
+                <Badge className={subscription?.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
                   {(subscription?.plan || 'free').toUpperCase()} PLAN
                 </Badge>
               </div>
