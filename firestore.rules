@@ -21,8 +21,7 @@ service cloud.firestore {
       return isSignedIn() && request.auth.token.email == 'chefdtanju@gmail.com';
     }
 
-    // --- System Rules (Publicly Readable for Branding) ---
-    // Specifically separated to ensure public access to branding and alerts
+    // --- System Rules (Publicly Readable for Branding & Announcements) ---
     match /system/payment {
       allow read: if true;
       allow write: if isAdmin();

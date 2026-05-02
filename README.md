@@ -16,7 +16,7 @@ Kitchen Profit Professional is an intelligent food cost control and margin analy
   ```bash
   npm install
   ```
-- **Secret Keys**: Rename `.env.example` to `.env.local` and add your `GEMINI_API_KEY`.
+- **Secret Keys**: Create a `.env.local` file (copy from `.env.example`) and add your `GEMINI_API_KEY`. Get your key from [aistudio.google.com](https://aistudio.google.com/).
 
 ### 3. Firebase Production Setup
 - **Console**: Create a project at [console.firebase.google.com](https://console.firebase.google.com/).
