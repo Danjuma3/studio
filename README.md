@@ -7,8 +7,9 @@ Kitchen Profit Professional is an intelligent food cost control and margin analy
 ## 🚀 How to Export & Launch
 
 ### 1. Download Your Code
-- **Locate the Download Icon**: In the top right corner of the Firebase Studio toolbar, click the **Download** icon (downward arrow). 
-- **Extract**: Save the ZIP file to your computer and extract it to a folder.
+- **Locate the Export Icon**: In the top right corner of the Firebase Studio toolbar, look for the **Cloud/Download icon** (downward arrow).
+- **Mobile Users**: If you are on a mobile phone and cannot see the icon, tap your browser's menu (three dots or "AA") and select **"Request Desktop Site"**. This will expand the toolbar and reveal the download button.
+- **Extract**: Save the ZIP file and extract it to a folder on your machine.
 
 ### 2. Local Setup
 - **Install Dependencies**: Open your terminal, navigate to the project folder, and run:
