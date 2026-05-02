@@ -42,7 +42,7 @@ export function BrandedLogo({
       {showPuzzleLines ? (
         <div className="grid grid-cols-2 grid-rows-2 w-full h-full p-[1px] bg-white/20">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="relative overflow-hidden border-[0.5px] border-white/10">
+            <div key={i} className="relative overflow-hidden border-[0.5px] border-white/5">
               <div
                 className="absolute w-[200%] h-[200%]"
                 style={{
@@ -52,6 +52,7 @@ export function BrandedLogo({
                   top: `-${Math.floor(i / 2) * 100}%`,
                 }}
               />
+              {/* Soft low-contrast overlay */}
               <div className="absolute inset-0 bg-white/5" />
             </div>
           ))}
