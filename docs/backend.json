@@ -47,7 +47,11 @@
   "firestore": {
     "/system/payment": {
       "schema": { "$ref": "#/backend/entities/SystemPaymentConfig" },
-      "description": "Global branding and billing configuration."
+      "description": "Global branding and billing configuration. Publicly readable."
+    },
+    "/system/alert": {
+      "schema": { "type": "object" },
+      "description": "Global market news and system alerts. Publicly readable."
     },
     "/users/{userId}/ingredients/{ingredientId}": {
       "schema": { "$ref": "#/backend/entities/Ingredient" },

@@ -22,7 +22,13 @@ service cloud.firestore {
     }
 
     // --- System Rules (Publicly Readable for Branding) ---
-    match /system/{configId} {
+    // Specifically separated to ensure public access to branding and alerts
+    match /system/payment {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /system/alert {
       allow read: if true;
       allow write: if isAdmin();
     }
