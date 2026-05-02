@@ -10,7 +10,7 @@ Kitchen Profit Professional is an intelligent food cost control and margin analy
 ### 1. Serverless Power (No Standby Server Needed)
 This app is built on a **Serverless Architecture**. You do **not** need to maintain a standby server or backend hardware.
 - **Frontend & Logic**: Hosted on Firebase App Hosting (recommended) or Vercel.
-- **Database**: Firestore handles scaling automatically.
+- **Database**: Firestore handles scaling automatically—it "wakes up" when called and costs nothing when idle.
 - **AI**: Genkit flows run on-demand via Server Actions.
 
 ### 2. Launch Checklist
@@ -20,11 +20,11 @@ This app is built on a **Serverless Architecture**. You do **not** need to maint
    - Update `src/firebase/config.ts` with your production keys.
 2. **Environment Variables**:
    - Set `GEMINI_API_KEY` in your hosting provider's dashboard (e.g., Firebase App Hosting or Vercel).
-3. **Security & reCAPTCHA (App Check)**:
+3. **Security & App Check (reCAPTCHA)**:
    - To protect your app from bots, enable **App Check** in the Firebase Console.
    - You will need a **reCAPTCHA Enterprise Site Key**. 
    - Get this by going to **Firebase Console > App Check > Register > reCAPTCHA Enterprise**.
-   - Follow the prompts to generate your Site Key in the Google Cloud Console.
+   - **Crucial**: Only enable "Enforcement" after you have registered your production domain.
 4. **Domain**:
    - Connect your domain (e.g., `.ng` or `.com`) via your hosting provider's DNS settings.
 
@@ -35,8 +35,8 @@ This app is built on a **Serverless Architecture**. You do **not** need to maint
 4. Run `npm run dev` to start locally.
 
 ## 🖼️ Branding & Identity
-- **Puzzle Logo**: Features a 2x2 quadrant design with subtle white lines. 
-- **Faded Effect**: Logos sit under a premium frosted glass layer.
+- **Puzzle Logo**: Features a 2x2 quadrant design with subtle, low-contrast white lines for an elegant partitioned look. 
+- **Faded Effect**: Logos sit under a premium frosted glass layer (`backdrop-blur-md`).
 - **Customization**: Update the logo in **Settings** (supports high-res assets up to 10MB).
 
 ## 🔐 Support & Administration
