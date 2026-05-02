@@ -2,6 +2,7 @@
   "entities": {
     "Ingredient": {
       "title": "Ingredient",
+      "description": "User's private ingredient inventory with cost tracking.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
@@ -16,6 +17,7 @@
     },
     "Recipe": {
       "title": "Recipe",
+      "description": "A collection of ingredients forming a salable dish.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
@@ -26,6 +28,7 @@
     },
     "SystemPaymentConfig": {
       "title": "SystemPaymentConfig",
+      "description": "Global settings for branding and payments.",
       "type": "object",
       "properties": {
         "bankName": { "type": "string" },
@@ -36,40 +39,23 @@
         "proPriceUSD": { "type": "number" },
         "appLogoUrl": { "type": "string" }
       }
-    },
-    "SystemAlert": {
-      "title": "SystemAlert",
-      "type": "object",
-      "properties": {
-        "message": { "type": "string" },
-        "type": { "type": "string" },
-        "active": { "type": "boolean" },
-        "updatedAt": { "type": "string" }
-      }
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
     "/system/payment": {
       "schema": { "$ref": "#/backend/entities/SystemPaymentConfig" },
-      "description": "Global payment and branding configuration."
-    },
-    "/system/alert": {
-      "schema": { "$ref": "#/backend/entities/SystemAlert" },
-      "description": "Global broadcast messages."
+      "description": "Global branding and billing configuration."
     },
     "/users/{userId}/ingredients/{ingredientId}": {
       "schema": { "$ref": "#/backend/entities/Ingredient" },
-      "description": "User's private ingredient inventory."
+      "description": "Private ingredient list for each restaurant."
     },
     "/users/{userId}/recipes/{recipeId}": {
       "schema": { "$ref": "#/backend/entities/Recipe" },
-      "description": "User's private recipe configurations."
+      "description": "Private recipe costing for each restaurant."
     }
   }
 }

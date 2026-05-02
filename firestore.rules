@@ -3,104 +3,53 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * EkoPlateCost Security Rules
-     *
-     * CORE PHILOSOPHY
-     * This ruleset enforces a strict Path-Based Ownership model. All data is partitioned
-     * by the user's unique identifier (UID) to ensure absolute privacy and security. 
-     * Access is granted exclusively to the authenticated owner of the data tree.
-     *
-     * GLOBAL CONFIGURATION
-     * The /system collection contains platform-wide settings (branding, alerts, pricing).
-     * These are publicly readable to ensure the app can display identity and news 
-     * even before user authentication.
+     * Kitchen Profit Professional Security Rules
+     * Optimized for Global Launch
      */
 
     // --- Helper Functions ---
 
-    /** @description Checks if the request is from an authenticated user. */
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /** @description Checks if the authenticated user matches the owner of the path. */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    /** @description Checks if the user is the owner and the document exists. */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
-    }
-
-    /** @description Checks if the user is the platform administrator. */
     function isAdmin() {
       return isSignedIn() && request.auth.token.email == 'chefdtanju@gmail.com';
     }
 
-    // --- System Rules ---
-
-    /**
-     * @description Publicly readable platform configuration and alerts.
-     * Only the admin (chefdtanju@gmail.com) can modify these.
-     */
+    // --- System Rules (Publicly Readable for Branding) ---
     match /system/{configId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // --- User Rules ---
-
+    // --- User Data Partitioning ---
     match /users/{userId} {
       allow get: if isOwner(userId);
-      allow list: if false;
       allow create: if isOwner(userId);
-      allow update: if isExistingOwner(userId);
+      allow update: if isOwner(userId);
       allow delete: if false;
 
-      /**
-       * @description Ingredients inventory.
-       */
       match /ingredients/{ingredientId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.id == ingredientId;
-        allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-        allow delete: if isExistingOwner(userId);
-
-        match /marketPriceLogs/{logId} {
-          allow get, list: if isOwner(userId);
-          allow create: if isOwner(userId) && request.resource.data.id == logId && request.resource.data.ingredientId == ingredientId;
-          allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-          allow delete: if isExistingOwner(userId);
-        }
+        allow read, write: if isOwner(userId);
       }
 
-      /**
-       * @description Recipe configurations.
-       */
       match /recipes/{recipeId} {
-        allow get, list: if isOwner(userId);
-        allow create: if isOwner(userId) && request.resource.data.id == recipeId;
-        allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-        allow delete: if isExistingOwner(userId);
-
-        match /recipeIngredients/{riId} {
-          allow get, list: if isOwner(userId);
-          allow create: if isOwner(userId) && request.resource.data.id == riId && request.resource.data.recipeId == recipeId;
-          allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
-          allow delete: if isExistingOwner(userId);
-        }
+        allow read, write: if isOwner(userId);
       }
 
-      /**
-       * @description Operations and staff management.
-       */
       match /staff/{staffId} {
         allow read, write: if isOwner(userId);
       }
+      
       match /tasks/{taskId} {
         allow read, write: if isOwner(userId);
       }
+      
       match /issues/{issueId} {
         allow read, write: if isOwner(userId);
       }
