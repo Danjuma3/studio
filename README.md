@@ -20,7 +20,12 @@ This app is built on a **Serverless Architecture**. You do **not** need to maint
    - Update `src/firebase/config.ts` with your production keys.
 2. **Environment Variables**:
    - Set `GEMINI_API_KEY` in your hosting provider's dashboard (e.g., Firebase App Hosting or Vercel).
-3. **Domain**:
+3. **Security & reCAPTCHA (App Check)**:
+   - To protect your app from bots, enable **App Check** in the Firebase Console.
+   - You will need a **reCAPTCHA Enterprise Site Key**. 
+   - Get this by going to **Firebase Console > App Check > Register > reCAPTCHA Enterprise**.
+   - Follow the prompts to generate your Site Key in the Google Cloud Console.
+4. **Domain**:
    - Connect your domain (e.g., `.ng` or `.com`) via your hosting provider's DNS settings.
 
 ### 3. Local Setup
