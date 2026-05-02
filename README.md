@@ -4,30 +4,41 @@
 
 Kitchen Profit Professional is an intelligent food cost control and margin analysis platform built on a serverless, global-scale architecture.
 
-## 🚀 How to Export & Launch
+## 📥 How to Export & Download Your Code
 
-### 1. Download Your Code
-- **Locate the Export Icon**: In the top right corner of the Firebase Studio toolbar, look for the **Cloud/Download icon** (downward arrow).
-- **Mobile Users**: If you are on a mobile phone and cannot see the icon, tap your browser's menu (three dots or "AA") and select **"Request Desktop Site"**. This will expand the toolbar and reveal the download button.
-- **Extract**: Save the ZIP file and extract it to a folder on your machine.
+If you are ready to take this project to production, you need to download the source code to your computer.
 
-### 2. Local Setup
-- **Install Dependencies**: Open your terminal, navigate to the project folder, and run:
+### 1. Locate the Download Icon
+- Look at the **Top Right Corner** of this window (the header bar).
+- Look for an icon that looks like a **Downward Arrow** or a **Cloud with an Arrow**.
+- **Mobile Users:** If you cannot see the icon, it is likely hidden due to screen size. 
+  1. Rotate your phone to **Landscape Mode**.
+  2. Ensure **"Request Desktop Site"** is enabled in your browser menu.
+  3. If still not visible, we strongly recommend opening this project on a **Laptop or Desktop computer**.
+
+### 2. Extract & Setup
+- Save the ZIP file and extract it to a folder on your machine.
+- Open your terminal in that folder and run:
   ```bash
   npm install
   ```
-- **Secret Keys**: Create a `.env.local` file (copy from `.env.example`) and add your `GEMINI_API_KEY`. Get your key from [aistudio.google.com](https://aistudio.google.com/).
 
-### 3. Firebase Production Setup
+## 🚀 Launching to Production
+
+### 1. Secret Keys
+- Create a `.env.local` file in your project root.
+- Add your `GEMINI_API_KEY`. Get your key from [aistudio.google.com](https://aistudio.google.com/).
+
+### 2. Firebase Production Setup
 - **Console**: Create a project at [console.firebase.google.com](https://console.firebase.google.com/).
 - **Services**: Enable **Firestore** (Production Mode) and **Authentication** (Email/Password & Anonymous).
 - **Config**: Update `src/firebase/config.ts` with the keys from your new Firebase Project settings.
 
-### 4. Deploy to the Web
+### 3. Deploy to the Web
 - **GitHub**: Push your code to a private or public GitHub repository.
 - **App Hosting**: In the Firebase Console, connect the repository to **Firebase App Hosting**. It will automatically handle the build and deployment.
 
-### 5. Security (App Check)
+### 4. Security (App Check)
 - Register for **reCAPTCHA Enterprise** in the Google Cloud Console.
 - Add your Site Key to the Firebase App Check settings.
 - **Important**: Only enable enforcement after your production domain is live to avoid blocking yourself during testing.
@@ -35,14 +46,7 @@ Kitchen Profit Professional is an intelligent food cost control and margin analy
 ## 🖼️ Branding & Identity
 - **Subtle Puzzle Logo**: Features a 2x2 quadrant design with elegant, low-contrast white separation lines.
 - **Frosted Glass**: All branding elements utilize a premium `backdrop-blur-md` effect.
-- **Customization**: Update the platform logo in the **Settings** (supports high-res assets up to 10MB).
 
 ## 🔐 Support & Administration
 - **Default Admin**: `chefdtanju@gmail.com` has root access to the Diagnostic Console and Marketing AI Lab.
-- **Security**: Data is isolated per user via Firestore Security Rules, with public access granted to global system branding.
-
-## Built With
-- **Next.js 15** (App Router)
-- **Tailwind CSS & ShadCN UI**
-- **Genkit** (AI Analysis & Veo Video Generation)
-- **Firebase** (Firestore & Authentication)
+- **Security**: Data is isolated per user via Firestore Security Rules.
