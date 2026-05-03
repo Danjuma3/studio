@@ -32,7 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 
 export default function SupportWorkspacePage() {
-  const { user } = useUser();
+  const { user, isUserLoading } = useUser();
   const { ingredients, recipes, issues, updateSystemAlert } = useInventory();
   
   // Video AI State
@@ -41,6 +41,15 @@ export default function SupportWorkspacePage() {
   const [generatedVideo, setGeneratedVideo] = useState<string | null>(null);
 
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
+
+  // Wait for auth to load before checking permissions
+  if (isUserLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="animate-spin text-primary" size={48} />
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return (
@@ -54,7 +63,7 @@ export default function SupportWorkspacePage() {
 
   const handleGrandOpeningBroadcast = () => {
     updateSystemAlert({
-      message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROFIT PROFESSIONAL! Start mastering your margins today.",
+      message: "🎉 WELCOME TO THE GRAND OPENING OF KITCHEN PROF! Start mastering your margins today.",
       type: "market",
       active: true
     });
@@ -64,7 +73,6 @@ export default function SupportWorkspacePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Synchronized with next.config.ts 10MB limit
       if (file.size > 10 * 1024 * 1024) {
         toast({ 
           variant: "destructive", 
@@ -89,7 +97,7 @@ export default function SupportWorkspacePage() {
     try {
       const result = await generateMarketingVideo({
         photoDataUri: selectedPhoto,
-        prompt: "Create a high-tech marketing video showing this person sitting in a modern room with a laptop. The screen shows the 'Kitchen Profit Professional' app dashboard, and they are sliding through beautiful data charts and recipe interfaces."
+        prompt: "Create a high-tech marketing video showing this person sitting in a modern room with a laptop. The screen shows the 'Kitchen Prof' app dashboard, and they are sliding through beautiful data charts and recipe interfaces."
       });
       setGeneratedVideo(result.videoUrl);
       toast({ title: "Video Generated!", description: "Your marketing video is ready for review." });
@@ -193,7 +201,7 @@ export default function SupportWorkspacePage() {
                 </CardHeader>
                 <CardContent className="pt-6">
                   <div className="rounded-2xl bg-black p-6 text-green-400 font-mono text-[11px] h-64 overflow-y-auto shadow-2xl leading-relaxed">
-                    <div className="text-green-500/50"># Kitchen Profit Professional OS - Diagnostic Mode</div>
+                    <div className="text-green-500/50"># Kitchen Prof OS - Diagnostic Mode</div>
                     <div className="text-white/30">--------------------------------------------------</div>
                     <div>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</div>
                     <div>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</div>
@@ -309,7 +317,7 @@ export default function SupportWorkspacePage() {
                           <Play size={18} className="text-primary" />
                         </div>
                         <div className="text-sm leading-relaxed italic text-muted-foreground">
-                          "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Profit Professional app dashboard."
+                          "Generate a high-tech video showing this person sitting in a room with a laptop. They are interacting with the Kitchen Prof app dashboard."
                         </div>
                       </div>
                       <Button onClick={handleGenerateVideo} disabled={isGeneratingVideo || !selectedPhoto} className="w-full h-12 bg-primary rounded-xl text-lg font-bold shadow-lg">
