@@ -7,15 +7,12 @@ Kitchen Prof (Kitchen Profit Professional) is an intelligent food cost control a
 
 ## 📥 How to Export & Download Your Code
 
-If you are ready to take this project to production, you need to download the source code to your computer.
+If you are ready to take this project to production, you need to download the source code to your machine.
 
 ### 1. Locate the Download Icon
 - Look at the **Top Right Corner** of this window (the header bar).
 - Look for an icon that looks like a **Downward Arrow** or a **Cloud with an Arrow**.
-- **Mobile Users:** If you cannot see the icon, it is likely hidden due to screen size. 
-  1. Rotate your phone to **Landscape Mode**.
-  2. Ensure **"Request Desktop Site"** is enabled in your browser menu.
-  3. If still not visible, we strongly recommend opening this project on a **Laptop or Desktop computer**.
+- Click it to download your project as a ZIP file.
 
 ### 2. Extract & Setup
 - Save the ZIP file and extract it to a folder on your machine.
@@ -42,13 +39,7 @@ If you are ready to take this project to production, you need to download the so
 ### 4. Security (App Check)
 - Register for **reCAPTCHA Enterprise** in the Google Cloud Console.
 - Add your Site Key to the Firebase App Check settings.
-- **Important**: Only enable enforcement after your production domain is live to avoid blocking yourself during testing.
-
-## 🖼️ Branding & Identity
-- **Visual Name**: Kitchen Prof
-- **Subtle Puzzle Logo**: Features a 2x2 quadrant design with elegant, low-contrast white separation lines.
-- **Frosted Glass**: All branding elements utilize a premium `backdrop-blur-md` effect.
 
 ## 🔐 Support & Administration
 - **Default Admin**: `chefdtanju@gmail.com` has root access to the Diagnostic Console and Marketing AI Lab.
-- **Security**: Data is isolated per user via Firestore Security Rules.
+- **Recruitment Support**: `kitchenprof@gmail.com` (24-hour response time).

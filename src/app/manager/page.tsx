@@ -15,8 +15,7 @@ import {
   ClipboardList,
   MoreVertical,
   Activity,
-  UserCheck,
-  Mail
+  UserCheck
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
