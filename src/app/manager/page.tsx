@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useInventory } from '../lib/store';
@@ -13,15 +14,34 @@ import {
   UserPlus,
   ClipboardList,
   MoreVertical,
-  Activity
+  Activity,
+  UserCheck
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { useToast } from '@/hooks/use-toast';
 
 export default function ManagerPage() {
   const { staff, tasks, toggleTask } = useInventory();
+  const { toast } = useToast();
 
   const activeStaffCount = staff.filter(s => s.status === 'active').length;
   const pendingTasksCount = tasks.filter(t => !t.completed).length;
+
+  const handleGetStaffRequest = () => {
+    toast({
+      title: "Staff Request Received",
+      description: "Our human resource team will attend to your request within 24 hours.",
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -30,12 +50,39 @@ export default function ManagerPage() {
           <h1 className="text-3xl font-headline font-bold">Manager Control Center</h1>
           <p className="text-muted-foreground">Oversee kitchen operations, staff, and daily checklists.</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="rounded-xl border-primary/20 text-primary">
+        <div className="flex flex-wrap gap-3">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="rounded-xl border-primary/20 text-primary h-11 px-6 shadow-sm">
+                <UserCheck className="mr-2 h-4 w-4" />
+                Get Staff
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-headline font-bold">Recruitment Support</DialogTitle>
+                <DialogDescription className="text-base pt-2 leading-relaxed">
+                  Hit our get a staff button whenever you are short of kitchen staff, and our human resource team will attend to you within 24 hours.
+                  <br /><br />
+                  <span className="font-bold text-destructive">NOTE:</span> This option is only available to businesses within Nigeria for now.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="pt-6">
+                <Button 
+                  className="w-full bg-primary h-12 text-lg shadow-lg"
+                  onClick={handleGetStaffRequest}
+                >
+                  Confirm Staff Request
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Button variant="outline" className="rounded-xl border-primary/20 text-primary h-11 px-6">
             <ClipboardList className="mr-2 h-4 w-4" />
             Duty Roster
           </Button>
-          <Button className="bg-primary hover:bg-primary/90 rounded-xl">
+          <Button className="bg-primary hover:bg-primary/90 rounded-xl h-11 px-6 shadow-md">
             <UserPlus className="mr-2 h-4 w-4" />
             Add Staff
           </Button>
