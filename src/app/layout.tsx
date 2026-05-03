@@ -27,7 +27,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 size={40} 
                 className="rounded-xl mr-2" 
               />
-              <span className="font-brand font-bold text-primary text-sm tracking-tight truncate uppercase">Kitchen Profit Professional</span>
+              <span className="font-brand font-bold text-primary text-sm tracking-tight truncate uppercase">Kitchen Prof</span>
             </div>
             <div className="flex-1 hidden md:block">
             </div>

@@ -79,7 +79,7 @@ export function AppNavigation() {
             className="rounded-xl group-hover:scale-105 transition-transform" 
           />
           <div className="flex-1 overflow-hidden">
-            <div className="font-brand font-black text-sm text-primary leading-[1.1] tracking-tighter truncate uppercase">Kitchen Profit Professional</div>
+            <div className="font-brand font-black text-sm text-primary leading-[1.1] tracking-tighter truncate uppercase">Kitchen Prof</div>
             <div className="text-[9px] text-muted-foreground mt-0.5 uppercase tracking-tighter font-semibold">Managing margins for food business</div>
           </div>
         </Link>
@@ -180,7 +180,7 @@ export function AppNavigation() {
           </SidebarMenuButton>
         )}
         <div className="text-[10px] text-muted-foreground text-center pt-2">
-          &copy; {new Date().getFullYear()} Kitchen Profit Professional
+          &copy; {new Date().getFullYear()} Kitchen Prof
         </div>
       </SidebarFooter>
       <SidebarRail />

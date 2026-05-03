@@ -49,7 +49,7 @@ export default function StorePreviewPage() {
             className="rounded-2xl shadow-lg border" 
           />
           <div className="flex-1">
-            <h1 className="text-xl font-headline font-black leading-tight text-gray-900">Kitchen Profit Professional</h1>
+            <h1 className="text-xl font-headline font-black leading-tight text-gray-900">Kitchen Prof</h1>
             <p className="text-xs text-blue-500 font-medium mt-1">Managing margins for food business</p>
             <div className="mt-3 flex items-center gap-2">
               <Button size="sm" className="bg-blue-500 text-white rounded-full px-6 h-7 text-[10px] font-bold">
@@ -108,7 +108,7 @@ export default function StorePreviewPage() {
             <ChevronRight size={14} className="text-gray-300" />
           </div>
           <p className="text-[10px] text-gray-500 leading-relaxed">
-            Kitchen Profit Professional is the world's most intelligent food cost control platform. Built for the volatile modern market, our AI-driven system detects your regional hub in {location.city} and synchronizes global commodity prices to protect your margins.
+            Kitchen Prof is the world's most intelligent food cost control platform. Built for the volatile modern market, our AI-driven system detects your regional hub in {location.city} and synchronizes global commodity prices to protect your margins.
           </p>
         </div>
       </div>

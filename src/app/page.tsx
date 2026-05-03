@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useInventory } from './lib/store';
@@ -50,7 +51,7 @@ export default function Dashboard() {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h1 className="text-3xl lg:text-4xl font-brand font-black text-foreground tracking-tighter uppercase leading-none">Kitchen Profit Professional</h1>
+          <h1 className="text-3xl lg:text-4xl font-brand font-black text-foreground tracking-tighter uppercase leading-none">Kitchen Prof</h1>
           <p className="text-muted-foreground text-lg mt-1">Managing margins for food business</p>
         </div>
         <div className="text-right">

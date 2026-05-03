@@ -1,8 +1,9 @@
-# Kitchen Profit Professional 🍳
+
+# Kitchen Prof 🍳
 
 **Managing margins for food business.**
 
-Kitchen Profit Professional is an intelligent food cost control and margin analysis platform built on a serverless, global-scale architecture.
+Kitchen Prof (Kitchen Profit Professional) is an intelligent food cost control and margin analysis platform built on a serverless, global-scale architecture.
 
 ## 📥 How to Export & Download Your Code
 
@@ -44,6 +45,7 @@ If you are ready to take this project to production, you need to download the so
 - **Important**: Only enable enforcement after your production domain is live to avoid blocking yourself during testing.
 
 ## 🖼️ Branding & Identity
+- **Visual Name**: Kitchen Prof
 - **Subtle Puzzle Logo**: Features a 2x2 quadrant design with elegant, low-contrast white separation lines.
 - **Frosted Glass**: All branding elements utilize a premium `backdrop-blur-md` effect.
 

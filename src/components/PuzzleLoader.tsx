@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -95,7 +96,7 @@ export function PuzzleLoader({ imageUrl }: PuzzleLoaderProps) {
       <div className="text-center space-y-6">
         <div className="space-y-1">
           <h2 className="text-5xl font-brand font-black text-primary tracking-tighter animate-in fade-in slide-in-from-bottom-4 duration-1000 uppercase">
-            Kitchen Profit
+            Kitchen Prof
           </h2>
           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.5em] opacity-40">
             Managing margins for food business

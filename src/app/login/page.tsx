@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -54,7 +55,7 @@ export default function LoginPage() {
           <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg mb-4">
             <ChefHat size={32} />
           </div>
-          <CardTitle className="text-3xl font-headline font-bold">Kitchen Profit</CardTitle>
+          <CardTitle className="text-3xl font-headline font-bold">Kitchen Prof</CardTitle>
           <CardDescription>Securely manage your restaurant margins.</CardDescription>
         </CardHeader>
         <CardContent>
