@@ -42,21 +42,25 @@ export default function SupportWorkspacePage() {
 
   const isAdmin = user?.email === 'chefdtanju@gmail.com';
 
-  // Wait for auth to load before checking permissions
+  // Wait for auth to load before checking permissions to avoid flashing "Restricted"
   if (isUserLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <Loader2 className="animate-spin text-primary" size={48} />
+        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Verifying Root Access...</p>
       </div>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 animate-in fade-in duration-500">
         <ShieldAlert size={64} className="text-destructive opacity-20" />
         <h1 className="text-2xl font-headline font-bold">Admin Access Restricted</h1>
-        <div className="text-muted-foreground">Only platform administrators can access the support workspace.</div>
+        <div className="text-muted-foreground max-w-sm">Only platform administrators can access the support workspace and marketing AI tools.</div>
+        <Button asChild variant="outline">
+          <Link href="/">Back to Dashboard</Link>
+        </Button>
       </div>
     );
   }
@@ -103,7 +107,7 @@ export default function SupportWorkspacePage() {
       toast({ title: "Video Generated!", description: "Your marketing video is ready for review." });
     } catch (error: any) {
       console.error(error);
-      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Model at capacity or API key missing. Please check credentials." });
+      toast({ variant: "destructive", title: "Generation Failed", description: error.message || "Model at capacity or API key missing." });
     } finally {
       setIsGeneratingVideo(false);
     }
@@ -125,7 +129,7 @@ export default function SupportWorkspacePage() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button asChild className="rounded-xl h-12 px-6 bg-blue-600 hover:bg-blue-700">
+          <Button asChild className="rounded-xl h-12 px-6 bg-blue-600 hover:bg-blue-700 shadow-md">
             <Link href="/store-preview">
               <Smartphone className="mr-2 h-4 w-4" />
               App Store Preview

@@ -14,7 +14,7 @@ import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, Subscriptio
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   bankName: "Global Bank",
   accountNumber: "0000000000",
-  accountName: "Kitchen Profit International",
+  accountName: "Kitchen Prof International",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   globalStripePublicKey: "pk_live_global_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   proPrice: 25000,
@@ -23,7 +23,7 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {
-  message: "🌎 KITCHEN PROFIT IS NOW GLOBAL! Detect your location to synchronize regional market data.",
+  message: "🌎 KITCHEN PROF IS NOW LIVE! Sync your regional hub to protect your food margins.",
   type: "market",
   active: true,
   updatedAt: new Date().toISOString()
