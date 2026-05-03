@@ -2,14 +2,24 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChefHat, TrendingUp, PackageSearch, Calculator, Zap, ShieldCheck } from 'lucide-react';
+import { TrendingUp, PackageSearch, Calculator, Zap, ShieldCheck } from 'lucide-react';
+import { BrandedLogo } from '@/components/BrandedLogo';
+import { useInventory } from '../lib/store';
+import { getSafeLogoUrl } from '../lib/branding';
 
 export default function AboutPage() {
+  const { systemPayment } = useInventory();
+  const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
+
   return (
-    <div className="space-y-12 max-w-4xl mx-auto">
+    <div className="space-y-12 max-w-4xl mx-auto animate-in fade-in duration-700">
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-3xl text-white mb-4 shadow-xl">
-          <ChefHat size={48} />
+        <div className="flex justify-center mb-4">
+          <BrandedLogo 
+            url={currentLogoUrl} 
+            size={120} 
+            className="rounded-[2.5rem] shadow-2xl border-4 border-white" 
+          />
         </div>
         <h1 className="text-4xl font-headline font-bold">About Kitchen Prof</h1>
         <p className="text-xl text-muted-foreground leading-relaxed">
