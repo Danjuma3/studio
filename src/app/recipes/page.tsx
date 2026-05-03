@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -22,6 +23,7 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
+  DialogDescription,
   DialogTrigger,
   DialogFooter 
 } from '@/components/ui/dialog';
@@ -42,7 +44,7 @@ export default function RecipesPage() {
     return items.reduce((sum, item) => {
       const ingredient = ingredients.find(ing => ing.id === item.ingredientId);
       if (!ingredient) return sum;
-      const price = currentStrategy === 'bulk' ? ingredient.bulkPrice : ingredient.retailPrice;
+      const price = currentStrategy === 'bulk' ? (ingredient.bulkUnitPrice || ingredient.bulkPrice || 0) : (ingredient.retailUnitPrice || ingredient.retailPrice || 0);
       return sum + (price * item.quantity);
     }, 0);
   };
@@ -110,6 +112,9 @@ export default function RecipesPage() {
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Recipe Composer</DialogTitle>
+              <DialogDescription>
+                Build your recipe by adding ingredients and specifying quantities to calculate total batch costs.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-6 py-4">
               <div className="grid gap-4">
@@ -149,7 +154,7 @@ export default function RecipesPage() {
                         onChange={(e) => updateItemInForm(index, { ingredientId: e.target.value })}
                       >
                         {ingredients.map(ing => (
-                          <option key={ing.id} value={ing.id}>{ing.name} ({ing.unit})</option>
+                          <option key={ing.id} value={ing.id}>{ing.name} ({ing.unitOfMeasure?.replace('_', ' ') || 'kg'})</option>
                         ))}
                       </select>
                     </div>
@@ -232,7 +237,7 @@ export default function RecipesPage() {
                     {recipe.items.map((item, idx) => {
                       const ing = ingredients.find(i => i.id === item.ingredientId);
                       if (!ing) return null;
-                      const itemCost = (strategy === 'bulk' ? ing.bulkPrice : ing.retailPrice) * item.quantity;
+                      const itemCost = (strategy === 'bulk' ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : (ing.retailUnitPrice || ing.retailPrice || 0)) * item.quantity;
                       return (
                         <div key={idx} className="flex justify-between text-xs py-1 border-b border-dashed">
                           <span className="truncate max-w-[140px]">{ing.name}</span>
