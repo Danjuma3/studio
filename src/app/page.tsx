@@ -78,7 +78,7 @@ export default function Dashboard() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-0.5">
               <div className="text-[10px] font-bold uppercase tracking-wider opacity-70">
-                {systemAlert.type === 'market' ? 'Market Intelligence' : 'System Notice'}
+                Market Intelligence
               </div>
               <Badge variant="outline" className="text-[8px] h-4 py-0 font-bold">LATEST</Badge>
             </div>

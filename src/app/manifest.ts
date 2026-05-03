@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Kitchen Prof',
     short_name: 'KitchenProf',
-    description: 'Intelligent food cost control and margin analysis for Lagos restaurants.',
+    description: 'Intelligent food cost control and margin analysis for restaurants.',
     start_url: '/',
     display: 'standalone',
     background_color: '#f0fdf4',

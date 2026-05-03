@@ -108,7 +108,7 @@ export default function StorePreviewPage() {
             <ChevronRight size={14} className="text-gray-300" />
           </div>
           <p className="text-[10px] text-gray-500 leading-relaxed">
-            Kitchen Prof is the world's most intelligent food cost control platform. Built for the volatile modern market, our AI-driven system detects your regional hub in {location.city} and synchronizes global commodity prices to protect your margins.
+            Kitchen Prof is the world's most intelligent food cost control platform. Built for the volatile modern market, our AI-driven system detects your regional hub and synchronizes global commodity prices to protect your margins.
           </p>
         </div>
       </div>
