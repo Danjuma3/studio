@@ -15,7 +15,8 @@ import {
   ClipboardList,
   MoreVertical,
   Activity,
-  UserCheck
+  UserCheck,
+  Mail
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -63,6 +64,8 @@ export default function ManagerPage() {
                 <DialogTitle className="text-2xl font-headline font-bold">Recruitment Support</DialogTitle>
                 <DialogDescription className="text-base pt-2 leading-relaxed">
                   Hit our get a staff button whenever you are short of kitchen staff, and our human resource team will attend to you within 24 hours.
+                  <br /><br />
+                  For direct inquiries, contact us at: <span className="font-bold text-primary">kitchenprof@gmail.com</span>
                   <br /><br />
                   <span className="font-bold text-destructive">NOTE:</span> This option is only available to businesses within Nigeria for now.
                 </DialogDescription>
