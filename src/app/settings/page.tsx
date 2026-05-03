@@ -20,7 +20,9 @@ import {
   HelpCircle,
   UploadCloud,
   CreditCard,
-  Globe
+  Globe,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -201,6 +203,17 @@ export default function SettingsPage() {
     ? `${location.currencySymbol}${(systemPayment?.proPrice || 0).toLocaleString()}`
     : `$${(systemPayment?.proPriceUSD || 0).toLocaleString()}`;
 
+  const planFeatures = [
+    { name: "Ingredient Inventory", free: true, pro: true },
+    { name: "Recipe Composer (Batch Costing)", free: true, pro: true },
+    { name: "Manual Market Updates", free: true, pro: true },
+    { name: "Plate Costing (Cost % Analysis)", free: false, pro: true },
+    { name: "AI Procurement Strategy Audit", free: false, pro: true },
+    { name: "Historical Price Trend Charts", free: false, pro: true },
+    { name: "Regional Hub Detection", free: false, pro: true },
+    { name: "Global Supply Alerts", free: false, pro: true },
+  ];
+
   if (!mounted) return null;
 
   return (
@@ -356,7 +369,7 @@ export default function SettingsPage() {
                 <ImageIcon className="text-primary" size={24} />
                 App Branding
               </CardTitle>
-              <div className="text-sm text-muted-foreground">Visual identity of Kitchen Profit.</div>
+              <div className="text-sm text-muted-foreground">Visual identity of Kitchen Prof.</div>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
@@ -383,29 +396,80 @@ export default function SettingsPage() {
                 <div>
                   <CardTitle className="text-xl flex items-center gap-2">
                     <Crown className="text-primary" size={24} />
-                    Global Subscription
+                    Plan Comparison
                   </CardTitle>
-                  <div className="text-sm text-muted-foreground">Manage your access to professional margin tools.</div>
+                  <div className="text-sm text-muted-foreground">Compare features between Free and Pro packages.</div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-muted/30">
+                      <th className="text-left p-4 font-bold">Feature</th>
+                      <th className="text-center p-4 font-bold">Free</th>
+                      <th className="text-center p-4 font-bold text-primary">Pro</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {planFeatures.map((feature, idx) => (
+                      <tr key={idx} className="hover:bg-muted/5">
+                        <td className="p-4 text-muted-foreground font-medium">{feature.name}</td>
+                        <td className="p-4 text-center">
+                          {feature.free ? (
+                            <CheckCircle2 className="mx-auto text-primary" size={18} />
+                          ) : (
+                            <XCircle className="mx-auto text-muted-foreground/30" size={18} />
+                          )}
+                        </td>
+                        <td className="p-4 text-center">
+                          {feature.pro ? (
+                            <CheckCircle2 className="mx-auto text-primary" size={18} />
+                          ) : (
+                            <XCircle className="mx-auto text-muted-foreground/30" size={18} />
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6">
+          <Card className="border-none shadow-md overflow-hidden bg-white">
+            <CardHeader className="bg-primary/5 border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Crown className="text-primary" size={20} />
+                    Current Plan
+                  </CardTitle>
                 </div>
                 <Badge className={subscription?.plan === 'pro' ? 'bg-primary' : 'bg-muted text-muted-foreground'}>
-                  {(subscription?.plan || 'free').toUpperCase()} PLAN
+                  {(subscription?.plan || 'free').toUpperCase()}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
-                <div className="space-y-4 flex-1">
-                  <div className="font-bold text-lg capitalize">{subscription?.plan || 'free'} Member</div>
-                  <div className="text-sm text-muted-foreground">
-                    Plan status: <span className="font-medium text-foreground">Active ({location.country} Hub)</span>
-                  </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Hub Location</span>
+                  <span className="text-sm font-bold">{location.city}, {location.country}</span>
                 </div>
-
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Billing Status</span>
+                  <span className="text-sm font-bold text-green-600">Active</span>
+                </div>
+                
                 {subscription?.plan === 'free' && (
-                  <div className="shrink-0 pt-2">
+                  <div className="pt-4 border-t">
                     <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
                       <DialogTrigger asChild>
-                        <Button className="bg-primary hover:bg-primary/90 rounded-xl h-14 px-8 shadow-lg group flex flex-col items-center gap-0 leading-tight">
+                        <Button className="w-full h-14 bg-primary hover:bg-primary/90 rounded-xl shadow-lg group flex flex-col items-center gap-0 leading-tight">
                           <div className="flex items-center gap-2 text-lg">
                             <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
                             Upgrade to Pro
@@ -484,9 +548,7 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        <div className="space-y-6">
           <Card className="border-none shadow-md bg-primary text-primary-foreground">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -496,7 +558,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-sm opacity-90 leading-relaxed">
-                Payments are processed through regional secure nodes (Paystack/Stripe). Kitchen Profit Professional does not store sensitive card data.
+                Payments are processed through regional secure nodes (Paystack/Stripe). Kitchen Prof does not store sensitive card data.
               </div>
             </CardContent>
           </Card>
