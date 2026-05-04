@@ -9,20 +9,18 @@ Kitchen Prof (Kitchen Profit Professional) is an intelligent food cost control a
 
 If you are ready to take this project to production, follow these steps to download the source code:
 
-### 1. Locate the Export Tool
+### Option 1: Export to GitHub (Recommended)
+- Since you can see the **"Export to GitHub"** button on the bottom left, click it!
+- Follow the prompts to connect your GitHub account.
+- This will create a repository with all your code, which you can then "Clone" or "Download ZIP" directly from GitHub.
+
+### Option 2: Direct ZIP Download
 - Look at the **Top Right Corner** of the entire browser window (the main Firebase Studio header).
 - Look for an icon that looks like a **Cloud with a Downward Arrow** or a button that says **"Export"**.
 - **If you can't see it:**
   - Try zooming out your browser (Ctrl + minus or Cmd + minus).
   - Ensure you are not in a full-screen code editor mode that hides the main toolbar.
   - Refresh the page and look at the very top header bar.
-
-### 2. Extract & Setup
-- Save the ZIP file and extract it to a folder on your machine.
-- Open your terminal in that folder and run:
-  ```bash
-  npm install
-  ```
 
 ## 🚀 Launching to Production
 
@@ -38,10 +36,6 @@ If you are ready to take this project to production, follow these steps to downl
 ### 3. Deploy to the Web
 - **GitHub**: Push your code to a private or public GitHub repository.
 - **App Hosting**: In the Firebase Console, connect the repository to **Firebase App Hosting**. It will automatically handle the build and deployment.
-
-### 4. Security (App Check)
-- Register for **reCAPTCHA Enterprise** in the Google Cloud Console.
-- Add your Site Key to the Firebase App Check settings.
 
 ## 🔐 Support & Administration
 - **Default Admin**: `chefdtanju@gmail.com` has root access to the Diagnostic Console and Marketing AI Lab.
