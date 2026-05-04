@@ -5,38 +5,37 @@
 
 Kitchen Prof (Kitchen Profit Professional) is an intelligent food cost control and margin analysis platform built on a serverless, global-scale architecture.
 
-## 📥 How to Export & Download Your Code
+## 🚀 Post-Export: Getting Started on Your Laptop
 
-If you are ready to take this project to production, follow these steps to download the source code:
+Now that you have exported the code to GitHub, follow these steps to run it locally:
 
-### Option 1: Export to GitHub (Recommended)
-- Since you can see the **"Export to GitHub"** button on the bottom left, click it!
-- Follow the prompts to connect your GitHub account.
-- This will create a repository with all your code, which you can then "Clone" or "Download ZIP" directly from GitHub.
+### 1. Clone & Install
+- Open your terminal and clone the repository: `git clone <your-repo-url>`
+- Navigate into the folder: `cd kitchen-prof`
+- Install dependencies: `npm install`
 
-### Option 2: Direct ZIP Download
-- Look at the **Top Right Corner** of the entire browser window (the main Firebase Studio header).
-- Look for an icon that looks like a **Cloud with a Downward Arrow** or a button that says **"Export"**.
-- **If you can't see it:**
-  - Try zooming out your browser (Ctrl + minus or Cmd + minus).
-  - Ensure you are not in a full-screen code editor mode that hides the main toolbar.
-  - Refresh the page and look at the very top header bar.
+### 2. Environment Setup
+- Create a file named `.env.local` in the root folder.
+- Add your Gemini API Key: `GEMINI_API_KEY=your_key_here` (Get it from [aistudio.google.com](https://aistudio.google.com/)).
+- Add your Firebase config if you are using a custom project.
 
-## 🚀 Launching to Production
+### 3. Run Development Server
+- Start the app: `npm run dev`
+- Open [http://localhost:9002](http://localhost:9002) in your browser.
 
-### 1. Secret Keys
-- Create a `.env.local` file in your project root.
-- Add your `GEMINI_API_KEY`. Get your key from [aistudio.google.com](https://aistudio.google.com/).
+## 🔐 Launching to Production
 
-### 2. Firebase Production Setup
-- **Console**: Create a project at [console.firebase.google.com](https://console.firebase.google.com/).
-- **Services**: Enable **Firestore** (Production Mode) and **Authentication** (Email/Password & Anonymous).
-- **Config**: Update `src/firebase/config.ts` with the keys from your new Firebase Project settings.
+### 1. Firebase Setup
+- Go to the [Firebase Console](https://console.firebase.google.com/).
+- Create a new project.
+- Enable **Firestore** and **Authentication** (Email/Password & Anonymous).
+- Update `src/firebase/config.ts` with your new project's web config.
 
-### 3. Deploy to the Web
-- **GitHub**: Push your code to a private or public GitHub repository.
-- **App Hosting**: In the Firebase Console, connect the repository to **Firebase App Hosting**. It will automatically handle the build and deployment.
+### 2. Deployment
+- **App Hosting**: Connect your GitHub repository to **Firebase App Hosting** in the console. It will automatically build and deploy your Next.js app.
+- **Security Rules**: Copy the content of `firestore.rules` from this project into the "Rules" tab of your Firestore database in the Firebase Console.
 
 ## 🔐 Support & Administration
 - **Default Admin**: `chefdtanju@gmail.com` has root access to the Diagnostic Console and Marketing AI Lab.
 - **Recruitment Support**: `kitchenprof@gmail.com` (24-hour response time).
+- **Legal**: `legal@kitchenprof.ng`
