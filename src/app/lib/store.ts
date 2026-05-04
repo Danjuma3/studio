@@ -17,8 +17,8 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   accountName: "Kitchen Prof International",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   globalStripePublicKey: "pk_live_global_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  proPrice: 25000,
-  proPriceUSD: 19.99,
+  proPrice: 17500,
+  proPriceUSD: 14.99,
   appLogoUrl: ""
 };
 
