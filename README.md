@@ -7,12 +7,15 @@ Kitchen Prof (Kitchen Profit Professional) is an intelligent food cost control a
 
 ## 📥 How to Export & Download Your Code
 
-If you are ready to take this project to production, you need to download the source code to your machine.
+If you are ready to take this project to production, follow these steps to download the source code:
 
-### 1. Locate the Download Icon
-- Look at the **Top Right Corner** of this window (the header bar).
-- Look for an icon that looks like a **Downward Arrow** or a **Cloud with an Arrow**.
-- Click it to download your project as a ZIP file.
+### 1. Locate the Export Tool
+- Look at the **Top Right Corner** of the entire browser window (the main Firebase Studio header).
+- Look for an icon that looks like a **Cloud with a Downward Arrow** or a button that says **"Export"**.
+- **If you can't see it:**
+  - Try zooming out your browser (Ctrl + minus or Cmd + minus).
+  - Ensure you are not in a full-screen code editor mode that hides the main toolbar.
+  - Refresh the page and look at the very top header bar.
 
 ### 2. Extract & Setup
 - Save the ZIP file and extract it to a folder on your machine.
