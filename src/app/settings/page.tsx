@@ -467,7 +467,7 @@ export default function SettingsPage() {
                 
                 {subscription?.plan === 'free' && (
                   <div className="pt-4 border-t">
-                    <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
+                    <Dialog>
                       <DialogTrigger asChild>
                         <Button className="w-full h-14 bg-primary hover:bg-primary/90 rounded-xl shadow-lg group flex flex-col items-center gap-0 leading-tight">
                           <div className="flex items-center gap-2 text-lg">
