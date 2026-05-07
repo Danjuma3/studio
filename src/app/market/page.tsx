@@ -5,7 +5,7 @@ import { useInventory } from '../lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
-import { RefreshCw, Calendar, MapPin, ShoppingCart, Lock, Sparkles, LineChart as ChartIcon, Globe, Navigation, Loader2 } from 'lucide-react';
+import { RefreshCw, Calendar, MapPin, ShoppingCart, Lock, Sparkles, LineChart as ChartIcon, Globe, Navigation, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -59,14 +59,15 @@ export default function MarketUpdatePage() {
         // Mocking geo-intelligence response
         setTimeout(() => {
           updateLocation({
-            country: 'Global Region',
-            city: 'Detected Hub',
-            currencySymbol: location.currencySymbol
+            country: 'Nigeria',
+            city: 'Lagos',
+            currencySymbol: '₦',
+            currency: 'NGN'
           });
           setDetecting(false);
           toast({
             title: "Regional Hub Detected",
-            description: `Switched to ${location.currency} data stream for your current coordinates.`,
+            description: `Switched to NGN data stream for Lagos pricing nodes.`,
           });
         }, 1500);
       }, () => {
@@ -82,13 +83,13 @@ export default function MarketUpdatePage() {
 
   const syncPrices = () => {
     toast({
-      title: "Syncing Global Market Data",
-      description: `Connecting to international pricing nodes for ${location.city}...`,
+      title: "Syncing Lagos Market Data",
+      description: `Connecting to Mile 12 and Agege Abattoir nodes...`,
     });
     setTimeout(() => {
       toast({
-        title: "Global Sync Complete",
-        description: `Prices updated based on today's averages in ${location.country}.`,
+        title: "Lagos Hub Sync Complete",
+        description: `Prices updated based on today's hikes at Mile 12 and Agege.`,
       });
     }, 1500);
   };
@@ -99,8 +100,8 @@ export default function MarketUpdatePage() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-headline font-bold">Global Market Intelligence</h1>
-          <p className="text-muted-foreground">Real-time data from pricing hubs in {location.city}, {location.country}.</p>
+          <h1 className="text-3xl font-headline font-bold">Market Intelligence Hub</h1>
+          <p className="text-muted-foreground">Real-time data from {location.city} pricing nodes (Mile 12, Agege Abattoir).</p>
         </div>
         <div className="flex gap-3">
           <Button 
@@ -117,7 +118,7 @@ export default function MarketUpdatePage() {
             className="bg-primary hover:bg-primary/90 text-white rounded-xl h-12 px-8 shadow-md"
           >
             <RefreshCw className="mr-2 h-5 w-5" />
-            Sync Global Market
+            Sync Lagos Markets
           </Button>
         </div>
       </div>
@@ -188,7 +189,7 @@ export default function MarketUpdatePage() {
                     <Sparkles className="text-primary mb-2" size={32} />
                     <h3 className="text-lg font-bold">Unlock Market Trends</h3>
                     <p className="text-sm text-muted-foreground max-w-xs mb-4">
-                      Pro members get full historical analysis for Grains, Proteins, and Produce across all international hubs.
+                      Pro members get full historical analysis for Grains, Proteins, and Produce across all Lagos hubs.
                     </p>
                     <Button asChild className="rounded-xl shadow-lg">
                       <Link href="/settings">Upgrade Subscription</Link>
@@ -205,7 +206,7 @@ export default function MarketUpdatePage() {
           <Card className="border-none shadow-md bg-white">
             <CardHeader className="border-b bg-muted/20">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Update Regional Prices</CardTitle>
+                <CardTitle className="text-lg">Update Lagos Hub Prices</CardTitle>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
                   <Globe size={14} className="text-primary" />
                   Region: {location.country}
@@ -251,7 +252,7 @@ export default function MarketUpdatePage() {
               </div>
             </CardContent>
             <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
-              <Button className="bg-primary px-8 rounded-xl shadow-md">Apply Regional Updates</Button>
+              <Button className="bg-primary px-8 rounded-xl shadow-md">Apply Market Updates</Button>
             </CardFooter>
           </Card>
         </div>
@@ -261,34 +262,38 @@ export default function MarketUpdatePage() {
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
                 <MapPin className="text-primary" size={18} />
-                Local Hub Intelligence
+                Lagos Hub Intelligence
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold">{location.city} Central Hub</span>
-                    <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">Stable</Badge>
+                    <span className="text-xs font-bold">Mile 12 Market</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Volatile</Badge>
                   </div>
                   <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>Market Health</span>
-                    <span className="text-green-600">High</span>
+                    <span>Grains & Produce</span>
+                    <span className="text-amber-600 font-bold">+15% Hike</span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold">Regional Logistics</span>
-                  <Badge variant="outline" className="text-[10px] h-5 bg-amber-50 text-amber-700 border-amber-200">Processing</Badge>
+                  <span className="text-xs font-bold">Agege Abattoir</span>
+                  <Badge variant="outline" className="text-[10px] h-5 bg-destructive/10 text-destructive border-destructive/20">Critical</Badge>
+                </div>
+                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                  <span>Proteins</span>
+                  <span className="text-destructive font-bold">High Demand</span>
                 </div>
               </div>
 
               <div className="pt-4 border-t space-y-3">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase">Global Supply Alerts</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase">Supply Alerts</p>
                 <div className="flex gap-2">
-                  <ShoppingCart className="text-primary shrink-0" size={14} />
+                  <AlertCircle className="text-destructive shrink-0" size={14} />
                   <p className="text-[11px] text-muted-foreground">
-                    Commodity volatility detected in international shipping lanes. Prices may vary.
+                    Price hikes detected across all major Lagos gateways. Sync your inventory to protect your margins.
                   </p>
                 </div>
               </div>

@@ -23,7 +23,7 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {
-  message: "🌎 KITCHEN PROF IS NOW LIVE! Sync your regional hub to protect your food margins.",
+  message: "⚠️ LAGOS MARKET ALERT: Price hikes detected at Mile 12 (Grains/Produce) and Agege Abattoir (Proteins). Sync now to adjust your margins.",
   type: "market",
   active: true,
   updatedAt: new Date().toISOString()
@@ -191,10 +191,14 @@ export function useInventory() {
     setLocation(prev => ({ ...prev, ...newLocation }));
   };
 
-  // Merge Firestore data with hardcoded defaults to ensure no "Zero" price shows if doc is missing fields
-  const mergedSystemPayment = systemPayment 
-    ? { ...DEFAULT_SYSTEM_PAYMENT, ...systemPayment } 
-    : DEFAULT_SYSTEM_PAYMENT;
+  // Merge Firestore data with hardcoded defaults to ensure no "Zero" price shows
+  // We prioritize default values if the cloud values are missing or zero
+  const mergedSystemPayment = {
+    ...DEFAULT_SYSTEM_PAYMENT,
+    ...systemPayment,
+    proPrice: systemPayment?.proPrice || DEFAULT_SYSTEM_PAYMENT.proPrice,
+    proPriceUSD: systemPayment?.proPriceUSD || DEFAULT_SYSTEM_PAYMENT.proPriceUSD
+  };
 
   return {
     ingredients: ingredients || [],
