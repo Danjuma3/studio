@@ -17,7 +17,7 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   accountName: "Kitchen Prof International",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   globalStripePublicKey: "pk_live_global_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  proPrice: 17500,
+  proPrice: 17000,
   proPriceUSD: 14.99,
   appLogoUrl: ""
 };
@@ -44,7 +44,8 @@ export function useInventory() {
   useEffect(() => {
     if (typeof window !== 'undefined' && "geolocation" in navigator) {
       const locale = navigator.language;
-      if (locale.includes('NG')) {
+      // Heuristic for Nigerian users - checking locale or common browser settings
+      if (locale.includes('NG') || locale.includes('ng')) {
         setLocation({
           country: 'Nigeria',
           city: 'Lagos',
