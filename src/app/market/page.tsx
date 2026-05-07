@@ -83,12 +83,12 @@ export default function MarketUpdatePage() {
   const syncPrices = () => {
     toast({
       title: "Syncing Lagos Market Data",
-      description: `Connecting to Mile 12 and Agege Abattoir nodes...`,
+      description: `Connecting to Mile 12, Agege Abattoir, and Oyingbo nodes...`,
     });
     setTimeout(() => {
       toast({
         title: "Lagos Hub Sync Complete",
-        description: `Prices updated based on today's hikes at Mile 12 and Agege.`,
+        description: `Prices updated based on today's hikes at Mile 12, Agege, and Oyingbo.`,
       });
     }, 1500);
   };
@@ -100,7 +100,7 @@ export default function MarketUpdatePage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-headline font-bold">Market Intelligence Hub</h1>
-          <p className="text-muted-foreground">Real-time data from {location.city} pricing nodes (Mile 12, Agege Abattoir).</p>
+          <p className="text-muted-foreground">Real-time data from {location.city} pricing nodes (Mile 12, Agege Abattoir, Oyingbo).</p>
         </div>
         <div className="flex gap-3">
           <Button 
@@ -277,13 +277,26 @@ export default function MarketUpdatePage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold">Agege Abattoir</span>
-                  <Badge variant="outline" className="text-[10px] h-5 bg-destructive/10 text-destructive border-destructive/20">Critical</Badge>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold">Agege Abattoir</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-destructive/10 text-destructive border-destructive/20">Critical</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span>Proteins</span>
+                    <span className="text-destructive font-bold">High Demand</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>Proteins</span>
-                  <span className="text-destructive font-bold">High Demand</span>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold">Oyingbo Market</span>
+                    <Badge variant="outline" className="text-[10px] h-5 bg-blue-50 text-blue-700 border-blue-200">Active</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span>Condiments & Seafood</span>
+                    <span className="text-blue-600 font-bold">Supply Stable</span>
+                  </div>
                 </div>
               </div>
 
@@ -292,7 +305,7 @@ export default function MarketUpdatePage() {
                 <div className="flex gap-2">
                   <AlertCircle className="text-destructive shrink-0" size={14} />
                   <p className="text-[11px] text-muted-foreground">
-                    Price hikes detected across all major Lagos gateways. Sync your inventory to protect your margins.
+                    Price hikes detected across all major Lagos gateways (Mile 12, Agege, Oyingbo). Sync your inventory to protect your margins.
                   </p>
                 </div>
               </div>

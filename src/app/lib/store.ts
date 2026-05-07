@@ -23,7 +23,7 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {
-  message: "⚠️ LAGOS MARKET ALERT: Price hikes detected at Mile 12 (Grains/Produce) and Agege Abattoir (Proteins). Sync now to adjust your margins.",
+  message: "⚠️ LAGOS MARKET ALERT: Price hikes detected at Mile 12, Agege Abattoir, and Oyingbo nodes. Sync now to adjust your margins.",
   type: "market",
   active: true,
   updatedAt: new Date().toISOString()
