@@ -192,7 +192,6 @@ export function useInventory() {
   };
 
   // Merge Firestore data with hardcoded defaults to ensure no "Zero" price shows
-  // We prioritize default values if the cloud values are missing or zero
   const mergedSystemPayment = {
     ...DEFAULT_SYSTEM_PAYMENT,
     ...systemPayment,

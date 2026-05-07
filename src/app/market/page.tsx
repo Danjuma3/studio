@@ -56,7 +56,6 @@ export default function MarketUpdatePage() {
     setDetecting(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        // Mocking geo-intelligence response
         setTimeout(() => {
           updateLocation({
             country: 'Nigeria',
