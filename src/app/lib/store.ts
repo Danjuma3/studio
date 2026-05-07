@@ -191,13 +191,18 @@ export function useInventory() {
     setLocation(prev => ({ ...prev, ...newLocation }));
   };
 
+  // Merge Firestore data with hardcoded defaults to ensure no "Zero" price shows if doc is missing fields
+  const mergedSystemPayment = systemPayment 
+    ? { ...DEFAULT_SYSTEM_PAYMENT, ...systemPayment } 
+    : DEFAULT_SYSTEM_PAYMENT;
+
   return {
     ingredients: ingredients || [],
     recipes: recipes || [],
     staff: staff || [],
     tasks: tasks || [],
     issues: issues || [],
-    systemPayment: systemPayment || DEFAULT_SYSTEM_PAYMENT,
+    systemPayment: mergedSystemPayment,
     systemAlert: systemAlert || DEFAULT_SYSTEM_ALERT,
     subscription: { plan: currentPlan, status: 'active', nextBillingDate: "2024-01-01T00:00:00.000Z" } as SubscriptionInfo,
     location,

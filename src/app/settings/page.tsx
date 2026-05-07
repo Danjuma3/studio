@@ -199,9 +199,10 @@ export default function SettingsPage() {
   const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
   const isAfricanRegion = location.currency === 'NGN';
   
+  // Robust price calculation to ensure we never display "Zero" unless it's genuinely meant to be free
   const proDisplayPrice = isAfricanRegion 
-    ? `${location.currencySymbol}${(systemPayment?.proPrice || 0).toLocaleString()}`
-    : `$${(systemPayment?.proPriceUSD || 0).toLocaleString()}`;
+    ? `${location.currencySymbol}${(systemPayment?.proPrice || 17000).toLocaleString()}`
+    : `$${(systemPayment?.proPriceUSD || 14.99).toLocaleString()}`;
 
   const planFeatures = [
     { name: "Ingredient Inventory", free: true, pro: true },
