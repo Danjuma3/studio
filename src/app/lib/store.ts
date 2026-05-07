@@ -44,7 +44,6 @@ export function useInventory() {
   useEffect(() => {
     if (typeof window !== 'undefined' && "geolocation" in navigator) {
       const locale = navigator.language;
-      // Heuristic for Nigerian users - checking locale or common browser settings
       if (locale.includes('NG') || locale.includes('ng')) {
         setLocation({
           country: 'Nigeria',
@@ -191,7 +190,6 @@ export function useInventory() {
     setLocation(prev => ({ ...prev, ...newLocation }));
   };
 
-  // Merge Firestore data with hardcoded defaults to ensure no "Zero" price shows
   const mergedSystemPayment = {
     ...DEFAULT_SYSTEM_PAYMENT,
     ...systemPayment,
