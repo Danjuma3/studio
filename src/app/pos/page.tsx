@@ -94,9 +94,9 @@ export default function POSTerminalPage() {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row gap-8 h-[calc(100vh-8rem)]">
+    <div className="flex flex-col xl:flex-row gap-8 min-h-[calc(100vh-10rem)] pb-10">
       {/* Menu Side */}
-      <div className="flex-1 space-y-6 overflow-hidden flex flex-col">
+      <div className="flex-1 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl font-headline font-bold">POS Terminal</h1>
@@ -120,11 +120,11 @@ export default function POSTerminalPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto grid grid-cols-2 md:grid-cols-3 gap-4 pr-2 custom-scrollbar pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredRecipes.map((recipe) => (
             <Card 
               key={recipe.id} 
-              className="group cursor-pointer hover:border-primary/50 transition-all active:scale-95 flex flex-col justify-between"
+              className="group cursor-pointer hover:border-primary/50 transition-all active:scale-95 flex flex-col justify-between h-full shadow-sm"
               onClick={() => addToCart(recipe)}
             >
               <CardContent className="p-4 space-y-3">
@@ -132,14 +132,14 @@ export default function POSTerminalPage() {
                   <CookingPot size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm leading-tight">{recipe.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">{location.currencySymbol}{recipe.sellingPrice.toLocaleString()}</p>
+                  <h3 className="font-bold text-sm leading-tight line-clamp-2">{recipe.name}</h3>
+                  <p className="text-xs text-muted-foreground mt-1 font-semibold">{location.currencySymbol}{recipe.sellingPrice.toLocaleString()}</p>
                 </div>
               </CardContent>
             </Card>
           ))}
           {filteredRecipes.length === 0 && (
-            <div className="col-span-full py-20 text-center text-muted-foreground">
+            <div className="col-span-full py-20 text-center text-muted-foreground bg-muted/20 rounded-2xl border-dashed border-2">
               No recipes found.
             </div>
           )}
@@ -147,91 +147,93 @@ export default function POSTerminalPage() {
       </div>
 
       {/* Cart Side */}
-      <Card className="w-full xl:w-[400px] border-none shadow-2xl bg-white flex flex-col overflow-hidden">
-        <CardHeader className="bg-muted/30 border-b flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShoppingCart className="text-primary" size={20} />
-            <CardTitle className="text-lg">Checkout</CardTitle>
-          </div>
-          <Badge variant="secondary" className="font-bold">{cart.length} Items</Badge>
-        </CardHeader>
-
-        <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-          {cart.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
-              <ShoppingCart size={48} />
-              <p className="text-sm font-medium">Cart is empty</p>
+      <div className="w-full xl:w-[400px]">
+        <Card className="border-none shadow-2xl bg-white flex flex-col sticky top-20 max-h-[calc(100vh-12rem)]">
+          <CardHeader className="bg-muted/30 border-b flex flex-row items-center justify-between py-4 px-6 shrink-0">
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="text-primary" size={20} />
+              <CardTitle className="text-lg">Checkout</CardTitle>
             </div>
-          ) : (
-            cart.map((item) => (
-              <div key={item.recipeId} className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border group">
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm truncate">{item.recipeName}</p>
-                  <p className="text-xs text-muted-foreground">{location.currencySymbol}{item.price.toLocaleString()}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-7 w-7 rounded-full bg-white shadow-sm"
-                    onClick={() => updateQuantity(item.recipeId, -1)}
-                  >
-                    <Minus size={12} />
-                  </Button>
-                  <span className="text-sm font-black w-4 text-center">{item.quantity}</span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-7 w-7 rounded-full bg-white shadow-sm"
-                    onClick={() => updateQuantity(item.recipeId, 1)}
-                  >
-                    <Plus size={12} />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-7 w-7 text-destructive hover:bg-destructive/10 ml-1"
-                    onClick={() => removeFromCart(item.recipeId)}
-                  >
-                    <Trash2 size={12} />
-                  </Button>
-                </div>
+            <Badge variant="secondary" className="font-bold">{cart.length} Items</Badge>
+          </CardHeader>
+
+          <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            {cart.length === 0 ? (
+              <div className="py-20 flex flex-col items-center justify-center text-center space-y-4 opacity-30">
+                <ShoppingCart size={48} />
+                <p className="text-sm font-medium">Cart is empty</p>
               </div>
-            ))
-          )}
-        </CardContent>
+            ) : (
+              cart.map((item) => (
+                <div key={item.recipeId} className="flex items-center gap-3 p-3 rounded-xl bg-muted/20 border group">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm truncate">{item.recipeName}</p>
+                    <p className="text-xs text-muted-foreground font-semibold">{location.currencySymbol}{item.price.toLocaleString()}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7 rounded-full bg-white shadow-sm border"
+                      onClick={() => updateQuantity(item.recipeId, -1)}
+                    >
+                      <Minus size={12} />
+                    </Button>
+                    <span className="text-sm font-black w-4 text-center">{item.quantity}</span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7 rounded-full bg-white shadow-sm border"
+                      onClick={() => updateQuantity(item.recipeId, 1)}
+                    >
+                      <Plus size={12} />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-7 w-7 text-destructive hover:bg-destructive/10 ml-1"
+                      onClick={() => removeFromCart(item.recipeId)}
+                    >
+                      <Trash2 size={12} />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
 
-        <CardFooter className="bg-muted/10 border-t p-6 flex flex-col gap-4">
-          <div className="w-full space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground font-medium">
-              <span>Subtotal</span>
-              <span>{location.currencySymbol}{total.toLocaleString()}</span>
+          <CardFooter className="bg-muted/10 border-t p-6 flex flex-col gap-4 shrink-0">
+            <div className="w-full space-y-2">
+              <div className="flex justify-between text-sm text-muted-foreground font-medium">
+                <span>Subtotal</span>
+                <span>{location.currencySymbol}{total.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-lg font-black pt-2 border-t border-dashed">
+                <span>Total Due</span>
+                <span className="text-primary">{location.currencySymbol}{total.toLocaleString()}</span>
+              </div>
             </div>
-            <div className="flex justify-between text-lg font-black pt-2 border-t border-dashed">
-              <span>Total Due</span>
-              <span className="text-primary">{location.currencySymbol}{total.toLocaleString()}</span>
+            
+            <div className="grid grid-cols-2 gap-3 w-full">
+              <Button variant="outline" className="h-12 rounded-xl border-primary/20 text-primary">
+                <Printer size={18} className="mr-2" /> Receipt
+              </Button>
+              <Button 
+                className="h-12 rounded-xl bg-primary shadow-lg"
+                disabled={cart.length === 0}
+                onClick={handleCheckout}
+              >
+                <CheckCircle2 size={18} className="mr-2" /> Checkout
+              </Button>
             </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-3 w-full">
-            <Button variant="outline" className="h-12 rounded-xl">
-              <Printer size={18} className="mr-2" /> Receipt
-            </Button>
-            <Button 
-              className="h-12 rounded-xl bg-primary shadow-lg"
-              disabled={cart.length === 0}
-              onClick={handleCheckout}
-            >
-              <CheckCircle2 size={18} className="mr-2" /> Checkout
-            </Button>
-          </div>
-          
-          <p className="text-[10px] text-center text-muted-foreground uppercase font-black tracking-widest flex items-center justify-center gap-2">
-            <Calculator size={10} />
-            Stock Deduction Active
-          </p>
-        </CardFooter>
-      </Card>
+            
+            <p className="text-[10px] text-center text-muted-foreground uppercase font-black tracking-widest flex items-center justify-center gap-2">
+              <Calculator size={10} />
+              Stock Deduction Active
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
