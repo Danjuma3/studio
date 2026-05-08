@@ -1,5 +1,5 @@
 
-# Kitchen Prof 🍳
+# Kitchen Prof 🍳 (Stable V1.0)
 
 **Managing margins for food business.**
 
@@ -35,7 +35,14 @@ Now that you have exported the code to GitHub, follow these steps to run it loca
 - **App Hosting**: Connect your GitHub repository to **Firebase App Hosting** in the console. It will automatically build and deploy your Next.js app.
 - **Security Rules**: Copy the content of `firestore.rules` from this project into the "Rules" tab of your Firestore database in the Firebase Console.
 
+## 📊 Market Intelligence Hub
+This project is configured for the Lagos Regional Hub:
+- **Mile 12 Market**: Grains & Produce
+- **Agege Abattoir**: Proteins
+- **Oyingbo Market**: Condiments & Seafood
+
 ## 🔐 Support & Administration
-- **Default Admin**: `chefdtanju@gmail.com` has root access to the Diagnostic Console and Marketing AI Lab.
-- **Recruitment Support**: `kitchenprof@gmail.com` (24-hour response time).
+- **Default Admin**: `chefdtanju@gmail.com`
+- **Pricing**: Pro Tier set to **₦17,000/month**
+- **Recruitment Support**: `kitchenprof@gmail.com`
 - **Legal**: `legal@kitchenprof.ng`
