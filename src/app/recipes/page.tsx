@@ -14,7 +14,7 @@ import {
   CookingPot, 
   ChevronRight,
   TrendingDown,
-  TrendingUp,
+  Search,
   Scale
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -32,6 +32,7 @@ export default function RecipesPage() {
   const { ingredients, recipes, addRecipe, deleteRecipe } = useInventory();
   const [strategy, setStrategy] = useState<PricingStrategy>('bulk');
   const [isAdding, setIsAdding] = useState(false);
+  const [search, setSearch] = useState('');
   
   // Create Recipe Form State
   const [newRecipe, setNewRecipe] = useState({
@@ -39,6 +40,11 @@ export default function RecipesPage() {
     description: '',
     items: [] as RecipeItem[]
   });
+
+  const filteredRecipes = recipes.filter(recipe => 
+    recipe.name.toLowerCase().includes(search.toLowerCase()) ||
+    recipe.description?.toLowerCase().includes(search.toLowerCase())
+  );
 
   const calculateRecipeCost = (items: RecipeItem[], currentStrategy: PricingStrategy) => {
     return items.reduce((sum, item) => {
@@ -96,6 +102,16 @@ export default function RecipesPage() {
             onCheckedChange={(checked) => setStrategy(checked ? 'retail' : 'bulk')}
           />
         </div>
+      </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+        <Input 
+          placeholder="Search recipes..." 
+          className="pl-10 h-11 rounded-xl bg-white border shadow-sm focus-visible:ring-primary/20"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -196,7 +212,7 @@ export default function RecipesPage() {
           </DialogContent>
         </Dialog>
 
-        {recipes.map((recipe) => {
+        {filteredRecipes.map((recipe) => {
           const bulkCost = calculateRecipeCost(recipe.items, 'bulk');
           const retailCost = calculateRecipeCost(recipe.items, 'retail');
           const currentCost = strategy === 'bulk' ? bulkCost : retailCost;

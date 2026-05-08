@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function StockTakingPage() {
-  const { ingredients, updateIngredient, loading } = useInventory();
+  const { ingredients, recipes, updateIngredient, loading } = useInventory();
   const [search, setSearch] = useState('');
   const [isAuditing, setIsAuditing] = useState(false);
   const { toast } = useToast();
@@ -35,9 +35,18 @@ export default function StockTakingPage() {
     }
   }, [user, isUserLoading, router]);
 
-  const filteredIngredients = ingredients.filter(ing => 
-    ing.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredIngredients = ingredients.filter(ing => {
+    const searchLower = search.toLowerCase();
+    const matchesIngredient = ing.name.toLowerCase().includes(searchLower);
+    
+    // Recipe-aware search: check if the ingredient is used in a recipe matching the search
+    const matchesRecipe = recipes.some(recipe => 
+      recipe.name.toLowerCase().includes(searchLower) && 
+      recipe.items.some(item => item.ingredientId === ing.id)
+    );
+
+    return matchesIngredient || matchesRecipe;
+  });
 
   const handleStockUpdate = (id: string, value: string) => {
     const numValue = parseFloat(value);
@@ -53,7 +62,6 @@ export default function StockTakingPage() {
       description: "Reconciling physical pantry records with system data...",
     });
 
-    // Simulate audit processing time
     setTimeout(() => {
       setIsAuditing(false);
       toast({
@@ -63,7 +71,7 @@ export default function StockTakingPage() {
     }, 2000);
   };
 
-  const lowStockCount = ingredients.filter(ing => ing.currentStock <= ing.minStock).length;
+  const lowStockCount = ingredients.filter(ing => (ing.currentStock || 0) <= (ing.minStock || 0)).length;
 
   if (loading || isUserLoading) {
     return (
@@ -149,8 +157,8 @@ export default function StockTakingPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <Input 
-            placeholder="Search for ingredient to update stock..." 
-            className="pl-10 h-11 rounded-xl bg-muted/30 border-none"
+            placeholder="Search by ingredient name or recipe (e.g. Jollof)..." 
+            className="pl-10 h-11 rounded-xl bg-muted/30 border-none focus-visible:ring-primary/20"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -171,11 +179,11 @@ export default function StockTakingPage() {
               {filteredIngredients.length === 0 ? (
                  <TableRow>
                    <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                     No ingredients tracked yet. Add some in the Inventory or Recipe Composer.
+                     {search ? "No matching ingredients or recipes found." : "No ingredients tracked yet."}
                    </TableCell>
                  </TableRow>
               ) : filteredIngredients.map((ing) => {
-                const isLow = ing.currentStock <= ing.minStock;
+                const isLow = (ing.currentStock || 0) <= (ing.minStock || 0);
                 return (
                   <TableRow key={ing.id} className="hover:bg-accent/5 transition-colors">
                     <TableCell className="font-medium">{ing.name}</TableCell>
@@ -183,14 +191,14 @@ export default function StockTakingPage() {
                       <Input 
                         type="number"
                         className="w-20 mx-auto h-8 text-center"
-                        value={ing.currentStock}
+                        value={ing.currentStock || 0}
                         onChange={(e) => handleStockUpdate(ing.id, e.target.value)}
                       />
                     </TableCell>
-                    <TableCell className="text-center text-muted-foreground">{ing.minStock}</TableCell>
+                    <TableCell className="text-center text-muted-foreground">{ing.minStock || 0}</TableCell>
                     <TableCell className="text-center">
                       <Badge variant="outline" className="capitalize">
-                        {ing.unitOfMeasure?.replace('_', ' ')}
+                        {ing.unitOfMeasure?.replace('_', ' ') || 'kg'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
