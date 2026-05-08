@@ -15,12 +15,15 @@ export default function CostPercentagePage() {
   const { recipes, ingredients, updateRecipe, subscription, location } = useInventory();
   const [strategy] = useState<PricingStrategy>('bulk');
 
+  const safeIngredients = ingredients || [];
+  const safeRecipes = recipes || [];
+
   const calculateRecipeCost = (recipe: Recipe) => {
-    return recipe.items.reduce((sum, item) => {
-      const ingredient = ingredients.find(ing => ing.id === item.ingredientId);
+    return (recipe.items || []).reduce((sum, item) => {
+      const ingredient = safeIngredients.find(ing => ing.id === item.ingredientId);
       if (!ingredient) return sum;
-      const price = strategy === 'bulk' ? (ingredient.bulkUnitPrice || 0) : (ingredient.retailUnitPrice || 0);
-      return sum + (price * item.quantity);
+      const price = strategy === 'bulk' ? (ingredient.bulkUnitPrice || ingredient.bulkPrice || 0) : (ingredient.retailUnitPrice || ingredient.retailPrice || 0);
+      return sum + (price * (item.quantity || 0));
     }, 0);
   };
 
@@ -86,7 +89,7 @@ export default function CostPercentagePage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        {recipes.length === 0 ? (
+        {safeRecipes.length === 0 ? (
           <div className="col-span-full py-20 text-center space-y-4">
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto text-muted-foreground">
               <Calculator size={32} />
@@ -98,9 +101,9 @@ export default function CostPercentagePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 col-span-full">
-            {recipes.map((recipe) => {
+            {safeRecipes.map((recipe) => {
               const cost = calculateRecipeCost(recipe);
-              const costPercentage = recipe.sellingPrice > 0 ? (cost / recipe.sellingPrice) * 100 : 0;
+              const costPercentage = (recipe.sellingPrice || 0) > 0 ? (cost / recipe.sellingPrice) * 100 : 0;
               const isHealthy = costPercentage <= 35 && costPercentage > 0;
 
               return (
@@ -136,7 +139,7 @@ export default function CostPercentagePage() {
                           <Input 
                             type="number"
                             className="h-8 font-bold text-lg"
-                            value={recipe.sellingPrice}
+                            value={recipe.sellingPrice || 0}
                             onChange={(e) => handlePriceUpdate(recipe.id, e.target.value)}
                           />
                         </div>
@@ -153,14 +156,14 @@ export default function CostPercentagePage() {
 
                     <div className="mt-6 pt-6 border-t space-y-3">
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight">Component Breakdown</p>
-                      {recipe.items.slice(0, 3).map((item, idx) => {
-                        const ing = ingredients.find(i => i.id === item.ingredientId);
+                      {(recipe.items || []).slice(0, 3).map((item, idx) => {
+                        const ing = safeIngredients.find(i => i.id === item.ingredientId);
                         if (!ing) return null;
-                        const itemCost = (strategy === 'bulk' ? (ing.bulkUnitPrice || 0) : (ing.retailUnitPrice || 0)) * item.quantity;
+                        const itemCost = (strategy === 'bulk' ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : (ing.retailUnitPrice || ing.retailPrice || 0)) * (item.quantity || 0);
                         const itemPercentage = (itemCost / (cost || 1)) * 100;
                         return (
                           <div key={idx} className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground">{ing.name} ({item.quantity}{ing.unitOfMeasure})</span>
+                            <span className="text-muted-foreground">{ing.name} ({item.quantity}{ing.unitOfMeasure || ing.unit || 'kg'})</span>
                             <div className="flex gap-4">
                               <span className="tabular-nums">{location.currencySymbol}{itemCost.toLocaleString()}</span>
                               <span className="font-bold text-primary w-10 text-right">{itemPercentage.toFixed(0)}%</span>
@@ -173,7 +176,7 @@ export default function CostPercentagePage() {
                   <CardFooter className="bg-muted/10 p-4 border-t flex justify-between items-center">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <DollarSign size={14} className="text-primary" />
-                      Profit per plate: <span className="font-bold text-foreground">{location.currencySymbol}{(recipe.sellingPrice - cost).toLocaleString()}</span>
+                      Profit per plate: <span className="font-bold text-foreground">{location.currencySymbol}{((recipe.sellingPrice || 0) - cost).toLocaleString()}</span>
                     </div>
                     <Button variant="ghost" size="sm" className="text-primary text-xs h-8">
                       Adjust Prices <ArrowRight size={14} className="ml-1" />

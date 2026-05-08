@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -23,27 +24,31 @@ export default function ProfitCalculatorPage() {
   const [loading, setLoading] = useState(false);
   const [insights, setInsights] = useState<CostOptimizationInsightOutput | null>(null);
 
+  const safeIngredients = ingredients || [];
+  const safeRecipes = recipes || [];
+
   const calculateTotalProfit = () => {
-    return recipes.reduce((sum, recipe) => {
-      const cost = recipe.items.reduce((rSum, item) => {
-        const ing = ingredients.find(i => i.id === item.ingredientId);
-        return rSum + (ing ? ing.bulkPrice * item.quantity : 0);
+    return safeRecipes.reduce((sum, recipe) => {
+      const cost = (recipe.items || []).reduce((rSum, item) => {
+        const ing = safeIngredients.find(i => i.id === item.ingredientId);
+        const price = ing ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : 0;
+        return rSum + (price * (item.quantity || 0));
       }, 0);
-      return sum + (recipe.sellingPrice - cost);
+      return sum + ((recipe.sellingPrice || 0) - cost);
     }, 0);
   };
 
   const getAIInsights = async () => {
-    if (ingredients.length === 0) return;
+    if (safeIngredients.length === 0) return;
     setLoading(true);
     try {
       const data = {
-        ingredients: ingredients.map(ing => ({
+        ingredients: safeIngredients.map(ing => ({
           name: ing.name,
-          unit: ing.unit,
-          bulkPrice: ing.bulkPrice,
-          retailPrice: ing.retailPrice,
-          weeklyUsage: ing.weeklyUsage
+          unit: ing.unitOfMeasure || ing.unit || 'kg',
+          bulkPrice: ing.bulkUnitPrice || ing.bulkPrice || 0,
+          retailPrice: ing.retailUnitPrice || ing.retailPrice || 0,
+          weeklyUsage: ing.weeklyUsage || 0
         }))
       };
       const result = await analyzeProcurementStrategy(data);
@@ -64,7 +69,7 @@ export default function ProfitCalculatorPage() {
         </div>
         <Button 
           onClick={getAIInsights} 
-          disabled={loading || ingredients.length === 0}
+          disabled={loading || safeIngredients.length === 0}
           className="bg-primary hover:bg-primary/90 text-white rounded-xl h-12 px-8 shadow-lg transition-all"
         >
           {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}

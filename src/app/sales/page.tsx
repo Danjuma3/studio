@@ -24,8 +24,13 @@ import {
 export default function SalesHistoryPage() {
   const { sales, location } = useInventory();
 
-  const totalRevenue = sales.reduce((sum, sale) => sum + sale.totalAmount, 0);
-  const totalItemsSold = sales.reduce((sum, sale) => sum + sale.items.reduce((iSum, item) => iSum + item.quantity, 0), 0);
+  const safeSales = sales || [];
+
+  const totalRevenue = safeSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
+  const totalItemsSold = safeSales.reduce((sum, sale) => {
+    const itemQty = (sale.items || []).reduce((iSum, item) => iSum + (item.quantity || 0), 0);
+    return sum + itemQty;
+  }, 0);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -48,7 +53,7 @@ export default function SalesHistoryPage() {
             <History className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-black">{sales.length}</div>
+            <div className="text-2xl font-black">{safeSales.length}</div>
             <p className="text-[10px] text-muted-foreground mt-1 font-bold">Transactions recorded</p>
           </CardContent>
         </Card>
@@ -71,7 +76,7 @@ export default function SalesHistoryPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-black">
-              {location.currencySymbol}{sales.length > 0 ? Math.round(totalRevenue / sales.length).toLocaleString() : 0}
+              {location.currencySymbol}{safeSales.length > 0 ? Math.round(totalRevenue / safeSales.length).toLocaleString() : 0}
             </div>
             <p className="text-[10px] opacity-70 mt-1 font-bold uppercase">Average value per sale</p>
           </CardContent>
@@ -98,7 +103,7 @@ export default function SalesHistoryPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sales.length === 0 ? (
+                {safeSales.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="h-48 text-center text-muted-foreground space-y-4">
                       <div className="flex flex-col items-center gap-2">
@@ -108,7 +113,7 @@ export default function SalesHistoryPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  sales.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((sale) => (
+                  [...safeSales].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((sale) => (
                     <TableRow key={sale.id} className="hover:bg-accent/5 transition-colors group">
                       <TableCell className="py-4">
                         <div className="flex items-center gap-2">
@@ -123,7 +128,7 @@ export default function SalesHistoryPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {sale.items.map((item, idx) => (
+                          {(sale.items || []).map((item, idx) => (
                             <Badge key={idx} variant="outline" className="text-[9px] font-bold bg-muted/30">
                               {item.quantity}x {item.recipeName}
                             </Badge>
@@ -131,7 +136,7 @@ export default function SalesHistoryPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right font-black tabular-nums">
-                        {location.currencySymbol}{sale.totalAmount.toLocaleString()}
+                        {location.currencySymbol}{(sale.totalAmount || 0).toLocaleString()}
                       </TableCell>
                       <TableCell className="text-right">
                         <ArrowUpRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors cursor-pointer ml-auto" />

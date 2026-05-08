@@ -29,15 +29,21 @@ export default function Dashboard() {
     setMounted(true);
   }, []);
 
-  const lowStockCount = ingredients.filter(ing => (ing.currentStock || 0) <= (ing.minStock || 0)).length;
+  // Safeguard array operations with fallbacks to avoid 'reduce' of undefined
+  const safeIngredients = ingredients || [];
+  const safeRecipes = recipes || [];
+  const safeSales = sales || [];
+
+  const lowStockCount = safeIngredients.filter(ing => (ing.currentStock || 0) <= (ing.minStock || 0)).length;
   
   // Actual sales revenue calculation
-  const totalActualSales = sales.reduce((acc, sale) => acc + sale.totalAmount, 0);
+  const totalActualSales = safeSales.reduce((acc, sale) => acc + (sale.totalAmount || 0), 0);
 
-  const highCostRecipes = recipes.filter(r => {
-    const cost = r.items.reduce((sum, item) => {
-      const ing = ingredients.find(i => i.id === item.ingredientId);
-      return sum + (ing ? (ing.bulkUnitPrice || ing.bulkPrice || 0) * item.quantity : 0);
+  const highCostRecipes = safeRecipes.filter(r => {
+    const cost = (r.items || []).reduce((sum, item) => {
+      const ing = safeIngredients.find(i => i.id === item.ingredientId);
+      const price = ing ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : 0;
+      return sum + (price * (item.quantity || 0));
     }, 0);
     return r.sellingPrice > 0 && (cost / r.sellingPrice) > 0.35;
   }).length;
@@ -98,7 +104,7 @@ export default function Dashboard() {
               <PackageSearch className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">{ingredients.length - lowStockCount} / {ingredients.length}</div>
+              <div className="text-4xl font-black">{safeIngredients.length - lowStockCount} / {safeIngredients.length}</div>
               <p className="text-xs text-muted-foreground mt-1 font-medium">Optimal inventory levels</p>
               {lowStockCount > 0 && (
                 <div className="mt-4 flex items-center gap-1 text-xs text-destructive font-bold bg-destructive/5 p-2 rounded-lg">
@@ -118,9 +124,9 @@ export default function Dashboard() {
             <CardContent className="pt-4">
               <div className="text-4xl font-black">{location.currencySymbol}{totalActualSales.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground mt-1 font-medium">Actual income from served plates</p>
-              {sales.length > 0 && (
+              {safeSales.length > 0 && (
                 <div className="mt-4 flex items-center gap-1 text-xs text-green-600 font-bold bg-green-50 p-2 rounded-lg">
-                  <TrendingUp size={14} /> {sales.length} transactions processed
+                  <TrendingUp size={14} /> {safeSales.length} transactions processed
                 </div>
               )}
             </CardContent>
@@ -134,7 +140,7 @@ export default function Dashboard() {
               <Calculator className="h-5 w-5 opacity-80" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">{recipes.length - highCostRecipes} / {recipes.length}</div>
+              <div className="text-4xl font-black">{safeRecipes.length - highCostRecipes} / {safeRecipes.length}</div>
               <p className="text-xs opacity-70 mt-1 font-medium">Recipes with safe margins</p>
               <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground bg-black/10 p-2 rounded-lg">
                 <TrendingDown size={14} /> AI optimization suggestions ready
