@@ -32,6 +32,20 @@ export interface Recipe {
   updatedAt: string;
 }
 
+export interface SaleItem {
+  recipeId: string;
+  recipeName: string;
+  quantity: number;
+  price: number;
+}
+
+export interface Sale {
+  id: string;
+  items: SaleItem[];
+  totalAmount: number;
+  createdAt: string;
+}
+
 export type PricingStrategy = 'bulk' | 'retail';
 
 export interface StaffMember {

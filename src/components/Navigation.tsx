@@ -17,7 +17,8 @@ import {
   LogOut,
   User,
   ShieldAlert,
-  LifeBuoy
+  LifeBuoy,
+  ShoppingCart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -39,6 +40,7 @@ import { BrandedLogo } from './BrandedLogo';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'POS Terminal', href: '/pos', icon: ShoppingCart },
   { name: 'Stock Taking', href: '/stock', icon: PackageSearch },
   { name: 'Recipe Composer', href: '/recipes', icon: CookingPot },
   { name: 'Cost Percentage', href: '/costing', icon: Calculator },

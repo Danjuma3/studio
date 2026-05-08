@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Ingredient": {
@@ -26,6 +27,17 @@
         "items": { "type": "array" }
       }
     },
+    "Sale": {
+      "title": "Sale",
+      "description": "A recorded transaction of recipes sold.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      }
+    },
     "SystemPaymentConfig": {
       "title": "SystemPaymentConfig",
       "description": "Global settings for branding and payments.",
@@ -47,11 +59,11 @@
   "firestore": {
     "/system/payment": {
       "schema": { "$ref": "#/backend/entities/SystemPaymentConfig" },
-      "description": "Global branding and billing configuration. Publicly readable."
+      "description": "System branding and billing configuration. Publicly readable."
     },
     "/system/alert": {
       "schema": { "type": "object" },
-      "description": "Global market news and system alerts. Publicly readable."
+      "description": "Market news and system alerts. Publicly readable."
     },
     "/users/{userId}/ingredients/{ingredientId}": {
       "schema": { "$ref": "#/backend/entities/Ingredient" },
@@ -60,6 +72,10 @@
     "/users/{userId}/recipes/{recipeId}": {
       "schema": { "$ref": "#/backend/entities/Recipe" },
       "description": "Private recipe costing for each restaurant."
+    },
+    "/users/{userId}/sales/{saleId}": {
+      "schema": { "$ref": "#/backend/entities/Sale" },
+      "description": "Recorded sales for performance tracking."
     }
   }
 }

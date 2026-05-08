@@ -9,7 +9,7 @@ import {
   deleteDocumentNonBlocking,
   setDocumentNonBlocking
 } from '@/firebase/non-blocking-updates';
-import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert, UserLocation } from './types';
+import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert, UserLocation, Sale, SaleItem } from './types';
 
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
   bankName: "Hub Bank",
@@ -78,6 +78,12 @@ export function useInventory() {
     return collection(firestore, 'users', user.uid, 'recipes');
   }, [firestore, user]);
   const { data: recipes, isLoading: isRecipesLoading } = useCollection<Recipe>(recipesQuery);
+
+  const salesQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'users', user.uid, 'sales');
+  }, [firestore, user]);
+  const { data: sales } = useCollection<Sale>(salesQuery);
 
   const staffQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -160,6 +166,36 @@ export function useInventory() {
     deleteDocumentNonBlocking(docRef);
   };
 
+  const addSale = (saleItems: SaleItem[]) => {
+    if (!firestore || !user || !ingredients) return;
+    
+    const saleId = Math.random().toString(36).substr(2, 9);
+    const totalAmount = saleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    const saleDocRef = doc(firestore, 'users', user.uid, 'sales', saleId);
+    setDocumentNonBlocking(saleDocRef, {
+      id: saleId,
+      items: saleItems,
+      totalAmount,
+      createdAt: new Date().toISOString()
+    }, { merge: true });
+
+    // Deduct stock levels automatically
+    saleItems.forEach(saleItem => {
+      const recipe = recipes?.find(r => r.id === saleItem.recipeId);
+      if (recipe) {
+        recipe.items.forEach(item => {
+          const ingredient = ingredients.find(ing => ing.id === item.ingredientId);
+          if (ingredient) {
+            const deduction = item.quantity * saleItem.quantity;
+            const newStock = Math.max(0, (ingredient.currentStock || 0) - deduction);
+            updateIngredient(ingredient.id, { currentStock: newStock });
+          }
+        });
+      }
+    });
+  };
+
   const toggleTask = (id: string) => {
     if (!firestore || !user || !tasks) return;
     const task = tasks.find(t => t.id === id);
@@ -200,6 +236,7 @@ export function useInventory() {
   return {
     ingredients: ingredients || [],
     recipes: recipes || [],
+    sales: sales || [],
     staff: staff || [],
     tasks: tasks || [],
     issues: issues || [],
@@ -214,6 +251,7 @@ export function useInventory() {
     addRecipe,
     updateRecipe,
     deleteRecipe,
+    addSale,
     toggleTask,
     reportIssue,
     upgradePlan,
