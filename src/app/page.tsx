@@ -153,8 +153,8 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 grid-rows-2 gap-4 h-full min-h-[400px]">
           <div className="bg-white/40 backdrop-blur-md rounded-3xl p-8 border border-white/60 shadow-xl flex flex-col justify-end transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 duration-500">
             <Globe className="text-primary mb-4" size={40} />
-            <h3 className="text-xl font-headline font-bold">Global Intelligence</h3>
-            <p className="text-sm text-muted-foreground mt-2">Sync with international pricing nodes.</p>
+            <h3 className="text-xl font-headline font-bold">Market Intelligence</h3>
+            <p className="text-sm text-muted-foreground mt-2">Sync with regional pricing nodes.</p>
           </div>
           <div className="bg-primary/5 rounded-3xl p-8 border border-primary/10 shadow-lg flex flex-col justify-start transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 duration-500">
             <div className="flex-1" />

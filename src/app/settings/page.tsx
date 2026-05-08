@@ -120,7 +120,7 @@ export default function SettingsPage() {
     updateSystemPaymentConfig(adminConfig);
     toast({
       title: "Settings Updated",
-      description: "Global system configuration has been updated successfully.",
+      description: "Platform system configuration has been updated successfully.",
     });
   };
 
@@ -128,7 +128,7 @@ export default function SettingsPage() {
     updateSystemAlert(adminAlert);
     toast({
       title: "Alert Broadcasted",
-      description: "The global market alert has been updated for all users.",
+      description: "The market alert has been updated for all users.",
     });
   };
 
@@ -148,7 +148,7 @@ export default function SettingsPage() {
         setAdminConfig({ ...adminConfig, appLogoUrl: reader.result as string });
         toast({
           title: "Photo Ready",
-          description: "Your photo has been prepared. Click 'Save Global Settings' to apply.",
+          description: "Your photo has been prepared. Click 'Save System Settings' to apply.",
         });
       };
       reader.readAsDataURL(file);
@@ -166,15 +166,15 @@ export default function SettingsPage() {
 
   const handleGlobalCreditCard = () => {
     toast({
-      title: "Processing Global Credit Card",
-      description: "Connecting to global payment hub...",
+      title: "Processing Payment",
+      description: "Connecting to secure payment hub...",
     });
     setTimeout(() => {
       upgradePlan('pro');
       setIsUpgradeOpen(false);
       toast({
-        title: "International Plan Active",
-        description: "Your professional global margins are now unlocked.",
+        title: "Plan Active",
+        description: "Your professional margins are now unlocked.",
       });
     }, 2000);
   };
@@ -199,7 +199,6 @@ export default function SettingsPage() {
   const currentLogoUrl = getSafeLogoUrl(systemPayment?.appLogoUrl);
   const isAfricanRegion = location.currency === 'NGN';
   
-  // Robust price calculation to ensure we never display "Zero" unless it's genuinely meant to be free
   const proDisplayPrice = isAfricanRegion 
     ? `${location.currencySymbol}${(systemPayment?.proPrice || 17000).toLocaleString()}`
     : `$${(systemPayment?.proPriceUSD || 14.99).toLocaleString()}`;
@@ -212,7 +211,7 @@ export default function SettingsPage() {
     { name: "AI Procurement Strategy Audit", free: false, pro: true },
     { name: "Historical Price Trend Charts", free: false, pro: true },
     { name: "Regional Hub Detection", free: false, pro: true },
-    { name: "Global Supply Alerts", free: false, pro: true },
+    { name: "Supply Alerts", free: false, pro: true },
   ];
 
   if (!mounted) return null;
@@ -221,7 +220,7 @@ export default function SettingsPage() {
     <div className="space-y-8 pb-20">
       <div>
         <h1 className="text-3xl font-headline font-bold">Settings & Billing</h1>
-        <p className="text-muted-foreground text-sm">Manage your business profile, global subscription, and branding.</p>
+        <p className="text-muted-foreground text-sm">Manage your business profile, subscription, and branding.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -289,13 +288,13 @@ export default function SettingsPage() {
 
                   <div className="space-y-4 border-t pt-6">
                     <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                      <Globe size={16} /> Global Pricing & Keys
+                      <Globe size={16} /> Pricing & Keys
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Regional Price (₦)</Label><Input type="number" value={adminConfig?.proPrice || 0} onChange={(e) => setAdminConfig({...adminConfig, proPrice: parseFloat(e.target.value) || 0})}/></div>
-                      <div className="space-y-2"><Label>Global Price ($)</Label><Input type="number" step="0.01" value={adminConfig?.proPriceUSD || 0} onChange={(e) => setAdminConfig({...adminConfig, proPriceUSD: parseFloat(e.target.value) || 0})}/></div>
+                      <div className="space-y-2"><Label>International Price ($)</Label><Input type="number" step="0.01" value={adminConfig?.proPriceUSD || 0} onChange={(e) => setAdminConfig({...adminConfig, proPriceUSD: parseFloat(e.target.value) || 0})}/></div>
                       <div className="space-y-2"><Label>Paystack Public Key</Label><Input value={adminConfig?.paystackPublicKey || ''} onChange={(e) => setAdminConfig({...adminConfig, paystackPublicKey: e.target.value})}/></div>
-                      <div className="space-y-2"><Label>Global Gateway Key</Label><Input value={adminConfig?.globalStripePublicKey || ''} onChange={(e) => setAdminConfig({...adminConfig, globalStripePublicKey: e.target.value})}/></div>
+                      <div className="space-y-2"><Label>International Gateway Key</Label><Input value={adminConfig?.globalStripePublicKey || ''} onChange={(e) => setAdminConfig({...adminConfig, globalStripePublicKey: e.target.value})}/></div>
                     </div>
                   </div>
 
@@ -311,7 +310,7 @@ export default function SettingsPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="bg-muted/30 p-4 border-t flex justify-end">
-                  <Button onClick={handleAdminSave} className="bg-primary gap-2"><Save size={18} />Save Global Settings</Button>
+                  <Button onClick={handleAdminSave} className="bg-primary gap-2"><Save size={18} />Save System Settings</Button>
                 </CardFooter>
               </Card>
 
@@ -324,9 +323,9 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="pt-6 space-y-4">
                   <div className="space-y-2">
-                    <Label>Global Alert Message</Label>
+                    <Label>Alert Message</Label>
                     <Input 
-                      placeholder="e.g. URGENT: Global shipping delays detected!"
+                      placeholder="e.g. URGENT: Market supply delays detected!"
                       value={adminAlert?.message || ''}
                       onChange={(e) => setAdminAlert({...adminAlert, message: e.target.value})}
                     />
@@ -383,7 +382,7 @@ export default function SettingsPage() {
                   <div className="space-y-1">
                     <div className="font-bold text-lg">Identity Control</div>
                     <div className="text-sm text-muted-foreground leading-relaxed">
-                      Branding is managed centrally by the platform administrator to ensure a consistent global experience across all regions.
+                      Branding is managed centrally by the platform administrator to ensure a consistent experience across all regions.
                     </div>
                   </div>
                 </div>
@@ -482,10 +481,10 @@ export default function SettingsPage() {
                         <DialogHeader>
                           <DialogTitle className="text-2xl font-headline flex items-center gap-2">
                             <Sparkles className="text-primary" />
-                            Global Pro Activation
+                            Pro Activation
                           </DialogTitle>
                           <DialogDescription>
-                            Confirm your payment details below to unlock professional margin tools globally.
+                            Confirm your payment details below to unlock professional margin tools.
                           </DialogDescription>
                         </DialogHeader>
                         
@@ -509,7 +508,7 @@ export default function SettingsPage() {
                                 <div className="p-4 bg-muted/50 rounded-2xl border-2 border-primary/10 space-y-3">
                                   <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Bank Name</span>
-                                    <span className="text-sm font-bold">{systemPayment?.bankName || 'Global Hub Bank'}</span>
+                                    <span className="text-sm font-bold">{systemPayment?.bankName || 'Hub Bank'}</span>
                                   </div>
                                   <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-bold text-muted-foreground uppercase">Account Number</span>
@@ -529,14 +528,14 @@ export default function SettingsPage() {
                                   className="w-full h-12 gap-2 bg-black text-white hover:bg-black/90 shadow-lg"
                                 >
                                   <CreditCard size={18} />
-                                  Global Credit Card
+                                  Credit Card
                                 </Button>
                                 <Button variant="outline" className="w-full h-12 gap-2 border-dashed">
                                   <Globe size={18} />
                                   International Wire
                                 </Button>
                                 <div className="text-[10px] text-center text-muted-foreground italic">
-                                  Global payments processed via international gateway nodes.
+                                  Payments are processed via secure international gateway nodes.
                                 </div>
                               </div>
                             )}
@@ -554,7 +553,7 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <ShieldCheck size={20} />
-                Global Security
+                Secure Payments
               </CardTitle>
             </CardHeader>
             <CardContent>

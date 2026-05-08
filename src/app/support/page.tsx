@@ -165,7 +165,7 @@ export default function SupportWorkspacePage() {
             <Card className="border-none shadow-md bg-white">
               <CardHeader className="pb-2">
                 <div className="text-xs font-bold text-muted-foreground uppercase flex justify-between items-center">
-                  Global Stock <Users size={14} className="text-primary" />
+                  Total Stock <Users size={14} className="text-primary" />
                 </div>
               </CardHeader>
               <CardContent>
@@ -209,7 +209,7 @@ export default function SupportWorkspacePage() {
                     <div className="text-white/30">--------------------------------------------------</div>
                     <div>&gt; Initializing Secure Handshake with chefdtanju@gmail.com...</div>
                     <div>&gt; Status: AUTH_SUCCESS_LEVEL_ROOT</div>
-                    <div>&gt; Scanning Firestore Collections (Global Scope)...</div>
+                    <div>&gt; Scanning Firestore Collections (System Scope)...</div>
                     <div>&gt; Found {ingredients.length} ingredient nodes.</div>
                     <div>&gt; Found {recipes.length} recipe configurations.</div>
                     <div>&gt; AI Model Link: STABLE</div>

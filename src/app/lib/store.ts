@@ -12,9 +12,9 @@ import {
 import { Ingredient, Recipe, StaffMember, ManagerTask, SupportIssue, SubscriptionInfo, UserPlan, SystemPaymentConfig, SystemAlert, UserLocation } from './types';
 
 const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
-  bankName: "Global Bank",
+  bankName: "Hub Bank",
   accountNumber: "0000000000",
-  accountName: "Kitchen Prof International",
+  accountName: "Kitchen Prof",
   paystackPublicKey: "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   globalStripePublicKey: "pk_live_global_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   proPrice: 17000,
@@ -23,7 +23,7 @@ const DEFAULT_SYSTEM_PAYMENT: SystemPaymentConfig = {
 };
 
 const DEFAULT_SYSTEM_ALERT: SystemAlert = {
-  message: "⚠️ LAGOS MARKET ALERT: Price hikes detected at Mile 12, Agege Abattoir, and Oyingbo nodes. Sync now to adjust your margins.",
+  message: "⚠️ MARKET ALERT: Price hikes detected at Mile 12, Agege Abattoir, and Oyingbo nodes. Sync now to adjust your margins.",
   type: "market",
   active: true,
   updatedAt: new Date().toISOString()
@@ -34,8 +34,8 @@ export function useInventory() {
   const firestore = useFirestore();
   const [currentPlan, setCurrentPlan] = useState<UserPlan>('free');
   const [location, setLocation] = useState<UserLocation>({
-    country: 'Global',
-    city: 'Regional Hub',
+    country: 'Regional',
+    city: 'Hub',
     currency: 'USD',
     currencySymbol: '$'
   });
