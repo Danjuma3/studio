@@ -13,7 +13,8 @@ import {
   Megaphone,
   Globe,
   Activity,
-  Layers
+  Layers,
+  History
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
-  const { ingredients, recipes, systemAlert } = useInventory();
+  const { ingredients, recipes, sales, systemAlert, location } = useInventory();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -30,14 +31,8 @@ export default function Dashboard() {
 
   const lowStockCount = ingredients.filter(ing => (ing.currentStock || 0) <= (ing.minStock || 0)).length;
   
-  const totalPotentialProfit = recipes.reduce((acc, recipe) => {
-    const cost = recipe.items.reduce((sum, item) => {
-      const ing = ingredients.find(i => i.id === item.ingredientId);
-      const price = ing ? (ing.bulkUnitPrice || ing.bulkPrice || 0) : 0;
-      return sum + (price * item.quantity);
-    }, 0);
-    return acc + Math.max(0, recipe.sellingPrice - cost);
-  }, 0);
+  // Actual sales revenue calculation
+  const totalActualSales = sales.reduce((acc, sale) => acc + sale.totalAmount, 0);
 
   const highCostRecipes = recipes.filter(r => {
     const cost = r.items.reduce((sum, item) => {
@@ -114,18 +109,18 @@ export default function Dashboard() {
           </Card>
         </Link>
         
-        <Link href="/costing" className="group">
+        <Link href="/sales" className="group">
           <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-white group-hover:translate-y-[-4px] overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/5">
-              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">Food Cost %</CardTitle>
-              <Calculator className="h-5 w-5 text-primary" />
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-tight">Sales Revenue</CardTitle>
+              <History className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">{recipes.length - highCostRecipes} / {recipes.length}</div>
-              <p className="text-xs text-muted-foreground mt-1 font-medium">Target margin compliance</p>
-              {highCostRecipes > 0 && (
-                <div className="mt-4 flex items-center gap-1 text-xs text-amber-500 font-bold bg-amber-50 p-2 rounded-lg">
-                  <TrendingUp size={14} /> {highCostRecipes} recipes need price review
+              <div className="text-4xl font-black">{location.currencySymbol}{totalActualSales.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1 font-medium">Actual income from served plates</p>
+              {sales.length > 0 && (
+                <div className="mt-4 flex items-center gap-1 text-xs text-green-600 font-bold bg-green-50 p-2 rounded-lg">
+                  <TrendingUp size={14} /> {sales.length} transactions processed
                 </div>
               )}
             </CardContent>
@@ -135,12 +130,12 @@ export default function Dashboard() {
         <Link href="/profit" className="group">
           <Card className="border-none shadow-md hover:shadow-xl transition-all h-full bg-primary text-primary-foreground group-hover:translate-y-[-4px] overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2 bg-white/5">
-              <CardTitle className="text-sm font-bold opacity-80 uppercase tracking-tight">Projected Profit</CardTitle>
-              <TrendingUp className="h-5 w-5 opacity-80" />
+              <CardTitle className="text-sm font-bold opacity-80 uppercase tracking-tight">Cost Control</CardTitle>
+              <Calculator className="h-5 w-5 opacity-80" />
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="text-4xl font-black">₦{totalPotentialProfit.toLocaleString()}</div>
-              <p className="text-xs opacity-70 mt-1 font-medium">Estimated potential</p>
+              <div className="text-4xl font-black">{recipes.length - highCostRecipes} / {recipes.length}</div>
+              <p className="text-xs opacity-70 mt-1 font-medium">Recipes with safe margins</p>
               <div className="mt-4 flex items-center gap-1 text-xs font-bold text-accent-foreground bg-black/10 p-2 rounded-lg">
                 <TrendingDown size={14} /> AI optimization suggestions ready
               </div>

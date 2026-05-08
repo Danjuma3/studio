@@ -18,7 +18,8 @@ import {
   User,
   ShieldAlert,
   LifeBuoy,
-  ShoppingCart
+  ShoppingCart,
+  History
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -41,6 +42,7 @@ import { BrandedLogo } from './BrandedLogo';
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'POS Terminal', href: '/pos', icon: ShoppingCart },
+  { name: 'Sales History', href: '/sales', icon: History },
   { name: 'Stock Taking', href: '/stock', icon: PackageSearch },
   { name: 'Recipe Composer', href: '/recipes', icon: CookingPot },
   { name: 'Cost Percentage', href: '/costing', icon: Calculator },
