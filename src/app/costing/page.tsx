@@ -44,7 +44,7 @@ export default function CostPercentagePage() {
         <div className="text-center space-y-4 max-w-lg mx-auto">
           <h1 className="text-3xl font-headline font-bold">Plate Costing is a Pro Feature</h1>
           <p className="text-muted-foreground text-lg">
-            Unlock professional food cost percentage analysis and real-time margin tracking for your global business.
+            Unlock professional food cost percentage analysis and real-time margin tracking for your business.
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function CostPercentagePage() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3 p-3 rounded-lg bg-white/50 border">
               <CheckCircle2 size={20} className="text-primary" />
-              <span className="text-sm font-medium">Automatic Global Cost % Calculations</span>
+              <span className="text-sm font-medium">Automatic Cost % Calculations</span>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-lg bg-white/50 border">
               <CheckCircle2 size={20} className="text-primary" />
